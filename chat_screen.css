@@ -1,0 +1,14 @@
+
+body {
+	height: 100vh;
+	background: var(--bs-dark);
+	padding: 1rem;
+}
+
+#chat-screen {
+	min-height: 90vh;
+}
+
+#chat-screen > div {
+	max-height: 90vh;
+}

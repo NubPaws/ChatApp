@@ -6,3 +6,17 @@ body {
 #wrapper {
 	height: 100vh;
 }
+
+#chat-screen {
+	max-width: 60vw;
+	margin: auto;
+	height: 80vh;
+}
+
+#user-profile {
+	height: 50px;
+}
+
+.profile-pic {
+	width: 50px;
+}

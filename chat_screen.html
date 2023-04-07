@@ -16,23 +16,31 @@
 				</div>
 			</div>
 			<div id="chat-screen" class="row d-flex justify-content-center">
-				<div id="contact-list" class="col-3 container bg-white px-0 border border-dark">
+				<!-- The list of contacts including the user's profile. -->
+				<div id="contact-list" class="col-sm-12 col-md-3 container bg-white px-0 border border-dark">
+					<!-- Profile here. -->
 					<div class="card no-border bg-light rounded-0">
 						<h5 class="card-title d-flex">
 							<img
-							class="img-fluid profile-pic rounded border mt-1"
-							src="./imgs/wobbuffet.png" alt="Wobbufet">
-							Rami Hashan
+								class="img-fluid profile-pic rounded border mt-1"
+								src="./imgs/wobbuffet.png" alt="Wobbuffet"
+							>
+							<p class="p-1">Wobbuffet</p>
 						</h5>
-						<div class="card-text"></div>
-						<button type="button" class="btn btn-success">
-							Add Contact
-						</button>
+						<div class="card-text text-end">
+							<button type="button" class="btn btn-success">
+								Add Contact
+							</button>
+						</div>
 					</div>
+					<!-- The list of contacts here. -->
 				</div>
-				<div id="chat-box" class="col-9 overflow-auto bg-white px-0 border border-dark">
+				
+				<!-- The chat box goes here. -->
+				<div id="chat-box" class="col-sm-12 col-md-9 overflow-auto bg-white px-0 border border-dark">
 					<h1 class="text-dark">World</h1>
 				</div>
+				
 			</div>
 		</div>
 		

@@ -17,23 +17,29 @@
 			</div>
 			<div id="chat-screen" class="row d-flex justify-content-center">
 				<!-- The list of contacts including the user's profile. -->
-				<div id="contact-list" class="col-sm-12 col-md-3 container bg-white px-0 border border-dark">
-					<!-- Profile here. -->
-					<div class="card no-border bg-light rounded-0">
-						<h5 class="card-title d-flex">
+				<div id="contact-list" class="col-sm-12 col-md-3 container-fluid bg-white border border-dark">
+					<!-- The user's profile. -->
+					<div class="row bg-light border border-dark rounded-0">
+						<div class="col-2 px-0">
 							<img
-								class="img-fluid profile-pic rounded border mt-1"
-								src="./imgs/wobbuffet.png" alt="Wobbuffet"
+								class="img-fluid profile-pic rounded border m-1"
+								src="./imgs/cat.png" alt="Cat"
 							>
-							<p class="p-1">Wobbuffet</p>
-						</h5>
-						<div class="card-text text-end">
-							<button type="button" class="btn btn-success">
-								Add Contact
+						</div>
+						<div class="col-8 px-0">
+							Wobbuffet
+						</div>
+						<div class="col-2 px-0">
+							<button type="button" class="btn no-border p-0">
+								<img
+									class="img-fluid profile-pic m-1 p-1"
+									src="./imgs/plus.png" alt="+"
+								>
 							</button>
 						</div>
 					</div>
 					<!-- The list of contacts here. -->
+					
 				</div>
 				
 				<!-- The chat box goes here. -->

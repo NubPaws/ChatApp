@@ -1,6 +1,8 @@
 
 body {
 	background: var(--bs-dark);
+	--window-height: 80vh;
+	--window-width: 80vw;
 }
 
 #wrapper {
@@ -8,16 +10,26 @@ body {
 }
 
 #chat-screen {
-	max-width: 80vw;
+	max-width: var(--window-width);
 	margin: auto;
-	height: 80vh;
+	height: var(--window-height);
 }
 
-#user-profile {
-	height: 50px;
+#contact-list {
+	height: var(--window-height);
 }
 
-.profile-pic {
-	width: 50px;
+#contacts {
+	max-height: 90%;
+	margin: 0px 0px;
+	padding: 0px 0px;
+}
+
+#selected-chat {
+	background: var(--bs-secondary);
+	color: var(--bs-light);
+}
+
+#chat-title-img {
 	height: 50px;
 }

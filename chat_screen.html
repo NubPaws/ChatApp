@@ -24,7 +24,7 @@
 					<div class="row bg-light border border-dark rounded-0">
 						<div class="col-2 m-0 p-1">
 							<img
-								class="img-fluid rounded border m-1"
+								class="img-fluid rounded-5 border m-1"
 								src="./imgs/cat.png" alt="Cat"
 							>
 						</div>
@@ -40,24 +40,53 @@
 							</button>
 						</div>
 					</div>
+					
 					<!-- The list of contacts here. -->
-					<div class="row border border-dark">
-						<div class="col-2 m-0 p-1">
-							<img
-								class="img-fluid rounded border m-1"
-								src="./imgs/raccoon.png" alt="Raccoon"
-							>
+					<div id="contacts" class="container-fluid row m-0 p-0 overflow-auto">
+						<div class="row m-0 p-0 border">
+							<div class="col-2 m-0 p-1">
+								<img
+									class="img-fluid rounded-5 border m-1"
+									src="./imgs/raccoon.png" alt="Raccoon"
+								>
+							</div>
+							<div class="col-10 m-0 p-1">
+								<div class="p-0 m-0">Mr. Raccoon One</div>
+								<div class="text-end p-0 m-0">14:20, 11/05/23</div>
+							</div>
 						</div>
-						<div class=" col-10 m-0 p-1">
-							<div class="p-0 m-0">Mr. Raccoon</div>
-							<div class="text-end p-0 m-0">14:20, 11/05/23</div>
+						<div id="selected-chat" class="row m-0 p-0 border">
+							<div class="col-2 m-0 p-1">
+								<img
+									class="img-fluid rounded-5 border m-1"
+									src="./imgs/raccoon.png" alt="Raccoon"
+								>
+							</div>
+							<div class="col-10 m-0 p-1">
+								<div class="p-0 m-0">Mr. Raccoon Two</div>
+								<div class="text-end p-0 m-0">14:20, 11/05/23</div>
+							</div>
 						</div>
+						
 					</div>
+					
 				</div>
 				
 				<!-- The chat box goes here. -->
-				<div id="chat-box" class="col-sm-12 col-md-9 overflow-auto bg-white px-0 border border-dark">
-					<h1 class="text-dark">World</h1>
+				<div id="chat-box" class="container-fluid col-sm-12 col-md-9 px-0 bg-light border border-dark">
+					<!-- Title of the chat. -->
+					<div class="row m-0 p-0 border">
+						<div class="col-2 col-lg-1 m-0 p-1 text-center">
+							<img id="chat-title-img"
+								class="img-fluid rounded border m-0 rounded-5"
+								src="./imgs/raccoon.png" alt="Raccoon"
+							>
+						</div>
+						<div class="col-10 col-lg-11 m-0 p-1">
+							<h4 class="p-0 m-0">Mr. Raccoon Two</h4>
+							<h6 class="p-0 m-0">Online</h6>
+						</div>
+					</div>
 				</div>
 				
 			</div>

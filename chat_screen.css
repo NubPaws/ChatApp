@@ -37,6 +37,7 @@ body {
 #contactList {
 	width: 30%;
 	float: left;
+	user-select: none;
 }
 
 #profile {
@@ -66,6 +67,7 @@ body {
 	float: left;
 	padding-left: 0.5rem;
 	padding-top: 0.25rem;
+	cursor: default;
 }
 
 #addContactBtn {
@@ -161,6 +163,7 @@ body {
 	border-width: 0;
 	border-bottom-width: var(--profile-botton-border-width);
 	border-color: black;
+	user-select: none;
 }
 
 #chatProfileImg {
@@ -176,11 +179,13 @@ body {
 	margin-left: 0.5rem;
 	font-size: 18pt;
 	font-weight: bold;
+	cursor: default;
 }
 
 #chatProfileStatus {
 	margin-left: 0.5rem;
 	font-size: 12pt;
+	cursor: default;
 }
 
 #chatArea {

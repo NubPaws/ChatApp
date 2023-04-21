@@ -11,60 +11,87 @@
 <body>
 	
 	<!-- Logout button right here let's gooo! -->
-	<button type="button" id="logout-btn" class="btn btn-danger">Logout</button>
+	<button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
 	
 	<!-- The chat screen. -->
-	<div id="chat-app">
+	<div id="chatApp">
 		<!-- The amazing list of contacts is here. -->
-		<div id="contact-list" class="bg-light">
+		<div id="contactList" class="bg-light">
 			<!-- Profile of the user here. -->
 			<div id="profile">
-				<img id="profile-image" src="./imgs/cat.png" alt="Cat">
-				<h5 id="profile-name">
-					Sir. Cat
+				<img id="profileImage" src="./imgs/cat.png" alt="Cat">
+				<h5 id="profileName">
+					Sir Cat
 				</h5>
-				<img id="add-contact-btn" src="./imgs/person-add.svg"></img>
+				<img
+					id="addContactBtn"
+					src="./imgs/person-add.svg"
+					data-bs-toggle="modal"
+					data-bs-target="#addContactModal"
+				></img>
+				
+				<!-- Add contact modal. -->
+				<div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addContactModalLabel">Add new contact</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<input type="text" class="form-control" id="contactIdentifier" placeholder="Contact's identifier">
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
+						</div>
+						</div>
+					</div>
+				</div>
+				<!-- End of modal. -->
 			</div>
+			
 			<!-- Chat list here. -->
 			<div id="contacts" class="overflow-auto">
-				<div class="contact-card">
-					<img class="contact-profile-pic" src="./imgs/raccoon.png" alt="Raccoon">
-					<h5 class="contact-profile-name">
-						Mr Raccoon
+				<div class="contactCard">
+					<img class="contactProfilePic" src="./imgs/raccoon.png" alt="Raccoon">
+					<h5 class="contactProfileName">
+						Mr. Raccoon
 					</h5>
-					<span class="last-contacted-text">14:20, 11/05/23</span>
+					<span class="lastContactedText">14:20, 11/05/23</span>
 				</div>
-				<div class="contact-card selected">
-					<img class="contact-profile-pic" src="./imgs/raccoon.png" alt="Raccoon">
-					<h5 class="contact-profile-name">
-						Mr Raccoon
+				<div class="contactCard selected">
+					<img class="contactProfilePic" src="./imgs/raccoon.png" alt="Raccoon">
+					<h5 class="contactProfileName">
+						Mr. Raccoon
 					</h5>
-					<span class="last-contacted-text">14:20, 11/05/23</span>
+					<span class="lastContactedText">14:20, 11/05/23</span>
 				</div>
-				<div class="contact-card">
-					<img class="contact-profile-pic" src="./imgs/raccoon.png" alt="Raccoon">
-					<h5 class="contact-profile-name">
-						Mr Raccoon
+				<div class="contactCard">
+					<img class="contactProfilePic" src="./imgs/raccoon.png" alt="Raccoon">
+					<h5 class="contactProfileName">
+						Mr. Raccoon
 					</h5>
-					<span class="last-contacted-text">14:20, 11/05/23</span>
+					<span class="lastContactedText">14:20, 11/05/23</span>
 				</div>
 			</div>
 		</div>
 		
 		<!-- The chat box is here -->
-		<div id="chat-box" class="bg-light">
-			<div id="chat-title">
-				<img id="chat-profile-img" src="./imgs/raccoon.png">
-				<span id="chat-profile-title">Mr Raccoon</span>
+		<div id="chatBox" class="bg-light">
+			<div id="chatTitle">
+				<img id="chatProfileImg" src="./imgs/raccoon.png">
+				<span id="chatProfileTitle">Mr. Raccoon</span>
 				<br>
-				<span id="chat-profile-status">Online</span>
+				<span id="chatProfileStatus">Online</span>
 			</div>
-			<div id="chat-area">
+			<div id="chatArea" class="overflow-auto">
 				
 			</div>
-			<div id="chat-field">
-				<input id="chat-field-text" type="text" placeholder="Write your message here...">
-				<button id="chat-field-btn" type="button" class="btn btn-secondary">Send</button>
+			<div id="chatField">
+				<input id="chatFieldText" type="text" placeholder="Write your message here...">
+				<button id="chatFieldBtn" type="button" class="btn btn-secondary">Send</button>
 			</div>
 		</div>
 	</div>

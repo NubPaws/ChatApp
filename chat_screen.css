@@ -16,22 +16,25 @@ body {
 	padding: 0px;
 }
 
-#logout-btn {
+#logoutBtn {
 	position: absolute;
 	top: 0;
 	right: 0;
 	margin: 10px;
 }
 
-#chat-app {
-	margin: 0;
-	padding: 10vh 30vh;
-	height: 100%;
-	max-height: 80vh;
-	min-height: 400px;
+#chatApp {
+	padding: 0;
+	display: inline-block;
+	margin-top: 10vh;
+	margin-left: 10vw;
+	width: 80vw;
+	height: 80vh;
+	min-width: 800px;
+	min-height: 500px;
 }
 
-#contact-list {
+#contactList {
 	width: 30%;
 	float: left;
 }
@@ -45,7 +48,7 @@ body {
 	background-color: var(--profile-bg-color);
 }
 
-#profile-image {
+#profileImage {
 	--profile-image-margin: 1px;
 	--profile-image-border: 2px;
 	float: left;
@@ -59,25 +62,25 @@ body {
 	border-width: var(--profile-image-border);
 }
 
-#profile-name {
+#profileName {
 	float: left;
 	padding-left: 0.5rem;
 	padding-top: 0.25rem;
 }
 
-#add-contact-btn {
+#addContactBtn {
 	cursor: pointer;
 	position: absolute;
 	object-position: right top;
 	right: 0;
 	margin: 0.25rem;
 	padding: 0;
-	height: calc(var(--profile-height) - 5px);
+	height: calc(var(--profile-height) - 0.5rem);
 	animation: fadeOutClick 0.25s;
 	border-radius: 1rem;
 }
 
-#add-contact-btn:focus, #add-contact-btn:active {
+#addContactBtn:focus, #addContactBtn:active {
 	background-color: var(--bs-secondary);
 	animation: fadeInClick 0.25s;
 }
@@ -105,14 +108,14 @@ body {
 	clear: both;
 }
 
-.contact-card {
+.contactCard {
 	height: var(--contact-card-height);
 	clear: both;
 	position: relative;
 	cursor: pointer;
 }
 
-.contact-profile-pic {
+.contactProfilePic {
 	--top-margin: 0.25rem;
 	float: left;
 	height: calc(var(--contact-card-height) - 2 * var(--top-margin));
@@ -126,23 +129,23 @@ body {
 	border-width: 1px;
 }
 
-.contact-profile-name {
+.contactProfileName {
 	float: left;
 	padding-left: 0.5rem;
 	padding-top: 0.25rem;
 }
 
-.last-contacted-text {
+.lastContactedText {
 	position: absolute;
 	bottom: 0;
 	right: 0.5rem;
 }
 
-.contact-card.selected {
+.contactCard.selected {
 	background-color: var(--profile-bg-color);
 }
 
-#chat-box {
+#chatBox {
 	width: 70%;
 	float: left;
 	height: var(--screen-height);
@@ -151,7 +154,7 @@ body {
 	border-left-width: 1px;
 }
 
-#chat-title {
+#chatTitle {
 	height: var(--profile-height);
 	background: var(--profile-bg-color);
 	border-style: solid;
@@ -160,7 +163,7 @@ body {
 	border-color: black;
 }
 
-#chat-profile-img {
+#chatProfileImg {
 	--chat-profile-img-margin: 0.2rem;
 	height: calc(var(--profile-height) - 2 * var(--chat-profile-img-margin) - var(--profile-botton-border-width));
 	border-radius: 1rem;
@@ -169,34 +172,35 @@ body {
 	float: left;
 }
 
-#chat-profile-title {
+#chatProfileTitle {
 	margin-left: 0.5rem;
 	font-size: 18pt;
 	font-weight: bold;
 }
 
-#chat-profile-status {
+#chatProfileStatus {
 	margin-left: 0.5rem;
 	font-size: 12pt;
 }
 
-#chat-area {
+#chatArea {
 	height: calc(var(--screen-height) - var(--profile-height) - var(--chat-area-height));
 	background-color: #F4EDED;
 }
 
-#chat-field {
+#chatField {
 	height: var(--chat-area-height);
 	background-color: var(--bg-light);
 	padding: 0.5rem;
+	display: flex;
 }
 
-#chat-field-text {
-	width: 90%;
+#chatFieldText {
+	width: 52rem;
 	height: 100%;
+	flex-grow: 100;
 }
 
-#chat-field-btn {
-	width: 9.5%;
-	margin-bottom: 0.25rem;
+#chatFieldBtn {
+	margin-left: 0.5rem;
 }

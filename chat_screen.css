@@ -8,10 +8,18 @@
 	--contact-card-height: 60px;
 	
 	--chat-area-height: 50px;
+	
+	--ca-red: #E71D36;
+	--ca-orage: #FF9F1C;
+	--ca-sea-green: #2EC4B6;
+	--ca-pink: #F4EDED;
+	--ca-white: #FDFFFC;
+	--ca-dark: #011627;
 }
 
 body {
-	background: var(--bs-dark);
+	/*background: var(--bs-dark);*/
+	background: var(--ca-dark);
 	margin: 0px;
 	padding: 0px;
 }
@@ -190,7 +198,7 @@ body {
 
 #chatArea {
 	height: calc(var(--screen-height) - var(--profile-height) - var(--chat-area-height));
-	background-color: #F4EDED;
+	background-color: var(--ca-pink);
 }
 
 #chatField {

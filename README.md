@@ -4,24 +4,24 @@
 	- [About](#about)
 	- [Current State](#current-state)
 - [Technologies](#technologies)
-	- [Currently Implementated](#currently-implementated)
+	- [Currently Implemented](#currently-implemented)
 	- [To Be Implemented](#to-be-implemented)
 - [Credits](#credits)
 
 ## About
-This project attempts to make a chat application that will be accessable on multiple platforms:
+This project attempts to make a chat application that will be accessible on multiple platforms:
 
 * Web browser
 * Desktop app
 * Android app
 
-In this chat app a user will be able to register a new account and log into his account to chat with his contacts that he'll be able to add based on their unique identifiers.
+In this chat app, users will be able to register a new accounts and log into their account. By doing so, users may chat with each other.
 
 ## Current State
 Currently the layout of the log in page, the register page and a representation of what the chat screen will look like. Currently there is no JavaScript involved in the application so the pages are mainly static.
 
 # Technologies
-## Currently Implementated
+## Currently Implemented
 1. JavaScript
 2. Bootstrap
 

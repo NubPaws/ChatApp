@@ -4,7 +4,7 @@
 	- [About](#about)
 	- [Current State](#current-state)
 - [Technologies](#technologies)
-	- [Currently Implementated](#currently-implemented)
+	- [Currently Implemented](#currently-implemented)
 	- [To Be Implemented](#to-be-implemented)
 - [Credits](#credits)
 

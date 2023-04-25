@@ -228,19 +228,27 @@ body {
 	padding-top: 0.2rem;
 }
 
-.right-speech-bubble {
+.speechBubble {
 	position: relative;
 	background: #5ebd00;
 	border-radius: .4em;
-	width:auto;
-	height:auto;
-	float: right;
-	top: 80%;
 	margin-right: 10px;
 	padding: 5px;
+	padding-right: 30px;
 }
 
-.right-speech-bubble:after {
+.speechBubble:after {
+	content: '';
+	position: absolute;
+	top: 50%;
+}
+
+.rightSpeechBubble {
+	float: right;
+	top: 80%;
+}
+
+.rightSpeechBubble:after {
 	content: '';
 	position: absolute;
 	right: 0;
@@ -255,19 +263,12 @@ body {
 	margin-right: -9px;
 }
 
-.left-speech-bubble {
-	position: relative;
-	background: #5ebd00;
-	border-radius: .4em;
-	width:auto;
-	height:auto;
+.leftSpeechBubble {
 	float: left;
 	top: 70%;
-	margin-right: 10px;
-	padding: 5px;
 }
 
-.left-speech-bubble:after {
+.leftSpeechBubble:after {
 	content: '';
 	position: absolute;
 	left: 0;
@@ -280,4 +281,11 @@ body {
 	border-bottom: 0;
 	margin-top: -5px;
 	margin-left: -9px;
+}
+
+.timestamp {
+	font-size: 8pt;
+	position: absolute;
+	right: 3px;
+	bottom: 0;
 }

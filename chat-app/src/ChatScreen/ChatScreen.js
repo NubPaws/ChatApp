@@ -11,7 +11,7 @@ export function ChatScreen(props) {
 			</div>
 			<div id="wrapper">
 				<div id="sidePanel">
-					<ContactList username="Sir Cat" image={props.profileImage} contacts={props.contacts} />
+					<ContactList username="Sir Cat" image={props.profileImage} contactsHook={props.contactsHook} />
 				</div>
 				<div id="chatWindow">
 					<ChatWindow openChat="Mr. Raccoon" />

@@ -1,0 +1,14 @@
+body {
+    background-color:#22547D;;
+}
+
+.pane {
+    background-color:#FDFFFC;
+    position: absolute;
+    left: 5%;
+    top: 7%;
+}
+
+.authentication-row {
+    padding: 5px;
+}

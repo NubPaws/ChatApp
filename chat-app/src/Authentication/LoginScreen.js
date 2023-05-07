@@ -1,4 +1,5 @@
 import "./authentication.css"
+import { Link } from "react-router-dom";
 
 export function LoginScreen(props) {
     return (
@@ -26,7 +27,7 @@ export function LoginScreen(props) {
               <button className="btn btn-primary">Login</button>
             </form>
             <div className="text-center">
-              <p>Not registered? <a href="registration.html">click here</a> to register</p>
+              <p>Not registered? <Link to='/registration'>click here</Link> to register</p>
             </div>
           </div>
         </div>

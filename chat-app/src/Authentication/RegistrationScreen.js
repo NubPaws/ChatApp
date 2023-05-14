@@ -1,51 +1,26 @@
 import { Link } from "react-router-dom";
 import "./authentication.css"
+import { Input } from "./Input";
+import { handleRegister, previewProfilePicture } from "./Validation";
+
 
 export function RegistrationScreen() {
     return (
         <div className="container pane">
             <form>
-                <div className="form-group row authentication-row">
-                    <div className="col-3">
-                        <label htmlFor="username">Username</label>
-                    </div>
-                    <div className="col-9">
-                        <input type="text" className="form-control" id="Username" placeholder="Username" />
-                    </div>
-                </div>
-                <div className="form-group row authentication-row">
-                    <div className="col-3">
-                        <label htmlFor="user-password">Password</label>
-                    </div>
-                    <div className="col-9">
-                        <input type="password" className="form-control" id="user-password" placeholder="Password" />
-                    </div>
-                </div>
-                <div className="form-group row authentication-row">
-                    <div className="col-3">
-                        <label htmlFor="validated-password">Please validate your password</label>
-                    </div>
-                    <div className="col-9">
-                        <input type="password" className="form-control" id="validated-password" placeholder="Password" />
-                    </div>
-                </div>
-                <div className="form-group row authentication-row">
-                    <div className="col-3">
-                        <label htmlFor="display-name">Display name</label>
-                    </div>
-                    <div className="col-9">
-                        <input type="text" className="form-control" id="display-name" placeholder="Username" />
-                    </div>
-                </div>
-                <div className="form-group row authentication-row">
-                    <div className="col-3">
-                        <label htmlFor="profile-picture">Profile Picture</label>
-                    </div>
-                    <div className="col-9">
-                        <input type="file" className="form-control" id="profile-picture" />
-                    </div>
-                </div>
-                <button className="btn btn-primary">Register</button>
+                <Input id="username" type="text" name="username" inputText="Username - has to be at least 4 characters long" 
+                        placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
+                <Input id="password" type="password" name="password" inputText="Password - has to be at least 8 characters long" 
+                        placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
+                <Input id="confirmPassword" type="password" name="confirmPassword" 
+                        inputText="Please validate your password" placeholder="Password" errorMessageId="confirmPasswordErrorMessage"></Input>
+                <Input id="displayName" type="text" name="displayName" inputText="Display Name" 
+                        placeholder="Display Name" errorMessageId="displayNameErrorMessage"></Input>
+
+                <Input id="profilePicture" type="file" name="profilePicture" inputText="Profile Picture" onChange={previewProfilePicture}></Input>
+                <img id="preview"/>
+                <br></br>
+                <button className="btn btn-primary" onClick={handleRegister}>Register</button>
             </form>
             <div className="text-center">
                 <p>Already registered? <Link to='/login'>click here</Link> to login</p>

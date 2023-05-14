@@ -1,35 +1,25 @@
 import "./authentication.css"
 import { Link } from "react-router-dom";
+import { Input } from "./Input";
+import { handleLogin } from "./Validation";
 
 export function LoginScreen(props) {
-    return (
-        <div>
-          <title>Login</title>
+  return (
+    <div>
+      <title>Login</title>
 
-          <div className="container pane">
-            <form>
-              <div className="form-group row authentication-row">
-                <div className="col-3">
-                  <label htmlFor="username">Username</label>
-                </div>
-                <div className="col-9">
-                  <input type="text" className="form-control" id="Username" placeholder="Username" />
-                </div>
-              </div>
-              <div className="form-group row authentication-row">
-                <div className="col-3">
-                  <label htmlFor="user-password">Password</label>
-                </div>
-                <div className="col-9">
-                  <input type="password" className="form-control" id="user-password" placeholder="Password" />
-                </div>
-              </div>
-              <button className="btn btn-primary">Login</button>
-            </form>
-            <div className="text-center">
-              <p>Not registered? <Link to='/registration'>click here</Link> to register</p>
-            </div>
-          </div>
+      <div className="container pane">
+        <form>
+          <Input id="username" type="text" name="username" inputText="Username"
+                placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
+          <Input id="password" type="password" name="password" inputText="Password"
+                placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
+          <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+        </form>
+        <div className="text-center">
+          <p>Not registered? <Link to='/registration'>click here</Link> to register</p>
         </div>
-      );
+      </div>
+    </div>
+  );
 }

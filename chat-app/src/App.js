@@ -6,15 +6,18 @@ import { RegistrationScreen } from './Authentication/RegistrationScreen';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
+  
+  const [userCredentials, setUserCredentials] = useState("");
+
   return (
     <div className="App">
       <header className="App-header">
       </header>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<LoginScreen />}></Route>
-          <Route path='/login' element={<LoginScreen />}></Route>
-          <Route path='/registration' element={<RegistrationScreen />}></Route>
+          <Route path='/' element={<LoginScreen userCredentials={userCredentials} />}></Route>
+          <Route path='/login' element={<LoginScreen userCredentials={userCredentials}/>}></Route>
+          <Route path='/registration' element={<RegistrationScreen setUserCredentials={setUserCredentials}/>}></Route>
         </Routes>
       </BrowserRouter>
 

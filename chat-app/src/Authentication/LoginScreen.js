@@ -14,7 +14,7 @@ export function LoginScreen(props) {
                 placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
           <Input id="password" type="password" name="password" inputText="Password"
                 placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
-          <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+          <button className="btn btn-primary" onClick={(event) => handleLogin(event, props.userCredentials)}>Login</button>
         </form>
         <div className="text-center">
           <p>Not registered? <Link to='/registration'>click here</Link> to register</p>

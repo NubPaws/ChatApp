@@ -1,3 +1,4 @@
+
 const MIN_USERNAME_LENGTH = 4;
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -59,18 +60,32 @@ function previewProfilePicture(event) {
     preview.style.width = "150px";
 }
 
-function handleRegister(event) {
+function handleRegister(event, props) {
     event.preventDefault();
     // Checking for registration success
-    if (handleUsername() && handleUsername() &&    handlePassword() &&  confirmPassword() &&  handleDisplayName()) {
-
+    if (handleUsername() && handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
+        // registering user
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let displayName = document.getElementById("displayName").value;
+        let profilePicture = document.getElementById("preview").src;
+        props.setUserCredentials(
+            {
+                "username": username,
+                "password": password,
+                "display name": displayName,
+                "profilePicture": profilePicture
+            });
+        alert("Registered successfully");
     }
 }
 
-function handleLogin(event) {
+function handleLogin(event, userCredentials) {
     event.preventDefault();
-    handleUsername();
-    handlePassword();   
+    if (userCredentials["username"] == document.getElementById("username").value
+        && userCredentials["username"] == document.getElementById("password").value) {
+            alert("Login successfully");
+    }
 }
 
 export {

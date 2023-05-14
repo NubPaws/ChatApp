@@ -4,7 +4,7 @@ import { Input } from "./Input";
 import { handleRegister, previewProfilePicture } from "./Validation";
 
 
-export function RegistrationScreen() {
+export function RegistrationScreen(props) {
     return (
         <div className="container pane">
             <form>
@@ -20,7 +20,7 @@ export function RegistrationScreen() {
                 <Input id="profilePicture" type="file" name="profilePicture" inputText="Profile Picture" onChange={previewProfilePicture}></Input>
                 <img id="preview"/>
                 <br></br>
-                <button className="btn btn-primary" onClick={handleRegister}>Register</button>
+                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props)}>Register</button>
             </form>
             <div className="text-center">
                 <p>Already registered? <Link to='/login'>click here</Link> to login</p>

@@ -5,6 +5,7 @@ export function Button(props) {
 		backgroundColor: props.bgColor,
 		color: props.textColor,
 		borderWidth: props.borderWidth,
+		borderRadius: props.borderRadius,
 	};
 	return (
 		<button
@@ -21,6 +22,7 @@ Button.defaultProps = {
 	text: "",
 	className: "",
 	borderWidth: "2px",
+	borderRadius: "7px",
 };
 
 export function IconButton(props) {

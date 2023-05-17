@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import "./authentication.css"
 import { Input } from "./Input";
 import { handleRegister, previewProfilePicture } from "./Validation";
+import { useNavigate } from "react-router-dom";
 
 
 export function RegistrationScreen(props) {
+    const navigate = useNavigate();
     return (
         <div className="container pane">
             <form>
@@ -20,7 +22,7 @@ export function RegistrationScreen(props) {
                 <Input id="profilePicture" type="file" name="profilePicture" inputText="Profile Picture" onChange={previewProfilePicture}></Input>
                 <img id="preview"/>
                 <br></br>
-                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props)}>Register</button>
+                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props.userCredentials, props.setUserCredentials, navigate)}>Register</button>
             </form>
             <div className="text-center">
                 <p>Already registered? <Link to='/login'>click here</Link> to login</p>

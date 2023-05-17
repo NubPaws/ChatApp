@@ -60,7 +60,7 @@ function previewProfilePicture(event) {
     preview.style.width = "150px";
 }
 
-function handleRegister(event, props) {
+function handleRegister(event, userCredentials, setUserCredentials, navigate) {
     event.preventDefault();
     // Checking for registration success
     if (handleUsername() && handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
@@ -69,25 +69,34 @@ function handleRegister(event, props) {
         let password = document.getElementById("password").value;
         let displayName = document.getElementById("displayName").value;
         let profilePicture = document.getElementById("preview").src;
-        props.setUserCredentials(
-            {
-                "username": username,
-                "password": password,
-                "display name": displayName,
-                "profilePicture": profilePicture
-            });
+        let userData = {};
+        userData[username] = {
+            "password": password,
+            "display name": displayName,
+            "image": profilePicture,
+            "logged in": false
+        };
+        setUserCredentials({ ...userCredentials, ...userData });
+        console.log(userCredentials);
         alert("Registered successfully");
+        // navigate("/login", { replace: true })
     }
 }
 
-function handleLogin(event, userCredentials) {
+function handleLogin(event, userCredentials, setCurrentUser) {
     event.preventDefault();
-    if (userCredentials["username"] == document.getElementById("username").value
-        && userCredentials["username"] == document.getElementById("password").value) {
+    if (handleUsername() && handlePassword()) {
+        let enteredUsername = document.getElementById("username").value;
+        let enteredPassword = document.getElementById("password").value;
+        if (userCredentials[enteredUsername]["password"] === enteredPassword) {
             alert("Login successfully");
+            setCurrentUser(enteredPassword);
+        }
+        else {
+            alert("Login Failed");
+        }
     }
 }
-
 export {
     previewProfilePicture,
     handleRegister,

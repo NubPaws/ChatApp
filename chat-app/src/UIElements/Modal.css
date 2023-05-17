@@ -20,6 +20,13 @@
 	padding: 10px;
 }
 
+.modalFooter {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: right;
+}
+
 .modalTitle {
 	margin: 0;
 }

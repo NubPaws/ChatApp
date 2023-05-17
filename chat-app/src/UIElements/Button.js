@@ -17,7 +17,7 @@ export function Button(props) {
 }
 
 Button.defaultProps = {
-	backgroundColor: "white",
+	bgColor: "white",
 	color: "black",
 	text: "",
 	className: "",

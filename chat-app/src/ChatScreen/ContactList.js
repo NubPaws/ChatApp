@@ -6,20 +6,44 @@ import "./Contact.css";
 
 export function ContactList(props) {
 	// Generate the contact list.
-	const database = props.databaseHook[0];
-	
+	const [database, setDatabase] = props.databaseHook;
+	// eslint-disable-next-line
+	const [contactToAdd, setContactToAdd] = useState("");
 	const [selected, setSelected] = useState(undefined);
 	
+	function addToContactList(name) {
+		if (!database.hasOwnProperty(name))
+			return;
+		
+		if (database[name].messages.hasOwnProperty(props.username))
+			return;
+		
+		const db = database;
+		// Add the user to the contact's chat.
+		db[name].messages[props.username] = [];
+		// Add the contact to the user's chat.
+		db[props.username].messages[name] = [];
+		
+		setDatabase(db);
+	}
+	
 	function createContact(username, image, time, i) {
-		const date = new Date(time);
-		const hm = `${date.getHours()}:${date.getMinutes()}`;
-		const day = date.getDay().toString().padStart(2, '0');
-		const month = date.getMonth().toString().padStart(2, '0');
-		const year = date.getFullYear();
+		let dateStr;
+		if (time !== "") {
+			const date = new Date(time);
+			const hm = `${date.getHours()}:${date.getMinutes()}`;
+			const day = date.getDay().toString().padStart(2, '0');
+			const month = date.getMonth().toString().padStart(2, '0');
+			const year = date.getFullYear();
+			dateStr = `${hm} ${day}/${month}/${year}`;
+		} else {
+			dateStr = "";
+		}
+		
 		return <Contact
 			username={username}
 			image={image}
-			lastMessage={`${hm} ${day}/${month}/${year}`}
+			lastMessage={dateStr}
 			key={i.toString()}
 			onClick={() => {
 				setSelected(i);
@@ -42,9 +66,13 @@ export function ContactList(props) {
 			if (!database.hasOwnProperty(key))
 				continue;
 			
+			let time;
+			if (messages[key].length !== 0)
+				time = messages[key][messages[key].length - 1].time;
+			else time = "";
 			const contact = createContact(
 				key, database[key].image,
-				messages[key][messages[key].length - 1].time, i
+				time, i
 			);
 			
 			contactsList.push(contact);
@@ -59,7 +87,8 @@ export function ContactList(props) {
 			<UserProfile
 				username={props.username}
 				image={props.image}
-				databaseHook={props.databaseHook} />
+				addToContactList={addToContactList}
+				setContactToAdd={setContactToAdd} />
 			<div id="listOfContacts">
 				{generateContacts()}
 			</div>

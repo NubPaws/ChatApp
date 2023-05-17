@@ -1,9 +1,8 @@
 import { Button } from "../UIElements/Button";
-
-import "./ChatWindow.css";
+import { useState } from "react";
 
 import raccoonImage from "../imgs/raccoon.png";
-import { useState } from "react";
+import "./ChatWindow.css";
 
 export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
@@ -39,7 +38,7 @@ export function ChatWindow(props) {
 		<div id="title">
 			<img id="profileImg" src={raccoonImage} alt="Raccoon" />
 			<div id="userInfo">
-				<span id="name">Mr. Raccoon</span>
+				<span id="name">{activeChat}</span>
 				<span id="status">Online</span>
 			</div>
 		</div>

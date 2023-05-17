@@ -8,10 +8,12 @@ import personAdd from "../imgs/personAdd.svg";
 
 export function UserProfile(props) {
 	const [ show, setShow ] = useState(false);
-	const [ database, setDatabase ] = props.databaseHook;
+	const setContactToAdd = props.setContactToAdd;
 	
-	function addContactToList() {
-		setShow(true);
+	function updateContactNameToAdd() {
+		// This solution is meant to force a rerender to occur.
+		setContactToAdd(document.getElementById("userAddTextField").value);
+		props.addToContactList(document.getElementById("userAddTextField").value);
 	}
 	
 	return (
@@ -21,8 +23,16 @@ export function UserProfile(props) {
 			<IconButton
 				image={personAdd}
 				alt="Add Person"
-				onClick={addContactToList} />
-			<Modal onClose={() => setShow(false)} show={show} />
+				onClick={() => setShow(true)} />
+			<Modal
+				onClose={() => setShow(false)}
+				onAccept={updateContactNameToAdd}
+				show={show}
+				title="Add a new contact">
+				<div id="userAddTextFieldContainer">
+					<input id="userAddTextField" type="text" placeholder="Enter contact name..." />
+				</div>
+			</Modal>
 		</div>
 	);
 }

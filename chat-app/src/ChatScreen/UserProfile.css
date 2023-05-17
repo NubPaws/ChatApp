@@ -7,3 +7,14 @@
 	border: 0;
 	border-bottom: 1px black solid;
 }
+
+#userAddTextFieldContainer {
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+}
+
+#userAddTextField {
+	flex: 1;
+	font-size: 14pt;
+}

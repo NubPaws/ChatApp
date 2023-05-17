@@ -11,6 +11,7 @@ export function LoginScreen(props) {
 
   useEffect(() => {
     if (props.currentUser !== "") {
+      props.setAllowChatScreen(true);
       navigate("/chat")
     }
   }, [props.currentUser, props.setCurrentUser]);

@@ -60,7 +60,7 @@ function previewProfilePicture(event) {
     preview.style.width = "150px";
 }
 
-function handleRegister(event, userCredentials, setUserCredentials, navigate) {
+function handleRegister(event, userCredentials, setUserCredentials, setShouldRedirect) {
     event.preventDefault();
     // Checking for registration success
     if (handleUsername() && handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
@@ -77,9 +77,8 @@ function handleRegister(event, userCredentials, setUserCredentials, navigate) {
             "logged in": false
         };
         setUserCredentials({ ...userCredentials, ...userData });
-        console.log(userCredentials);
         alert("Registered successfully");
-        // navigate("/login", { replace: true })
+        setShouldRedirect(true);
     }
 }
 
@@ -88,7 +87,7 @@ function handleLogin(event, userCredentials, setCurrentUser) {
     if (handleUsername() && handlePassword()) {
         let enteredUsername = document.getElementById("username").value;
         let enteredPassword = document.getElementById("password").value;
-        if (userCredentials[enteredUsername]["password"] === enteredPassword) {
+        if (userCredentials[enteredUsername] !== undefined && userCredentials[enteredUsername]["password"] === enteredPassword) {
             alert("Login successfully");
             setCurrentUser(enteredPassword);
         }

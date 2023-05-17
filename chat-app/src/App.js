@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useRoutes } from "react-router-dom";
 import './App.css';
 import { useState } from 'react';
 import { LoginScreen } from './Authentication/LoginScreen';
@@ -10,6 +10,7 @@ function App() {
 
   const [userCredentials, setUserCredentials] = useState("");
   const [currentUser, setCurrentUser] = useState("");
+  const [allowChatScreen, setAllowChatScreen] = useState(false);
 
   return (
     <div className="App">
@@ -18,11 +19,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginScreen userCredentials={userCredentials} setUserCredentials={setUserCredentials}
-                currentUser={currentUser} setCurrentUser={setCurrentUser}/>}></Route>
+                currentUser={currentUser} setCurrentUser={setCurrentUser} setAllowChatScreen={setAllowChatScreen}/>}></Route>
           <Route path='/login' element={<LoginScreen userCredentials={userCredentials} setUserCredentials={setUserCredentials}
-                currentUser={currentUser} setCurrentUser={setCurrentUser}/>}></Route>
+                currentUser={currentUser} setCurrentUser={setCurrentUser} setAllowChatScreen={setAllowChatScreen}/>}></Route>
           <Route path='/registration' element={<RegistrationScreen userCredentials={userCredentials} setUserCredentials={setUserCredentials} />}></Route>
-          <Route path='/chat' element={<ChatScreen userCredentials={userCredentials} />}></Route>
+          <Route path='/chat' element={<ChatScreen userCredentials={userCredentials} setCurrentUser={setCurrentUser}
+                setAllowChatScreen={setAllowChatScreen} allowChatScreen={allowChatScreen} />}></Route>
         </Routes>
       </BrowserRouter>
 

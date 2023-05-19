@@ -1,6 +1,6 @@
 export function Input(props) {
     return (
-        <div className="form-group row authentication-row">
+        <div className="dataEntry">
             <div className="col-3">
                 <label htmlFor={props.id}>{props.inputText}</label>
             </div>

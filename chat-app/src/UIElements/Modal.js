@@ -20,6 +20,13 @@ export function Modal(props) {
 		}
 	}
 	
+	function acceptButton() {
+		if (props.onAccept === undefined)
+			return <></>;
+		
+		return <Button onClick={() => {props.onAccept(); props.onClose()}} bgColor="#28A745" text="Accept" />
+	}
+	
 	return (
 		<div className="modal" onClick={props.onClose}>
 			<div className="modalContent" onClick={e => e.stopPropagation()}>
@@ -28,10 +35,15 @@ export function Modal(props) {
 				</div>
 				<div className="modalBody">{props.children}</div>
 				<div className="modalFooter">
-					<Button onClick={() => {props.onAccept(); props.onClose()}} bgColor="#28A745" text="Accept" />
+					{acceptButton()}
 					<Button onClick={props.onClose} bgColor="#5C95FF" text="Close" />
 				</div>
 			</div>
 		</div>
 	);
+}
+
+Modal.defaultProps = {
+	onAccept: undefined,
+	onClose: undefined,
 }

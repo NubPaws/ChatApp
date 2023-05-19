@@ -1,7 +1,7 @@
+import React from "react";
 import { Button } from "../UIElements/Button";
 import { useState } from "react";
 
-import raccoonImage from "../imgs/raccoon.png";
 import "./ChatWindow.css";
 
 export function ChatWindow(props) {
@@ -33,10 +33,11 @@ export function ChatWindow(props) {
 		setDatabase(db);
 	}
 	
+	const chatImg = database[activeChat].image;
 	return (
 	<div id="chatBox">
 		<div id="title">
-			<img id="profileImg" src={raccoonImage} alt="Raccoon" />
+			<img id="profileImg" src={chatImg} alt="Raccoon" />
 			<div id="userInfo">
 				<span id="name">{activeChat}</span>
 				<span id="status">Online</span>

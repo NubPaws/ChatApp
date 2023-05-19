@@ -16,9 +16,9 @@ export function RegistrationScreen(props) {
             setShouldRedirect(false);
             navigate("/login")
         }
-      }, [shouldRedirect, setShouldRedirect]);
+      }, [shouldRedirect, setShouldRedirect, navigate]);
     return (
-        <div className="container pane">
+        <div className="pane">
             <form>
                 <Input id="username" type="text" name="username" inputText="Username - has to be at least 4 characters long" 
                         placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
@@ -30,9 +30,9 @@ export function RegistrationScreen(props) {
                         placeholder="Display Name" errorMessageId="displayNameErrorMessage"></Input>
 
                 <Input id="profilePicture" type="file" name="profilePicture" inputText="Profile Picture" onChange={previewProfilePicture}></Input>
-                <img id="preview"/>
+                <img id="preview" alt=""/>
                 <br></br>
-                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props.userCredentials, props.setUserCredentials, setShouldRedirect)}>Register</button>
+                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props.userCredentials, props.setUserCredentials, setShouldRedirect, props.databaseHook)}>Register</button>
             </form>
             <div className="text-center">
                 <p>Already registered? <Link to='/login'>click here</Link> to login</p>

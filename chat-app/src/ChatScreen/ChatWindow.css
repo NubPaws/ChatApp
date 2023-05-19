@@ -34,6 +34,7 @@
 	border-style: solid;
 	align-self: center;
 	height: calc(var(--title-height) - 2 * var(--margin));
+	aspect-ratio: 1 / 1;
 }
 
 #userInfo {

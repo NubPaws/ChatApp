@@ -44,7 +44,7 @@ function confirmPassword() {
 function handleDisplayName() {
     let displayName = document.getElementById("displayName");
     let errorMessageSpan = document.getElementById("displayNameErrorMessage");
-    if (displayName.value.length == 0) {
+    if (displayName.value.length === 0) {
         errorMessageSpan.innerText = "Display Name can't be empty"
         return false;
     }
@@ -60,7 +60,7 @@ function previewProfilePicture(event) {
     preview.style.width = "150px";
 }
 
-function handleRegister(event, userCredentials, setUserCredentials, setShouldRedirect) {
+function handleRegister(event, userCredentials, setUserCredentials, setShouldRedirect, dbHook) {
     event.preventDefault();
     // Checking for registration success
     if (handleUsername() && handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
@@ -77,6 +77,15 @@ function handleRegister(event, userCredentials, setUserCredentials, setShouldRed
             "logged in": false
         };
         setUserCredentials({ ...userCredentials, ...userData });
+        const [database, setDatabase] = dbHook;
+        const db = database;
+        db[username] = {
+            display: displayName,
+            image: profilePicture,
+            messages: {}
+        }
+        setDatabase(db);
+        
         alert("Registered successfully");
         setShouldRedirect(true);
     }
@@ -89,7 +98,7 @@ function handleLogin(event, userCredentials, setCurrentUser) {
         let enteredPassword = document.getElementById("password").value;
         if (userCredentials[enteredUsername] !== undefined && userCredentials[enteredUsername]["password"] === enteredPassword) {
             alert("Login successfully");
-            setCurrentUser(enteredPassword);
+            setCurrentUser(enteredUsername);
         }
         else {
             alert("Login Failed");

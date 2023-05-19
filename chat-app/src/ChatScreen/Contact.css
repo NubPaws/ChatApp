@@ -4,6 +4,7 @@
 	border-radius: 100%;
 	border: 1px black solid;
 	margin: 0.25rem;
+	aspect-ratio: 1 / 1;
 }
 
 .username {

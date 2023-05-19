@@ -82,10 +82,16 @@ export function ContactList(props) {
 		return contactsList;
 	}
 	
+	let userDisplayName;
+	if (database.hasOwnProperty(props.username))
+		userDisplayName = database[props.username].display;
+	else
+		userDisplayName = "";
+	
 	return (
 		<div id="contactList">
 			<UserProfile
-				username={props.username}
+				username={userDisplayName}
 				image={props.image}
 				addToContactList={addToContactList}
 				setContactToAdd={setContactToAdd} />

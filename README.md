@@ -1,3 +1,5 @@
+The 2nd part of the first assignment is under the [init-react-client](https://github.com/NubPaws/ChatApp/tree/init-react-client) branch
+
 # Yuval & Rami's Chat App
 
 - [Yuval \& Rami's Chat App](#yuval--ramis-chat-app)

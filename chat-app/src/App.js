@@ -1,13 +1,16 @@
 import logo from './logo.svg';
 import { BrowserRouter, Route, Routes, useRoutes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ChatScreen } from "./ChatScreen/ChatScreen.js";
 import './App.css';
-import { useState } from 'react';
 import { LoginScreen } from './Authentication/LoginScreen';
 import { RegistrationScreen } from './Authentication/RegistrationScreen';
 import { ChatScreen } from './ChatScreen/ChatScreen';
 
-function App() {
+import catImage from "./imgs/cat.png";
+import raccoonImage from "./imgs/raccoon.png";
 
+function App() {
   const [userCredentials, setUserCredentials] = useState("");
   const [currentUser, setCurrentUser] = useState("");
   const [allowChatScreen, setAllowChatScreen] = useState(false);

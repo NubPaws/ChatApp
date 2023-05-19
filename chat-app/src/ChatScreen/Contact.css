@@ -1,0 +1,49 @@
+
+.profileImg {
+	padding: 0.1rem;
+	border-radius: 100%;
+	border: 1px black solid;
+	margin: 0.25rem;
+}
+
+.username {
+	margin: 0.5rem;
+	font-size: 16pt;
+	flex-grow: 1;
+}
+
+.contactCard {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	height: 74px;
+	position: relative;
+	border: 0;
+	border-bottom: 1px black solid;
+	cursor: pointer;
+}
+
+.contactCard:last-of-type {
+	border-bottom: 0;
+}
+
+.contactCard:hover {
+	box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
+}
+
+.contactCard:active {
+	box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.2);
+}
+
+.selectedCard {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.lastMessage {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin: 0.25rem;
+}

@@ -60,7 +60,7 @@ function previewProfilePicture(event) {
     preview.style.width = "150px";
 }
 
-function handleRegister(event, userCredentials, setUserCredentials, setShouldRedirect, dbHook) {
+function handleRegister(event, userCredentials, setUserCredentials, setShouldRedirect, dbHook, setShowMessage) {
     event.preventDefault();
     // Checking for registration success
     if (handleUsername() && handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
@@ -85,23 +85,20 @@ function handleRegister(event, userCredentials, setUserCredentials, setShouldRed
             messages: {}
         }
         setDatabase(db);
-        
-        alert("Registered successfully");
-        setShouldRedirect(true);
+        setShowMessage(true);
     }
 }
 
-function handleLogin(event, userCredentials, setCurrentUser) {
+function handleLogin(event, userCredentials, setCurrentUser, setShowMessage) {
     event.preventDefault();
     if (handleUsername() && handlePassword()) {
         let enteredUsername = document.getElementById("username").value;
         let enteredPassword = document.getElementById("password").value;
         if (userCredentials[enteredUsername] !== undefined && userCredentials[enteredUsername]["password"] === enteredPassword) {
-            alert("Login successfully");
             setCurrentUser(enteredUsername);
         }
         else {
-            alert("Login Failed");
+            setShowMessage(true);
         }
     }
 }

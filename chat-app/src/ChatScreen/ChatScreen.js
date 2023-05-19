@@ -1,7 +1,7 @@
 import { Button } from "../UIElements/Button.js";
 import { ContactList } from "./ContactList.js";
 import { ChatWindow } from "./ChatWindow.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatScreen.css";
 
@@ -12,14 +12,19 @@ export function ChatScreen(props) {
 	const [activeChat, setActiveChat] = useState(undefined);
 	const navigate = useNavigate();
 	
-	console.log(props.username);
 	
 	function logout(setAllowChatScreen, setCurrentUser) {
 		setAllowChatScreen(false);
 		setCurrentUser("");
 		navigate("/login");
 	}
-	
+	useEffect(() => {
+		if (!props.allowChatScreen) {
+			navigate("/login");
+		}		
+	});
+
+
 	return (
 		<div id="screen">
 		<div id="topBar">

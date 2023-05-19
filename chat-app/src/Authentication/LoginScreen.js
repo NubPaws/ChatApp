@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { Input } from "./Input";
 import { handleLogin } from "./Validation";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Modal } from "../UIElements/Modal";
+
 
 export function LoginScreen(props) {
   const navigate = useNavigate();
-  console.log(props.currentUser);
+  const [showMessage, setShowMessage] = useState(false);
 
   const {currentUser, setAllowChatScreen, setCurrentUser} = props;
   
@@ -24,11 +26,14 @@ export function LoginScreen(props) {
           placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
         <Input id="password" type="password" name="password" inputText="Password"
           placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
-        <button className="btn btn-primary" onClick={(event) => handleLogin(event, props.userCredentials, props.setCurrentUser)}>Login</button>
+        <button className="btn btn-primary" onClick={(event) => handleLogin(event, props.userCredentials, props.setCurrentUser, setShowMessage)}>Login</button>
       </form>
       <div className="text-center">
         <p>Not registered? <Link to='/registration'>click here</Link> to register</p>
       </div>
+      <Modal title="Login Failed" show={showMessage} onClose={() => {setShowMessage(false)}}>
+                <h5>Incorrect username/password</h5>
+            </Modal>
     </div>
   );
 }

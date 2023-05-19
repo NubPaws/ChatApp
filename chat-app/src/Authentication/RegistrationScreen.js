@@ -5,11 +5,12 @@ import { handleRegister, previewProfilePicture } from "./Validation";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
-
+import { Modal } from "../UIElements/Modal";
 
 export function RegistrationScreen(props) {
     const navigate = useNavigate();
     const [shouldRedirect, setShouldRedirect] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
     
     useEffect(() => {
         if (shouldRedirect === true) {
@@ -32,11 +33,14 @@ export function RegistrationScreen(props) {
                 <Input id="profilePicture" type="file" name="profilePicture" inputText="Profile Picture" onChange={previewProfilePicture}></Input>
                 <img id="preview" alt=""/>
                 <br></br>
-                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props.userCredentials, props.setUserCredentials, setShouldRedirect, props.databaseHook)}>Register</button>
+                <button className="btn btn-primary" onClick={(event) => handleRegister(event, props.userCredentials, props.setUserCredentials, setShouldRedirect, props.databaseHook, setShowMessage)}>Register</button>
             </form>
             <div className="text-center">
                 <p>Already registered? <Link to='/login'>click here</Link> to login</p>
             </div>
+            <Modal title="Registered successfully" show={showMessage} onClose={() => {setShowMessage(false); setShouldRedirect(true);}}>
+                <h5>You have successfully completed the registration</h5>
+            </Modal>
         </div>
     );
 }

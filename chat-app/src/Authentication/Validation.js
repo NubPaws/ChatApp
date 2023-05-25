@@ -51,23 +51,9 @@ function handleDisplayName() {
     return true;
 }
 
-function handleLogin(event, userCredentials, setCurrentUser, setShowMessage) {
-    event.preventDefault();
-    if (handleUsername() && handlePassword()) {
-        let enteredUsername = document.getElementById("username").value;
-        let enteredPassword = document.getElementById("password").value;
-        if (userCredentials[enteredUsername] !== undefined && userCredentials[enteredUsername]["password"] === enteredPassword) {
-            setCurrentUser(enteredUsername);
-        }
-        else {
-            setShowMessage(true);
-        }
-    }
-}
 export {
     handleUsername,
     handlePassword,
     handleDisplayName,
     confirmPassword,
-    handleLogin
 }

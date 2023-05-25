@@ -6,29 +6,32 @@ import { useNavigate } from "react-router-dom";
 import "./ChatScreen.css";
 
 export function ChatScreen(props) {
+	const navigate = useNavigate();
+
+	if (!props.token) {
+		navigate("/login");
+	}
+
 	const database = props.databaseHook[0];
 	const img = database.hasOwnProperty(props.username) ? database[props.username].image : "";
 	
 	const [activeChat, setActiveChat] = useState(undefined);
-	const navigate = useNavigate();
 	
 	
-	function logout(setAllowChatScreen, setCurrentUser) {
-		setAllowChatScreen(false);
-		setCurrentUser("");
+	function logout(setToken) {
+		setToken("");
 		navigate("/login");
 	}
 	useEffect(() => {
-		if (!props.allowChatScreen) {
+		if (!props.token) {
 			navigate("/login");
 		}		
 	});
 
-
 	return (
 		<div id="screen">
 		<div id="topBar">
-			<Button className="logoutBtn" text="Logout" bgColor="red" textColor="white" onClick={() => logout(props.setAllowChatScreen, props.setCurrentUser)} />
+			<Button className="logoutBtn" text="Logout" bgColor="red" textColor="white" onClick={() => logout(props.setToken)} />
 		</div>
 		<div id="wrapper">
 			<div id="sidePanel">

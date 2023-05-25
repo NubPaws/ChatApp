@@ -1,5 +1,4 @@
-import React from "react";
-import { Button } from "../UIElements/Button";
+import { Button } from "../UIElements/Button.js";
 import { useState } from "react";
 
 import "./ChatWindow.css";

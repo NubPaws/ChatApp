@@ -2,8 +2,10 @@
 
 # dependencies
 chat-app/node_modules
+chat-app/build
 chat-app/.pnp
 chat-app/.pnp.js
+backend/node_modules
 
 # testing
 chat-app/coverage

@@ -1,10 +1,10 @@
 import "./authentication.css"
 import { Link } from "react-router-dom";
-import { Input } from "./Input";
-import { handleLogin } from "./Validation";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Modal } from "../UIElements/Modal";
+import { Input } from "./Input.js";
+import { handleLogin } from "./Validation.js";
+import { Modal } from "../UIElements/Modal.js";
 
 
 export function LoginScreen(props) {

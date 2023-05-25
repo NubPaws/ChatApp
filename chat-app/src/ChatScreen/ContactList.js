@@ -1,5 +1,5 @@
-import { UserProfile } from "./UserProfile";
-import { Contact } from  "./Contact";
+import { UserProfile } from "./UserProfile.js";
+import { Contact } from  "./Contact.js";
 import { useState } from "react";
 
 import "./Contact.css";

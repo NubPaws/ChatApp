@@ -1,5 +1,5 @@
-import { IconButton } from "../UIElements/Button";
-import { Modal } from "../UIElements/Modal";
+import { IconButton } from "../UIElements/Button.js";
+import { Modal } from "../UIElements/Modal.js";
 import { useState } from "react";
 
 import "./UserProfile.css";

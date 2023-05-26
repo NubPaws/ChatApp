@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import mongoose, { Schema, SchemaType } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const IP_ADDRESS = "127.0.0.1";
 const PORT = 27017;
@@ -22,25 +22,25 @@ export function getNextMessageId() {
 }
 
 const userPassNameSchema = new Schema({
-	username: { type: [String, null] },
-	password: { type: [String, null] },
-	displayName: { type: [String, null] },
-	profilePic: { type: [String, null] },
+	username: { type: String, default: null },
+	password: { type: String, default: null },
+	displayName: { type: String, default: null },
+	profilePic: { type: String, default: null },
 });
 
 export const UserPassName = mongoose.model("UserPassName", userPassNameSchema);
 
 const userPassSchema = new Schema({
-	username: { type: [String, null] },
-	password: { type: [String, null] },
+	username: { type: String, default: null },
+	password: { type: String, default: null },
 });
 
 export const UserPass = mongoose.model("UserPass", userPassSchema);
 
 const userSchema = new Schema({
-	username: { type: [String, null] },
-	displayName: { type: [String, null] },
-	profilePic: { type: [String, null] },
+	username: { type: String, default: null },
+	displayName: { type: String, default: null },
+	profilePic: { type: String, default: null },
 });
 
 export const User = mongoose.model("User", userSchema);
@@ -49,15 +49,15 @@ const messageSchema = new Schema({
 	id: Number,
 	created: Date,
 	sender: userSchema,
-	content: { type: [String, null] },
+	content: { type: String, default: null },
 });
 
 export const Message = mongoose.model("Message", messageSchema);
 
 const chatSchema = new Schema({
 	id: Number,
-	users: { type: [[userSchema], null] },
-	messages: { type: [[messageSchema], null] },
+	users: { type: [userSchema], default: null },
+	messages: { type: [messageSchema], default: null },
 });
 
 export const Chat = mongoose.model("Chat", chatSchema);
@@ -89,7 +89,7 @@ export async function getChatsByUsername(username) {
 export async function startMongoDB() {
 	try {
 		client = await MongoClient.connect(MONGO_DB_ADDRESS);
-		await mongoose.connect(MONGO_DB_ADDRESS);
+		await mongoose.connect(MONGO_DB_ADDRESS + "chat");
 		
 		let maxNumber;
 		
@@ -107,7 +107,7 @@ export async function startMongoDB() {
 		const messages = await Message.find();
 		maxNumber = 0;
 		for (let i = 0; i < messages.length; i++) {
-			if (maxsNumber < messages[i].id) {
+			if (maxNumber < messages[i].id) {
 				maxNumber = messages[i].id;
 			}
 		}

@@ -1,9 +1,28 @@
-import { getUserByUsername, getUserPassByUsername, addUserToDatabase } from "./DatabaseConnector.js";
-import jwt from "jsonwebtoken";
+import { User, UserPass, UserPassName, getUserByUsername, getUserPassByUsername } from "./DatabaseConnector.js";
 
 export class UserAlreadyExistsError extends Error {}
 export class InvalidPasswordError extends Error {}
 export class UserDoesNotExistsError extends Error {}
+
+async function addUserToDatabase(username, password, displayName, profilePic) {
+	await UserPassName.create({
+		username: username,
+		password: password,
+		displayName: displayName,
+		profilePic: profilePic,
+	});
+	
+	await UserPass.create({
+		username: username,
+		password: password,
+	});
+	
+	await User.create({
+		username: username,
+		displayName: displayName,
+		profilePic: profilePic,
+	});
+}
 
 export async function addUser(username, password, displayName, profilePic) {
 	const users = await getUserPassByUsername(username);
@@ -32,9 +51,5 @@ export async function getUser(username) {
 	}
 	
 	const user = users[0];
-	return {
-		username: user.username,
-		displayName: user.displayName,
-		profilePic: user.profilePic,
-	}
+	return user.toObject();
 }

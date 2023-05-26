@@ -2,7 +2,6 @@
 
 # dependencies
 chat-app/node_modules
-chat-app/build
 chat-app/.pnp
 chat-app/.pnp.js
 backend/node_modules
@@ -23,3 +22,7 @@ chat-app/.env.production.local
 chat-app/npm-debug.log*
 chat-app/yarn-debug.log*
 chat-app/yarn-error.log*
+
+backend/.env
+task-server/
+database/

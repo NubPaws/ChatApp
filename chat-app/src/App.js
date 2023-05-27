@@ -7,7 +7,7 @@ import { ChatScreen } from './ChatScreen/ChatScreen';
 
 function App() {
     const [database, setDatabase] = useState({});
-    const [token, setToken] = useState("");
+    const [userCredentials, setUserCredentials] = useState({});
 
     return (
         <div className="App">
@@ -15,11 +15,11 @@ function App() {
             </header>
             <BrowserRouter>
                 <Routes>
-                    <Route path='/' element={<LoginScreen setToken={setToken} token={token} />}></Route>
-                    <Route path='/login' element={<LoginScreen setToken={setToken} token={token} />}></Route>
+                    <Route path='/' element={<LoginScreen userCredentials={userCredentials} setUserCredentials={setUserCredentials} />}></Route>
+                    <Route path='/login' element={<LoginScreen userCredentials={userCredentials} setUserCredentials={setUserCredentials} />}></Route>
                     <Route path='/registration' element={<RegistrationScreen databaseHook={[database, setDatabase]} />}></Route>
-                    <Route path='/chat' element={<ChatScreen databaseHook={[database, setDatabase]} 
-                        setToken={setToken} token={token} />}></Route>
+                    <Route path='/chat' element={<ChatScreen databaseHook={[database, setDatabase]}
+                        userCredentials={userCredentials} setUserCredentials={setUserCredentials} />}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

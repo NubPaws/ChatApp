@@ -1,6 +1,7 @@
 import { handleUsername, handlePassword } from "./Validation";
+import { getUserDetails } from "../APIRequests.js/APIRequests";
 
-async function loginUser(event, setShowErrorMessage, setToken) {
+async function loginUser(event, setShowErrorMessage, setUserCredentials) {
     event.preventDefault();
     if (handleUsername() && handlePassword()) {
         let enteredUsername = document.getElementById("username").value;
@@ -21,7 +22,12 @@ async function loginUser(event, setShowErrorMessage, setToken) {
         }
         else {
             const token = await res.text();
-            setToken(token);
+            const userDetails = await getUserDetails(enteredUsername,  "Bearer " + token,);
+            
+            setUserCredentials({
+                "token" : "Bearer " + token,
+                ...userDetails
+            })
         }
     }
 }

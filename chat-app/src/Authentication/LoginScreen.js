@@ -13,10 +13,10 @@ export function LoginScreen(props) {
 
     // Will change after successful login attempt
     useEffect(() => {
-        if (props.token !== "") {
-            navigate("/chat")
+        if (Object.keys(props.userCredentials).length !== 0) {
+            navigate("/chat");
         }
-    }, [props.token, props.setToken, navigate]);
+    }, [props.userCredentials, props.setUserCredentials, navigate]);
 
     return (
         <div className="pane">
@@ -25,7 +25,7 @@ export function LoginScreen(props) {
                     placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
                 <Input id="password" type="password" name="password" inputText="Password"
                     placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
-                <button className="btn btn-primary" onClick={(event) => loginUser(event, setShowErrorMessage, props.setToken)}>Login</button>
+                <button className="btn btn-primary" onClick={(event) => loginUser(event, setShowErrorMessage, props.setUserCredentials)}>Login</button>
             </form>
             <div className="text-center">
                 <p>Not registered? <Link to='/registration'>click here</Link> to register</p>

@@ -17,7 +17,6 @@ async function registerUser(event, setShowSuccessMessage, setShowErrorMessage) {
         reader.onloadend = () => {
             base64ProfileImage = reader.result;
         }
-        console.log(base64ProfileImage);
         let userData = {
             "username": username,
             "password": password,

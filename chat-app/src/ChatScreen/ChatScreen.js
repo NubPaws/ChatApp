@@ -17,7 +17,7 @@ export function ChatScreen(props) {
 	const img = props.userCredentials["profilePic"];
 	const database = props.databaseHook[0];
 
-	const [activeChat, setActiveChat] = useState(undefined);
+	const [activeChat, setActiveChat] = useState({});
 
 	function logout(setUserCredentials) {
 		setUserCredentials({});
@@ -35,7 +35,7 @@ export function ChatScreen(props) {
 						setActiveChat={setActiveChat} displayName={props.userCredentials["displayName"]}/>
 				</div>
 				<div id="chatWindow">
-					<ChatWindow username={props.userCredentials["username"]} activeChat={activeChat} databaseHook={props.databaseHook} />
+					<ChatWindow username={props.userCredentials["username"]} activeChat={activeChat} token={props.userCredentials["token"]} />
 				</div>
 			</div>
 		</div>

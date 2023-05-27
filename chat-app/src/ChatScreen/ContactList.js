@@ -34,7 +34,7 @@ export function ContactList(props) {
 					'Content-Type': 'application/json',
 					'Authorization': props.token
 				},
-				'body': JSON.stringify({"username" : username})
+				'body': JSON.stringify({ "username": username })
 			}
 			)
 		}
@@ -47,7 +47,7 @@ export function ContactList(props) {
 		return <div></div>;
 	}
 
-	function createContact(username, image, time, i) {
+	function createContact(username, image, time, i, chatId) {
 		let dateStr;
 		if (time !== "") {
 			const date = new Date(time);
@@ -67,7 +67,7 @@ export function ContactList(props) {
 			key={i.toString()}
 			onClick={() => {
 				setSelected(i);
-				props.setActiveChat(username);
+				props.setActiveChat({ "username": username, "profilePic": image, "chatId": chatId });
 			}}
 			className={selected === i ? "selectedCard" : ""} />
 	}
@@ -87,7 +87,7 @@ export function ContactList(props) {
 			}
 			const contact = createContact(
 				chat.user.username, chat.user.profilePic,
-				time, i
+				time, i, chat.id
 			);
 			contactsList.push(contact);
 			i++;
@@ -100,8 +100,8 @@ export function ContactList(props) {
 			<UserProfile
 				username={props.displayName}
 				image={props.image}
-				setContactToAdd={setContactToAdd} 
-				token={props.token}/>
+				setContactToAdd={setContactToAdd}
+				token={props.token} />
 			<div id="listOfContacts">
 				{generateContacts()}
 			</div>

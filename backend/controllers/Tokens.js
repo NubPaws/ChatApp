@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
 	try {
 		const token = await getToken(username, password);
 		
-		res.json(token);
+		res.send(token);
 	} catch (err) {
 		if (err instanceof InvalidCredentialsError) {
 			res.status(401).send("Invalid username and/or password");

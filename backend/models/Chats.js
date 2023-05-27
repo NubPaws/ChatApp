@@ -3,6 +3,18 @@ import { getUser } from "./Users.js";
 
 export class ChatAlreadyExistsError extends Error {}
 export class UserNotPartOfChatError extends Error {}
+export class InvalidChatIdError extends Error {}
+
+function cleanUpChatObj(chatObj) {
+	delete chatObj._id;
+	delete chatObj.__v;
+	delete chatObj.users[0]._id;
+	delete chatObj.users[0].__v;
+	delete chatObj.users[1]._id;
+	delete chatObj.users[1].__v;
+	
+	return chatObj;
+}
 
 /**
  * Returns an object representing the other user in the chat following
@@ -51,25 +63,18 @@ function getMessagesInChat(chat) {
  * Returns all of the chats a given user has.
  * @param {string} username The username to get all of the chats of.
  * @returns A JSON representing all of the chats the user has.
+ * @throws {UserNotPartOfChatError} If the user is not part of any chat.
  */
 export async function getChats(username) {
 	const data = await getChatsByUsername(username);
 	
-	const chats = [];
-	
-	for (let i = 0; i < data.length; i++) {
-		const entry = data[i];
-		const otherUser = getOtherUserInChat(entry, username);
-		const messages = getMessagesInChat(entry);
-		const lastMessage = messages === null ? null : messages[messages.length - 1];
-		chats.push({
-			id: entry.id,
-			user: otherUser,
-			lastMessage: lastMessage,
-		});
+	if (data.length === 0) {
+		throw new UserNotPartOfChatError();
 	}
 	
-	return chats;
+	const chat = data[0].toObject();
+	
+	return cleanUpChatObj(chat);
 }
 
 /**
@@ -90,13 +95,11 @@ export async function createChat(requestingUsername, otherUsername) {
 	const requesting = await getUser(requestingUsername);
 	const other = await getUser(otherUsername);
 	
-	const chat = new Chat({
+	await Chat.create({
 		id: getNextChatId(),
-		users: [ requesting.toObject(), other.toObject() ],
+		users: [ requesting, other ],
 		messages: null,
 	});
-	
-	await chat.save();
 }
 
 /**
@@ -107,8 +110,10 @@ export async function createChat(requestingUsername, otherUsername) {
  */
 function isUserPartOfChat(username, chat) {
 	let partOf = false;
-	for (let i = 0; i < chat.users.length; i++) {
-		partOf = partOf || chat.users[i].username === username;
+	const users = chat.users;
+	for (let i = 0; i < users.length; i++) {
+		const user = users[i];
+		partOf = partOf || user.username === username;
 	}
 	return partOf;
 }
@@ -123,40 +128,17 @@ function isUserPartOfChat(username, chat) {
 export async function getChat(username, id) {
 	const chat = await getChatById(id);
 	
-	if (!isUserPartOfChat(username, chat)) {
+	if (chat.length === 0) {
+		return new InvalidChatIdError();
+	}
+	
+	const chatObj = chat[0].toObject();
+	
+	if (!isUserPartOfChat(username, chatObj)) {
 		throw new UserNotPartOfChatError();
 	}
 	
-	const result = {
-		id: chat.id,
-		users: [],
-		messages: [],
-	}
-	
-	for (let i = 0; i < chat.users.length; i++) {
-		const user = chat.users[i];
-		result.users.push({
-			username: user.username,
-			displayName: user.displayName,
-			profilePic: user.profilePic,
-		});
-	}
-	
-	for (let i = 0; i < chat.messages.length; i++) {
-		const message = chat.messages[i];
-		result.messages.push({
-			id: message.id,
-			created: message.created,
-			sender: {
-				username: message.sender.username,
-				displayName: message.sender.displayName,
-				profilePic: message.sender.profilePic,
-			},
-			content: message.content,
-		});
-	}
-	
-	return result;
+	return cleanUpChatObj(chatObj);
 }
 
 export async function deleteChat(username, id) {
@@ -208,11 +190,20 @@ export async function addMessageToChat(username, chatId, messageContent) {
  */
 export async function getLastMessageInChat(username, chatId) {
 	const chat = await getChatById(chatId);
-	if (!isUserPartOfChat(username, chat)) {
+	if (chat.length === 0) {
 		throw new UserNotPartOfChatError();
 	}
 	
-	const messages = chat.messages;
+	const chatObj = chat[0];
 	
-	return messages[messages.length].toObject();
+	if (!isUserPartOfChat(username, chatObj)) {
+		throw new UserNotPartOfChatError();
+	}
+	
+	const messages = chatObj.messages;
+	
+	if (messages === null)
+		return null;
+	
+	return messages[messages.length].content;
 }

@@ -6,7 +6,6 @@ import "./Contact.css";
 
 export function ContactList(props) {
 	const [chats, setChats] = useState({});
-	// eslint-disable-next-line
 	const [contactToAdd, setContactToAdd] = useState("");
 	const [selected, setSelected] = useState(undefined);
 	useEffect(() => {
@@ -24,30 +23,29 @@ export function ContactList(props) {
 			setChats(json);
 		}
 		fetchChats();
-	})
+	}, [contactToAdd, props.token]);
+
+	useEffect(() => {
+		async function addChat(username) {
+			const url = "http://localhost:5000/api/Chats"
+			await fetch(url, {
+				'method': 'POST',
+				'headers': {
+					'Content-Type': 'application/json',
+					'Authorization': props.token
+				},
+				'body': JSON.stringify({"username" : username})
+			}
+			)
+		}
+		if (contactToAdd !== "") {
+			addChat(contactToAdd);
+		}
+	}, [contactToAdd, props.token]);
 
 	if (Object.keys(chats).length === 0) {
 		return <div></div>;
 	}
-
-	// Generate the contact list.
-	// const [database, setDatabase] = props.databaseHook;
-
-	// function addToContactList(name) {
-	// 	if (!database.hasOwnProperty(name))
-	// 		return;
-
-	// 	if (database[name].messages.hasOwnProperty(props.username))
-	// 		return;
-
-	// 	const db = database;
-	// 	// Add the user to the contact's chat.
-	// 	db[name].messages[props.username] = [];
-	// 	// Add the contact to the user's chat.
-	// 	db[props.username].messages[name] = [];
-
-	// 	setDatabase(db);
-	// }
 
 	function createContact(username, image, time, i) {
 		let dateStr;
@@ -78,10 +76,18 @@ export function ContactList(props) {
 		const contactsList = [];
 		let i = 0;
 
-		for (const chat of chats) {
+		for (const index in chats) {
+			let chat = chats[index];
+			let time;
+			if (chat.lastMessage !== undefined && chat.lastMessage !== null) {
+				time = chat.lastMessage.created;
+			}
+			else {
+				time = "";
+			}
 			const contact = createContact(
 				chat.user.username, chat.user.profilePic,
-				chat.lastMessage.created, i
+				time, i
 			);
 			contactsList.push(contact);
 			i++;
@@ -94,8 +100,8 @@ export function ContactList(props) {
 			<UserProfile
 				username={props.displayName}
 				image={props.image}
-				// addToContactList={addToContactList}
-				setContactToAdd={setContactToAdd} />
+				setContactToAdd={setContactToAdd} 
+				token={props.token}/>
 			<div id="listOfContacts">
 				{generateContacts()}
 			</div>

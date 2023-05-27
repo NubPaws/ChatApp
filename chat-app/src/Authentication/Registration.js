@@ -11,12 +11,7 @@ async function registerUser(event, setShowSuccessMessage, setShowErrorMessage) {
         let profilePicture = document.getElementById("profilePicture").files[0];
 
         // Converting the image from blob object to base64
-        let base64ProfileImage = null;
-        const reader = new FileReader();
-        reader.readAsDataURL(profilePicture);
-        reader.onloadend = () => {
-            base64ProfileImage = reader.result;
-        }
+        let base64ProfileImage = await convertImageToBase64(profilePicture);
         let userData = {
             "username": username,
             "password": password,
@@ -47,6 +42,18 @@ function previewProfilePicture(event) {
     preview.src = src;
     preview.style.height = "150px";
     preview.style.width = "150px";
+}
+
+
+function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve(reader.result )
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 }
 
 export { registerUser, previewProfilePicture }

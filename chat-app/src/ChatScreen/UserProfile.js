@@ -13,7 +13,7 @@ export function UserProfile(props) {
 	function updateContactNameToAdd() {
 		// This solution is meant to force a rerender to occur.
 		setContactToAdd(document.getElementById("userAddTextField").value);
-		props.addToContactList(document.getElementById("userAddTextField").value);
+		// props.addToContactList(document.getElementById("userAddTextField").value);
 	}
 	
 	return (

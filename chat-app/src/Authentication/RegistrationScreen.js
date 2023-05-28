@@ -1,11 +1,10 @@
-import { Link } from "react-router-dom";
 import "./authentication.css"
 import { registerUser, previewProfilePicture } from "./Registration";
-import { Input } from "./Input";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
-import { Modal } from "../UIElements/Modal";
+import { useState, useEffect } from "react";
+import { Input } from "./Input.js";
+import { Modal } from "../UIElements/Modal.js";
 
 export function RegistrationScreen(props) {
     const navigate = useNavigate();

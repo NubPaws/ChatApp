@@ -4,6 +4,7 @@
 chat-app/node_modules
 chat-app/.pnp
 chat-app/.pnp.js
+backend/node_modules
 
 # testing
 chat-app/coverage
@@ -22,6 +23,7 @@ chat-app/npm-debug.log*
 chat-app/yarn-debug.log*
 chat-app/yarn-error.log*
 
-# Other applications.
 backend
-task-server
+backend/.env
+task-server/
+database/

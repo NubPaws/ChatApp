@@ -4,7 +4,8 @@ import { Input } from "./Input";
 import { loginUser } from "./Login";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Modal } from "../UIElements/Modal";
+import { Input } from "./Input.js";
+import { Modal } from "../UIElements/Modal.js";
 
 
 export function LoginScreen(props) {

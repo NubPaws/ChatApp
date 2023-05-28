@@ -1,5 +1,5 @@
-import { UserProfile } from "./UserProfile";
-import { Contact } from "./Contact";
+import { UserProfile } from "./UserProfile.js";
+import { Contact } from "./Contact.js";
 import { useEffect, useState } from "react";
 
 import "./Contact.css";
@@ -17,8 +17,7 @@ export function ContactList(props) {
 					'Content-Type': 'application/json',
 					'Authorization': props.token
 				}
-			}
-			)
+			});
 			const json = await res.json();
 			setChats(json);
 		}
@@ -43,17 +42,13 @@ export function ContactList(props) {
 		}
 	}, [contactToAdd, props.token]);
 
-	if (Object.keys(chats).length === 0) {
-		return <div></div>;
-	}
-
 	function createContact(username, image, time, i, chatId) {
 		let dateStr;
 		if (time !== "") {
 			const date = new Date(time);
 			const hm = `${date.getHours()}:${date.getMinutes()}`;
 			const day = date.getDate().toString().padStart(2, '0');
-			const month = (date.getMonth() + 1).toString().padStart(2, '0'); // The  count starts at zero
+			const month = (date.getMonth() + 1).toString().padStart(2, '0'); // The count starts at zero
 			const year = date.getFullYear();
 			dateStr = `${hm} ${day}/${month}/${year}`;
 		} else {
@@ -81,8 +76,7 @@ export function ContactList(props) {
 			let time;
 			if (chat.lastMessage !== undefined && chat.lastMessage !== null) {
 				time = chat.lastMessage.created;
-			}
-			else {
+			} else {
 				time = "";
 			}
 			const contact = createContact(

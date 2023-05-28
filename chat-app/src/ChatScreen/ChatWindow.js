@@ -8,8 +8,10 @@ import "./ChatWindow.css";
 export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
 	const [sendClicked, setSendClicked] = useState(false);
+	const [messages, setMessages] = useState(<div id="chatArea"></div>);
 	
 	const activeChat = props.activeChat;
+	
 	useEffect(() => {
 		async function sendMessage(message) {
 			const url = "http://localhost:5000/api/Chats/" + activeChat["chatId"]+ "/Messages/"
@@ -20,22 +22,22 @@ export function ChatWindow(props) {
 					'Authorization': props.token
 				},
 				'body' : JSON.stringify({"msg": message})
-			}
-			)
+			});
 		}
 		const text = inputText.trim();
 		if (text !== "" && sendClicked === true) {
 			sendMessage(text);
+			setInputText("")
 		}
 		setSendClicked(false);
-	}, [sendClicked, setSendClicked, activeChat, inputText, props.token]);
-
-	if (activeChat === {}) {
+		generateMessages(activeChat, setMessages, props.token);
+	}, [sendClicked, setSendClicked, activeChat, inputText, props.token, setInputText]);
+	
+	if (Object.keys(activeChat).length === 0) {
 		return <div id="emptyChatBox"></div>;
 	}
 	
-	
-	const chatImg = activeChat["profilePic"];
+	const chatImg = activeChat.profilePic;
 	return (
 	<div id="chatBox">
 		<div id="title">
@@ -45,7 +47,7 @@ export function ChatWindow(props) {
 				<span id="status">Online</span>
 			</div>
 		</div>
-		{/* {generateMessages(props.username, props.activeChat)} */}
+		{messages}
 		<div id="chatField">
 			<input id="chatFieldText" type="text" placeholder="Write your message here..."
 				value={inputText}
@@ -64,48 +66,44 @@ function SpeechBubble(props) {
 	</div>
 }
 
-// function generateMessages(username, activeChat) {
-	// const user = database[username];
-	// const chat = database[activeChat];
+async function generateMessages(activeChat, setMessages, token) {
+	if (Object.keys(activeChat).length === 0) {
+		setMessages(<div id="chatArea"></div>);
+		return;
+	}
 	
-	// const userMessages = user.messages[activeChat];
-	// const chatMessages = chat.messages[username];
+	const url = "http://localhost:5000/api/Chats/" + activeChat.chatId + "/Messages/";
+	const res = await fetch(url, {
+		'method': 'GET',
+		'headers': {
+			'Content-Type': 'application/json',
+			'Authorization': token
+		},
+	});
+	const messagesJson = await res.json();
 	
-	// const messages = [];
+	// Convert the JSON into a message array.
+	const messages = messagesJson.map(msg => {
+		return {
+			message: msg.content,
+			timestamp: msg.created,
+			direction: (msg.sender.username === activeChat.username) ? "left" : "right",
+		};
+	});
 	
-	// // Put all the messages from the chat user.
-	// for (let i = 0; i < chatMessages.length; i++) {
-	// 	messages.push({
-	// 		message: chatMessages[i].message,
-	// 		timestamp: chatMessages[i].time,
-	// 		direction: "left",
-	// 	});
-	// }
+	// Sort messages by the date.
+	messages.sort((a, b) => a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0);
 	
-	// // Put all the messages from us.
-	// for (let i = 0; i < userMessages.length; i++) {
-	// 	messages.push({
-	// 		message: userMessages[i].message,
-	// 		timestamp: userMessages[i].time,
-	// 		direction: "right",
-	// 	});
-	// }
+	// Add the elements to the array.
+	const messageComps = [];
+	for (let i = 0; i < messages.length; i++) {
+		const date = new Date(messages[i].timestamp);
+		messageComps.push(<SpeechBubble
+			direction={messages[i].direction}
+			text={messages[i].message}
+			timestamp={`${date.getHours()}:${date.getMinutes()}`}
+			key={i.toString()} />);
+	}
 	
-	// // Sort messages by the date.
-	// messages.sort((a, b) => a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0);
-	
-	// // Add the elements to the array.
-	// const messageComps = [];
-	// for (let i = 0; i < messages.length; i++) {
-	// 	const date = new Date(messages[i].timestamp);
-	// 	messageComps.push(<SpeechBubble
-	// 		direction={messages[i].direction}
-	// 		text={messages[i].message}
-	// 		timestamp={`${date.getHours()}:${date.getMinutes()}`}
-	// 		key={i.toString()} />);
-	// }
-	
-	// return <div id="chatArea">
-	// 	{messageComps}
-	// </div>;
-// }
+	setMessages(<div id="chatArea">{messageComps}</div>);
+}

@@ -29,6 +29,8 @@
 	font-size: 16pt;
 	padding: 0.25rem 0.25rem;
 	border-width: 0px;
+	width: auto;
+	height: 100%;
 }
 
 .iconBtn:hover {

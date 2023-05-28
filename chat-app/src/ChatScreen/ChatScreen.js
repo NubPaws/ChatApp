@@ -15,7 +15,6 @@ export function ChatScreen(props) {
 
 
 	const img = props.userCredentials["profilePic"];
-	const database = props.databaseHook[0];
 
 	const [activeChat, setActiveChat] = useState({});
 
@@ -27,15 +26,28 @@ export function ChatScreen(props) {
 	return (
 		<div id="screen">
 			<div id="topBar">
-				<Button className="logoutBtn" text="Logout" bgColor="red" textColor="white" onClick={() => logout(props.setUserCredentials)} />
+				<Button
+					className="logoutBtn"
+					text="Logout"
+					bgColor="red"
+					textColor="white"
+					onClick={() => logout(props.setUserCredentials)} />
 			</div>
 			<div id="wrapper">
 				<div id="sidePanel">
-					<ContactList username={props.userCredentials["username"]} token={props.userCredentials["token"]} image={img} databaseHook={props.databaseHook}
-						setActiveChat={setActiveChat} displayName={props.userCredentials["displayName"]}/>
+					<ContactList
+						username={props.userCredentials["username"]}
+						token={props.userCredentials["token"]}
+						image={img}
+						databaseHook={props.databaseHook}
+						setActiveChat={setActiveChat}
+						displayName={props.userCredentials["displayName"]}/>
 				</div>
 				<div id="chatWindow">
-					<ChatWindow username={props.userCredentials["username"]} activeChat={activeChat} token={props.userCredentials["token"]} />
+					<ChatWindow
+						username={props.userCredentials["username"]}
+						activeChat={activeChat}
+						token={props.userCredentials["token"]} />
 				</div>
 			</div>
 		</div>

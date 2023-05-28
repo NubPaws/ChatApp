@@ -21,3 +21,7 @@ chat-app/.env.production.local
 chat-app/npm-debug.log*
 chat-app/yarn-debug.log*
 chat-app/yarn-error.log*
+
+# Other applications.
+backend
+task-server

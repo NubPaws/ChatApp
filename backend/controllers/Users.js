@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { addUser, UserAlreadyExistsError, InvalidPasswordError, getUser } from "../models/Users.js";
+import { addUser, UserAlreadyExistsError, InvalidPasswordError, getUser,
+	UserDoesNotExistsError } from "../models/Users.js";
 import { InvalidTokenError, getUsernameFromToken } from "../models/Tokens.js";
 
 const router = new Router();
@@ -14,13 +15,17 @@ router.get("/:username", async (req, res) => {
 		const username = await getUsernameFromToken(token);
 		
 		if (req.params.username === username) {
-			return await getUser(username);
+			res.json(await getUser(username));
+		} else {
+			res.send();
 		}
 	} catch (err) {
 		if (err instanceof InvalidTokenError) {
 			res.status(401).send("Invalid Token");
 		} else if (err instanceof UserDoesNotExistsError) {
 			res.status(404).send("User not found");
+		} else {
+			res.status(500).send("Internal Server Error");
 		}
 	}
 });

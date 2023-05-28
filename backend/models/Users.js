@@ -50,6 +50,8 @@ export async function getUser(username) {
 		throw new UserDoesNotExistsError();
 	}
 	
-	const user = users[0];
-	return user.toObject();
+	const user = users[0].toObject();
+	delete user._id;
+	delete user.__v;
+	return user;
 }

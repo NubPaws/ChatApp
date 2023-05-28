@@ -16,6 +16,15 @@ function cleanUpChatObj(chatObj) {
 	return chatObj;
 }
 
+function cleanUpMessageObj(msgObj) {
+	delete msgObj.sender._id;
+	delete msgObj.sender.__v;
+	delete msgObj._id;
+	delete msgObj.__v;
+	
+	return msgObj;
+}
+
 /**
  * Returns an object representing the other user in the chat following
  * the user schema.
@@ -138,12 +147,23 @@ export async function getChat(username, id) {
 		throw new UserNotPartOfChatError();
 	}
 	
+	if (chatObj.messages !== null) {
+		for (let i = 0; i < chatObj.messages.length; i++) {
+			chatObj.messages[i] = cleanUpMessageObj(chatObj.messages[i]);
+		}
+	}
+	
 	return cleanUpChatObj(chatObj);
 }
 
 export async function deleteChat(username, id) {
-	const chat = await getChatById(id);
+	const chats = await getChatById(id);
 	
+	if (chats.length === 0) {
+		throw new InvalidChatIdError();
+	}
+	
+	const chat = chats[0];
 	if (!isUserPartOfChat(username, chat)) {
 		throw new UserNotPartOfChatError();
 	}
@@ -159,51 +179,98 @@ export async function deleteChat(username, id) {
  * @returns The message that was created.
  */
 export async function addMessageToChat(username, chatId, messageContent) {
-	const chat = await getChatById(chatId);
+	const chats = await getChatById(chatId);
+	if (chats.length === 0) {
+		throw new InvalidChatIdError();
+	}
+	const chat = chats[0];
 	if (!isUserPartOfChat(username, chat)) {
 		throw new UserNotPartOfChatError();
 	}
 	
-	const user = await getUserByUsername(username);
+	const users = await getUserByUsername(username);
 	
 	const message = await Message.create({
 		id: getNextMessageId(),
 		created: Date.now(),
-		sender: user.toObject(),
+		sender: users[0].toObject(),
 		content: messageContent,
 	});
 	
 	// Add the message into the chat.
-	await Chat.findOneAndUpdate(
-		{ id: chatId },
-		{ $push: {messages: message.toObject()} }
-	);
+	if (chat.messages === null) {
+		await Chat.findOneAndUpdate(
+			{id: chatId},
+			{$set: {messages: [message.toObject()]}}
+		)
+	} else {
+		await Chat.findOneAndUpdate(
+			{ id: chatId },
+			{ $push: {messages: message.toObject()} }
+		);
+	}
 	
-	return message;
+	const messageObj = message.toObject();
+	
+	return cleanUpMessageObj(messageObj);
 }
 
 /**
- * Returns the last message in a given chat using the chat ID.
+ * Returns the last message in a all chats from a given user.
  * @param {string} username The username that requested the last message in the chat.
  * @param {number} chatId The ID of the chat that we are requesting the last message from.
  * @returns The last message in the chat following the message schema.
  */
-export async function getLastMessageInChat(username, chatId) {
-	const chat = await getChatById(chatId);
-	if (chat.length === 0) {
-		throw new UserNotPartOfChatError();
+export async function getLastMessageInChats(username) {
+	const chats = await getChatsByUsername(username);
+	if (chats.length === 0) {
+		return [];
 	}
 	
-	const chatObj = chat[0];
+	const result = [];
 	
-	if (!isUserPartOfChat(username, chatObj)) {
-		throw new UserNotPartOfChatError();
+	for (let i = 0; i < chats.length; i++) {
+		const chat = chats[i];
+		const messages = chat.messages;
+		const lastMessage = messages === null ? null : messages[messages.length - 1];
+		const otherUser = getOtherUserInChat(chat, username);
+		delete otherUser._id;
+		result.push({
+			id: chat.id,
+			user: otherUser,
+			lastMessage: lastMessage === null ? null : {
+				id: lastMessage.id,
+				created: lastMessage.created,
+				content: lastMessage.content,
+			},
+		});
 	}
 	
-	const messages = chatObj.messages;
+	return result;
+}
+
+export async function getAllMessagesInChat(id) {
+	const chats = await getChatById(id);
+	if (chats.length === 0) {
+		throw new InvalidChatIdError();
+	}
 	
-	if (messages === null)
-		return null;
+	const chat = chats[0];
 	
-	return messages[messages.length].content;
+	if (chat.messages === null) {
+		return [];
+	}
+	
+	const messages = chat.messages.toObject();
+	
+	for (let i = 0; i < messages.length; i++) {
+		delete messages[i].sender.displayName;
+		delete messages[i].sender.profilePic;
+		delete messages[i].sender._id;
+		delete messages[i].sender.__v;
+		delete messages[i]._id;
+		delete messages[i].__v;
+	}
+	
+	return messages;
 }

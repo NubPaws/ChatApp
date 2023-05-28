@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { InvalidTokenError, getUsernameFromToken } from "../models/Tokens.js";
 import { ChatAlreadyExistsError, InvalidChatIdError, UserNotPartOfChatError,
-	createChat, getChat, getChats, deleteChat, addMessageToChat, getLastMessageInChat } from "../models/Chats.js";
+	createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats, getAllMessagesInChat } from "../models/Chats.js";
 import { UserDoesNotExistsError } from "../models/Users.js";
 
 const router = new Router();
@@ -26,25 +26,18 @@ router.use(async (req, res, next) => {
 
 router.get("/", async (req, res) => {
 	try {
-		const chats = await getChats(req.username);
+		const chats = await getLastMessageInChats(req.username);
 		res.json(chats);
 	} catch (err) {
-		if (err instanceof UserNotPartOfChatError) {
-			res.status(401).send("User doesn't exists");
-		} else {
-			res.status(500).send("Internal Server Error");
-		}
+		res.status(500).send("Internal Server Error");
 	}
 });
 
 router.post("/", async (req, res) => {
-	const username = await getUsername(req, res);
-	if (!username)
-		return;
 	try {
 		const otherUsername = req.body;
 		
-		await createChat(username, otherUsername);
+		await createChat(req.username, otherUsername);
 	} catch (err) {
 		if (err instanceof ChatAlreadyExistsError) {
 			res.status(400).send("Chat already exists");
@@ -82,6 +75,8 @@ router.delete("/:id", async (req, res) => {
 	} catch (err) {
 		if (err instanceof UserNotPartOfChatError) {
 			res.status(401).send("User doesn't exists");
+		} else if (err instanceof InvalidChatIdError) {
+			res.status(401).send("Invalid chat id");
 		} else {
 			res.status(500).send("Internal Server Error");
 		}
@@ -96,6 +91,8 @@ router.post("/:id/Messages", async (req, res) => {
 	} catch (err) {
 		if (err instanceof UserNotPartOfChatError) {
 			res.status(401).send("User doesn't exists");
+		} else if (err instanceof InvalidChatIdError) {
+			res.status(400).send("Invalid chat id.");
 		} else {
 			res.status(500).send("Internal Server Error");
 		}
@@ -105,12 +102,12 @@ router.post("/:id/Messages", async (req, res) => {
 router.get("/:id/Messages", async (req, res) => {
 	const username = req.username;
 	try {
-		const lastMessage = await getLastMessageInChat(username, req.params.id);
+		const lastMessage = await getAllMessagesInChat(req.params.id);
 		
 		res.json(lastMessage);
 	} catch (err) {
-		if (err instanceof UserNotPartOfChatError) {
-			res.status(401).send("User doesn't exists");
+		if (err instanceof InvalidChatIdError) {
+			res.status(400).send("Invalid chat id");
 		} else {
 			res.status(500).send("Internal Server Error");
 		}

@@ -1,10 +1,21 @@
 # Yuval & Rami's Chat App
 
 - [Yuval \& Rami's Chat App](#yuval--ramis-chat-app)
+	- [Running the application](#running-the-application)
+		- [Running the backend server](#running-the-backend-server)
+		- [Running the chat application](#running-the-chat-application)
 	- [About](#about)
 	- [Current State](#current-state)
 - [Technologies](#technologies)
 - [Credits](#credits)
+
+## Running the application
+### Running the backend server
+In order to run the application you must have a database server up and running. In this application we are using the [MongoDB](https://www.mongodb.com/) platform to run the server.<br/>
+Assuming you have a MongoDB server up and running you can `cd` into the `backend` directory and install the required node modules using `npm i`. Afterwards you can run the server that connects to the database using `npm run server` (or you can use `node server.js` if you are not interested in running the server using nodemon).
+
+### Running the chat application
+To run the chat application you'll need to `cd` into the `chat-app` folder and run `npm start` to launch the React application, it will automatically open up in your default browser. Make sure to run the backend server first.
 
 ## About
 This project attempts to make a chat application that will be accessible on multiple platforms:

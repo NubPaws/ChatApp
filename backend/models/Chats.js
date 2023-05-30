@@ -262,7 +262,7 @@ export async function getAllMessagesInChat(username, id) {
 	
 	const chat = chats[0];
 	
-	if (chat.users[0].username !== username && chat.users[0].username !== username) {
+	if (chat.users[0].username !== username && chat.users[1].username !== username) {
 		throw new UserNotPartOfChatError();
 	}
 	

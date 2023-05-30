@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { config } from "dotenv";
 import { startMongoDB } from "./models/DatabaseConnector.js";
 import ErrorHandler from "./controllers/ErrorHandler.js";
@@ -24,6 +25,9 @@ console.log("Connected to the database.");
 // Create the express app.
 const app = express();
 const PORT = process.env.PORT;
+
+// Allow cross-origin resource sharing.
+app.use(cors());
 
 // Use the body parsers.
 app.use(bodyParser.text({type: "application/json"}));
@@ -57,6 +61,7 @@ app.use(ErrorHandler.users);
 // Define a catch-all error handler.
 app.use((err, req, res, next) => {
 	res.status(500).send("Internal server error");
+	console.log(err)
 });
 
 // Start listening.

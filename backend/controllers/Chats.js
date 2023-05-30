@@ -38,7 +38,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-	const otherUsername = req.body;
+	const otherUsername = req.body.username;
 	if (generateError({username: otherUsername}, res)) {
 		return;
 	}
@@ -74,11 +74,11 @@ router.delete("/:id", async (req, res, next) => {
 router.post("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
 	
-	if (generateError({message: req.body}, res)) {
+	if (generateError({message: req.body.msg}, res)) {
 		return;
 	}
 	try {
-		const message = await addMessageToChat(username, req.params.id, req.body);
+		const message = await addMessageToChat(username, req.params.id, req.body.msg);
 		res.json(message);
 	} catch (err) {
 		next(err);

@@ -12,8 +12,7 @@ export function ChatScreen(props) {
 			navigate("/login");
 		}
 	});
-
-
+	
 	const img = props.userCredentials["profilePic"];
 
 	const [activeChat, setActiveChat] = useState({});
@@ -22,7 +21,7 @@ export function ChatScreen(props) {
 		setUserCredentials({});
 		navigate("/login");
 	}
-
+	
 	return (
 		<div id="screen">
 			<div id="topBar">

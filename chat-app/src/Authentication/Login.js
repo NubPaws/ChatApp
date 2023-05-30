@@ -10,13 +10,14 @@ async function loginUser(event, setShowErrorMessage, setUserCredentials) {
             "username": enteredUsername,
             "password": enteredPassword,
         };
+        
         const res = await fetch(document.getElementById("loginForm").action, {
             'method': 'POST',
             'headers': {
                 'Content-Type': 'application/json',
             },
             'body': JSON.stringify(userData)
-        })
+        });
         if (res.status !== 200) {
             setShowErrorMessage(true);
         }

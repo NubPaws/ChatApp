@@ -20,7 +20,7 @@ export function ChatWindow(props) {
 					'Content-Type': 'application/json',
 					'Authorization': props.token
 				},
-				'body' : JSON.stringify({"msg": message})
+				'body': JSON.stringify({"msg": message})
 			});
 		}
 		const text = inputText.trim();
@@ -105,4 +105,6 @@ async function generateMessages(activeChat, setMessages, token) {
 	}
 	
 	setMessages(<div id="chatArea">{messageComps}</div>);
+	const chatArea = document.getElementById("chatArea");
+	chatArea.scrollTo(0, chatArea.scrollHeight);
 }

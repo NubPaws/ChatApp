@@ -9,23 +9,15 @@ router.post("/", async (req, res) => {
 	const { username, password } = req.body;
 	
 	// Make sure the information is valid.
-	const error = generateError({username, password});
-	if (error) {
-		res.status(400).json(error);
+	if (generateError({username, password}, res)) {
 		return;
 	}
 	
-	try {
-		// Get the token.
-		const token = await getToken(username, password);
-		
-		// Send it back to the user.
-		res.send(token);
-	} catch (err) {
-		if (err instanceof InvalidCredentialsError) {
-			res.status(401).send(err.message);
-		}
-	}
+	// Get the token.
+	const token = await getToken(username, password);
+	
+	// Send it back to the user.
+	res.send(token);
 });
 
 export default router;

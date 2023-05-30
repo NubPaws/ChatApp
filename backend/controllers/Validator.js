@@ -19,9 +19,10 @@ export function isEmpty(thing) {
  * @param {Object} items Needs to be an object containing key value pairs
  * where the key is the name of the field and the value is the value of said
  * field.
- * @returns An error object if one if the fields is empty, undefined otherwise.
+ * @param res The item to send the error over if an error did occur.
+ * @returns True if an error was generates and false otherwise.
  */
-export function generateError(items) {
+export function generateError(items, res) {
 	const error = {};
 	for (const key in items) {
 		if (isEmpty(items[key])) {
@@ -29,7 +30,8 @@ export function generateError(items) {
 		}
 	}
 	if (Object.keys(error).length === 0) {
-		return undefined;
+		return false;
 	}
-	return error;
+	res.send(400).json(error);
+	return true;
 }

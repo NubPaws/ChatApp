@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import { config } from "dotenv";
 import { startMongoDB } from "./models/DatabaseConnector.js";
-
+import ErrorHandler from "./controllers/ErrorHandler.js";
 import chatsRouter from "./controllers/Chats.js";
 import tokensRouter from "./controllers/Tokens.js";
 import usersRouter from "./controllers/Users.js";
@@ -43,6 +43,16 @@ app.use("/", express.static("../chat-app/build/"));
 app.use("/api/Chats", chatsRouter);
 app.use("/api/Tokens", tokensRouter);
 app.use("/api/Users", usersRouter);
+
+// Error handling.
+app.use(ErrorHandler.tokens);
+app.use(ErrorHandler.chats);
+app.use(ErrorHandler.users);
+
+// Define a catch-all error handler.
+app.use((err, req, res, next) => {
+	res.status(500).send("Internal server error");
+});
 
 app.listen(PORT, () => {
 	console.log(`Listening on http://localhost:${PORT}/`);

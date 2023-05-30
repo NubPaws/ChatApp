@@ -1,16 +1,8 @@
 import { getUserPassByUsername } from "./DatabaseConnector.js";
 import jwt from "jsonwebtoken";
 
-export class InvalidCredentialsError extends Error {
-	constructor(message) {
-		super(message ? message : "Incorrect username and/or password");
-	}
-}
-export class InvalidTokenError extends Error {
-	constructor(message) {
-		super(message ? message : "Invalid token received");
-	}
-}
+export class InvalidCredentialsError extends Error {}
+export class InvalidTokenError extends Error {}
 
 /**
  * Validates the log in of the username and password, doing so by returning

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { InvalidCredentialsError, getToken } from "../models/Tokens.js";
+import { getToken } from "../models/Tokens.js";
 import { generateError } from "./Validator.js";
 
 const router = new Router();

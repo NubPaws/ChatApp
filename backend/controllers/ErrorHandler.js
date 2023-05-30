@@ -1,5 +1,5 @@
 import { InvalidCredentialsError, InvalidTokenError } from "../models/Tokens.js";
-import { ChatAlreadyExistsError, InvalidChatIdError, UserNotPartOfChatError } from "../models/Chats.js";
+import { ChatAlreadyExistsError, InvalidChatIdError, InvalidMessageContentError, UserNotPartOfChatError } from "../models/Chats.js";
 import { InvalidPasswordError, UserAlreadyExistsError, UserDoesNotExistsError } from "../models/Users.js";
 
 function tokens(err, res, req, next) {
@@ -30,6 +30,9 @@ function chats(err, res, req, next) {
 	} else if (err instanceof InvalidChatIdError) {
 		statusCode = 401;
 		message = "Chat ID doesn't exists";
+	} else if (err instanceof InvalidMessageContentError) {
+		statusCode = 400;
+		message = "Message content is invalid.";
 	} else {
 		next(err);
 		return;

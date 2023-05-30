@@ -1,9 +1,7 @@
 import { Router } from "express";
-import { InvalidTokenError, getUsernameFromToken } from "../models/Tokens.js";
-import { ChatAlreadyExistsError, InvalidChatIdError, UserNotPartOfChatError,
-	createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats,
+import { getUsernameFromToken } from "../models/Tokens.js";
+import { createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats,
 	getAllMessagesInChat } from "../models/Chats.js";
-import { UserDoesNotExistsError } from "../models/Users.js";
 
 const router = new Router();
 
@@ -59,13 +57,18 @@ router.delete("/:id", async (req, res) => {
 
 router.post("/:id/Messages", async (req, res) => {
 	const username = req.username;
+	
+	if (generateError({message: req.body}, res)) {
+		return;
+	}
+	
 	const message = await addMessageToChat(username, req.params.id, req.body);
 	res.json(message);
 });
 
 router.get("/:id/Messages", async (req, res) => {
 	const username = req.username;
-	const lastMessage = await getAllMessagesInChat(req.params.id);
+	const lastMessage = await getAllMessagesInChat(username, req.params.id);
 	
 	res.json(lastMessage);
 });

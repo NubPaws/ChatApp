@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { addUser, UserAlreadyExistsError, InvalidPasswordError, getUser,
-	UserDoesNotExistsError } from "../models/Users.js";
-import { InvalidTokenError, getUsernameFromToken } from "../models/Tokens.js";
+import { addUser, getUser } from "../models/Users.js";
+import { getUsernameFromToken } from "../models/Tokens.js";
+import { generateError } from "./Validator.js";
 
 const router = new Router();
 
@@ -22,6 +22,11 @@ router.get("/:username", async (req, res) => {
 
 router.post("/", async (req, res) => {
 	const {username, password, displayName, profilePic} = req.body;
+	
+	if (generateError({username, password, displayName, profilePic}, res)) {
+		return;
+	}
+	
 	const data = await addUser(username, password, displayName, profilePic);
 	res.json(data);
 });

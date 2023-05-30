@@ -4,7 +4,7 @@ import { generateError } from "./Validator.js";
 
 const router = new Router();
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
 	// Take the information that should be passed from the app.
 	const { username, password } = req.body;
 	
@@ -12,12 +12,15 @@ router.post("/", async (req, res) => {
 	if (generateError({username, password}, res)) {
 		return;
 	}
-	
-	// Get the token.
-	const token = await getToken(username, password);
-	
-	// Send it back to the user.
-	res.send(token);
+	try {
+		// Get the token.
+		const token = await getToken(username, password);
+		
+		// Send it back to the user.
+		res.send(token);
+	} catch (err) {
+		next(err);
+	}
 });
 
 export default router;

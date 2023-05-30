@@ -9,9 +9,6 @@ backend/node_modules
 # testing
 chat-app/coverage
 
-# production
-chat-app/build
-
 # misc
 chat-app/.DS_Store
 chat-app/.env.local

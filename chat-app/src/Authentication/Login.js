@@ -1,5 +1,5 @@
-import { handleUsername, handlePassword } from "./Validation";
-import { getUserDetails } from "../APIRequests.js/APIRequests";
+import { handleUsername, handlePassword } from "./Validation.js";
+import { getUserDetails } from "../APIRequests/APIRequests.js";
 
 async function loginUser(event, setShowErrorMessage, setUserCredentials) {
     event.preventDefault();

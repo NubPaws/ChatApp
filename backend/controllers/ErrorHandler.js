@@ -1,8 +1,10 @@
 import { InvalidCredentialsError, InvalidTokenError } from "../models/Tokens.js";
-import { ChatAlreadyExistsError, InvalidChatIdError, InvalidMessageContentError, UserNotPartOfChatError } from "../models/Chats.js";
-import { InvalidPasswordError, UserAlreadyExistsError, UserDoesNotExistsError } from "../models/Users.js";
+import { ChatAlreadyExistsError, InvalidChatIdError,
+	InvalidMessageContentError, UserNotPartOfChatError } from "../models/Chats.js";
+import { InvalidPasswordError, InvalidUsernameError,
+	UserAlreadyExistsError, UserDoesNotExistsError } from "../models/Users.js";
 
-function tokens(err, res, req, next) {
+function tokens(err, req, res, next) {
 	let statusCode = undefined;
 	let message = undefined;
 	if (err instanceof InvalidCredentialsError) {
@@ -18,7 +20,7 @@ function tokens(err, res, req, next) {
 	res.status(statusCode).send(message);
 }
 
-function chats(err, res, req, next) {
+function chats(err, req, res, next) {
 	let statusCode = undefined;
 	let message = undefined;
 	if (err instanceof ChatAlreadyExistsError) {
@@ -40,7 +42,7 @@ function chats(err, res, req, next) {
 	res.status(statusCode).send(message);
 }
 
-function users(err, res, req, next) {
+function users(err, req, res, next) {
 	let statusCode = undefined;
 	let message = undefined;
 	if (err instanceof UserAlreadyExistsError) {
@@ -50,8 +52,11 @@ function users(err, res, req, next) {
 		statusCode = 400;
 		message = "Invalid Password";
 	} else if (err instanceof UserDoesNotExistsError) {
-		status = 404;
+		statusCode = 404;
 		message = "User not found";
+	} else if (err instanceof InvalidUsernameError) {
+		statusCode = 400;
+		message = "Invalid Username";
 	} else {
 		next(err);
 		return;

@@ -17,15 +17,19 @@ if (!process.env.PORT) {
 	process.env.PORT = 5000;
 }
 
+// Connect to the MongoDB server.
 await startMongoDB();
 console.log("Connected to the database.");
 
+// Create the express app.
 const app = express();
 const PORT = process.env.PORT;
 
+// Use the body parsers.
 app.use(bodyParser.text({type: "application/json"}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Create middleware to handle loading data from the body.
 app.use((req, res, next) => {
 	if (req.headers["content-type"] !== "application/json") {
 		next();
@@ -39,12 +43,13 @@ app.use((req, res, next) => {
 	next();
 })
 
+// Load the routes.
 app.use("/", express.static("../chat-app/build/"));
 app.use("/api/Chats", chatsRouter);
 app.use("/api/Tokens", tokensRouter);
 app.use("/api/Users", usersRouter);
 
-// Error handling.
+// Error handling middleware.
 app.use(ErrorHandler.tokens);
 app.use(ErrorHandler.chats);
 app.use(ErrorHandler.users);
@@ -54,6 +59,7 @@ app.use((err, req, res, next) => {
 	res.status(500).send("Internal server error");
 });
 
+// Start listening.
 app.listen(PORT, () => {
 	console.log(`Listening on http://localhost:${PORT}/`);
 });

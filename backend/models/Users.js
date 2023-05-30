@@ -3,6 +3,7 @@ import { User, UserPass, UserPassName, getUserByUsername, getUserPassByUsername 
 export class UserAlreadyExistsError extends Error {}
 export class InvalidPasswordError extends Error {}
 export class UserDoesNotExistsError extends Error {}
+export class InvalidUsernameError extends Error {}
 
 async function addUserToDatabase(username, password, displayName, profilePic) {
 	await UserPassName.create({
@@ -28,6 +29,10 @@ export async function addUser(username, password, displayName, profilePic) {
 	const users = await getUserPassByUsername(username);
 	if (users.length > 0) {
 		throw new UserAlreadyExistsError();
+	}
+	
+	if (username.length < 4) {
+		throw new InvalidUsernameError();
 	}
 	
 	if (password.length < 8) {

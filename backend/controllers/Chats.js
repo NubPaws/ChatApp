@@ -2,6 +2,7 @@ import { Router } from "express";
 import { getUsernameFromToken } from "../models/Tokens.js";
 import { createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats,
 	getAllMessagesInChat } from "../models/Chats.js";
+import { generateError } from "./Validator.js";
 
 const router = new Router();
 
@@ -16,61 +17,82 @@ router.use(async (req, res, next) => {
 		res.status(403).send("Token required");
 		return;
 	}
-	
-	const token = req.headers.authorization.split(" ")[1];
-	const username = await getUsernameFromToken(token);
-	req.username = username;
-	
-	next();
+	try {
+		const token = req.headers.authorization.split(" ")[1];
+		const username = await getUsernameFromToken(token);
+		req.username = username;
+		
+		next();
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.get("/", async (req, res) => {
-	const chats = await getLastMessageInChats(req.username);
-	res.json(chats);
+router.get("/", async (req, res, next) => {
+	try {
+		const chats = await getLastMessageInChats(req.username);
+		res.json(chats);
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
 	const otherUsername = req.body;
 	if (generateError({username: otherUsername}, res)) {
 		return;
 	}
-	
-	await createChat(req.username, otherUsername);
-	res.send();
+	try {
+		await createChat(req.username, otherUsername);
+		res.send();
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
 	const username = req.username
 	const id = req.params.id;
-	const chat = await getChat(username, id);
-	
-	res.json(chat);
+	try {
+		const chat = await getChat(username, id);
+		res.json(chat);
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
 	const username = req.username;
-	
-	await deleteChat(username, req.params.id);
-	
-	res.send();
+	try {
+		await deleteChat(username, req.params.id);
+		res.send();
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.post("/:id/Messages", async (req, res) => {
+router.post("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
 	
 	if (generateError({message: req.body}, res)) {
 		return;
 	}
-	
-	const message = await addMessageToChat(username, req.params.id, req.body);
-	res.json(message);
+	try {
+		const message = await addMessageToChat(username, req.params.id, req.body);
+		res.json(message);
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.get("/:id/Messages", async (req, res) => {
+router.get("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
-	const lastMessage = await getAllMessagesInChat(username, req.params.id);
-	
-	res.json(lastMessage);
+	try {
+		const lastMessage = await getAllMessagesInChat(username, req.params.id);
+		res.json(lastMessage);
+	} catch (err) {
+		next(err);
+	}
 });
 
 export default router;

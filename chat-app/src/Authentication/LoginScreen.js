@@ -1,10 +1,9 @@
 import "./authentication.css"
 import { Link } from "react-router-dom";
-import { Input } from "./Input";
-import { loginUser } from "./Login";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Input } from "./Input.js";
+import { loginUser } from "./Login.js";
 import { Modal } from "../UIElements/Modal.js";
 
 

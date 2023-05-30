@@ -140,7 +140,7 @@ export async function getChat(username, id) {
 	const chat = await getChatById(id);
 	
 	if (chat.length === 0) {
-		return new InvalidChatIdError();
+		throw new InvalidChatIdError();
 	}
 	
 	const chatObj = chat[0].toObject();

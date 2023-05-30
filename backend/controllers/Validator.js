@@ -6,7 +6,9 @@
  * @returns true if the thing is either null or undefined. false otherwise.
  */
 export function isEmpty(thing) {
-	return value == null;
+	return thing == null
+		|| (typeof thing === "string" && thing.trim().length === 0)
+		|| (Object.keys(thing).length === 0);
 }
 
 /**
@@ -32,6 +34,6 @@ export function generateError(items, res) {
 	if (Object.keys(error).length === 0) {
 		return false;
 	}
-	res.send(400).json(error);
+	res.status(400).json(error);
 	return true;
 }

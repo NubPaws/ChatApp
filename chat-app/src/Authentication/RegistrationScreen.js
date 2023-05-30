@@ -1,8 +1,8 @@
 import "./authentication.css"
-import { registerUser, previewProfilePicture } from "./Registration";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { registerUser, previewProfilePicture } from "./Registration.js";
 import { Input } from "./Input.js";
 import { Modal } from "../UIElements/Modal.js";
 

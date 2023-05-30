@@ -23,7 +23,6 @@ chat-app/npm-debug.log*
 chat-app/yarn-debug.log*
 chat-app/yarn-error.log*
 
-backend
 backend/.env
 task-server/
 database/

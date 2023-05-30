@@ -1,9 +1,25 @@
 import { getUserPassByUsername } from "./DatabaseConnector.js";
 import jwt from "jsonwebtoken";
 
-export class InvalidCredentialsError extends Error {}
-export class InvalidTokenError extends Error {}
+export class InvalidCredentialsError extends Error {
+	constructor(message) {
+		super(message ? message : "Incorrect username and/or password");
+	}
+}
+export class InvalidTokenError extends Error {
+	constructor(message) {
+		super(message ? message : "Invalid token received");
+	}
+}
 
+/**
+ * Validates the log in of the username and password, doing so by returning
+ * the token relating to that user.
+ * @param {string | null} username The username that attemps to get the token.
+ * @param {string | null} password The password of the username.
+ * @returns The token of said username.
+ * @throws {InvalidCredentialsError} If the username or password are not valid.
+ */
 export async function getToken(username, password) {
 	const users = await getUserPassByUsername(username);
 	if (users.length === 0) {
@@ -25,6 +41,13 @@ export async function getToken(username, password) {
 	return token;
 }
 
+/**
+ * Given a token, this functions returns the username cached inside that token.
+ * This function assumes that the data was made using the special key that is
+ * stored in the .env file (or the default one).
+ * @param {string} token The token of the user that attemps to make a request.
+ * @returns The username hashed inside the token.
+ */
 export async function getUsernameFromToken(token) {
 	const key = process.env.JWT_KEY;
 	

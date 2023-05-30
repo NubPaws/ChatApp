@@ -9,6 +9,14 @@ import usersRouter from "./controllers/Users.js";
 
 config();
 
+// Make sure that the process.env values are set properly if not defined in dotenv.
+if (!process.env.JWT_KEY) {
+	process.env.JWT_KEY = "default";
+}
+if (!process.env.PORT) {
+	process.env.PORT = 5000;
+}
+
 await startMongoDB();
 console.log("Connected to the database.");
 

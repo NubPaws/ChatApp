@@ -33,9 +33,8 @@ export function ContactList(props) {
 					'Content-Type': 'application/json',
 					'Authorization': props.token
 				},
-				'body': JSON.stringify({ "username": username })
-			}
-			)
+				'body': JSON.stringify({ username })
+			});
 		}
 		if (contactToAdd !== "") {
 			addChat(contactToAdd);

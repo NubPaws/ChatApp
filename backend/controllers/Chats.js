@@ -1,11 +1,17 @@
 import { Router } from "express";
-import { InvalidTokenError, getUsernameFromToken } from "../models/Tokens.js";
-import { ChatAlreadyExistsError, InvalidChatIdError, UserNotPartOfChatError,
-	createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats, getAllMessagesInChat } from "../models/Chats.js";
-import { UserDoesNotExistsError } from "../models/Users.js";
+import { getUsernameFromToken } from "../models/Tokens.js";
+import { createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats,
+	getAllMessagesInChat } from "../models/Chats.js";
+import { generateError } from "./Validator.js";
 
 const router = new Router();
 
+/**
+ * This middleware is in charge of validating the token from the user.
+ * The idea is that every API end point here requires a token, and if
+ * the token is invalid then there is no need to attempt and execute
+ * the API point.
+ */
 router.use(async (req, res, next) => {
 	if (!req.headers.authorization) {
 		res.status(403).send("Token required");
@@ -15,102 +21,77 @@ router.use(async (req, res, next) => {
 		const token = req.headers.authorization.split(" ")[1];
 		const username = await getUsernameFromToken(token);
 		req.username = username;
+		
+		next();
 	} catch (err) {
-		if (err instanceof InvalidTokenError) {
-			res.status(401).send("Invalid Token");
-			return;
-		}
+		next(err);
 	}
-	next();
 });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
 	try {
 		const chats = await getLastMessageInChats(req.username);
 		res.json(chats);
 	} catch (err) {
-		res.status(500).send("Internal Server Error");
+		next(err);
 	}
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
+	const otherUsername = req.body.username;
+	if (generateError({username: otherUsername}, res)) {
+		return;
+	}
 	try {
-		const otherUsername = req.body;
-		
 		await createChat(req.username, otherUsername);
+		res.send();
 	} catch (err) {
-		if (err instanceof ChatAlreadyExistsError) {
-			res.status(400).send("Chat already exists");
-		} else if (err instanceof UserDoesNotExistsError) {
-			res.status(400).send("One of the users doesn't exists");
-		}
+		next(err);
 	}
-	res.send();
 });
 
-router.get("/:id", async (req, res) => {
-	const username = req.username;
+router.get("/:id", async (req, res, next) => {
+	const username = req.username
+	const id = req.params.id;
 	try {
-		const id = req.params.id;
 		const chat = await getChat(username, id);
-		
 		res.json(chat);
 	} catch (err) {
-		if (err instanceof UserNotPartOfChatError) {
-			res.status(401).send("User doesn't exists");
-		} else if (err instanceof InvalidChatIdError) {
-			res.status(401).send("Chat ID doesn't exists");
-		} else {
-			res.status(500).send("Internal Server Error");
-		}
+		next(err);
 	}
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
 	const username = req.username;
 	try {
 		await deleteChat(username, req.params.id);
-		
 		res.send();
 	} catch (err) {
-		if (err instanceof UserNotPartOfChatError) {
-			res.status(401).send("User doesn't exists");
-		} else if (err instanceof InvalidChatIdError) {
-			res.status(401).send("Invalid chat id");
-		} else {
-			res.status(500).send("Internal Server Error");
-		}
+		next(err);
 	}
 });
 
-router.post("/:id/Messages", async (req, res) => {
+router.post("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
+	
+	if (generateError({message: req.body.msg}, res)) {
+		return;
+	}
 	try {
-		const message = await addMessageToChat(username, req.params.id, req.body);
+		const message = await addMessageToChat(username, req.params.id, req.body.msg);
 		res.json(message);
 	} catch (err) {
-		if (err instanceof UserNotPartOfChatError) {
-			res.status(401).send("User doesn't exists");
-		} else if (err instanceof InvalidChatIdError) {
-			res.status(400).send("Invalid chat id.");
-		} else {
-			res.status(500).send("Internal Server Error");
-		}
+		next(err);
 	}
 });
 
-router.get("/:id/Messages", async (req, res) => {
+router.get("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
 	try {
-		const lastMessage = await getAllMessagesInChat(req.params.id);
-		
+		const lastMessage = await getAllMessagesInChat(username, req.params.id);
 		res.json(lastMessage);
 	} catch (err) {
-		if (err instanceof InvalidChatIdError) {
-			res.status(400).send("Invalid chat id");
-		} else {
-			res.status(500).send("Internal Server Error");
-		}
+		next(err);
 	}
 });
 

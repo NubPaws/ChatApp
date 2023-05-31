@@ -1,4 +1,4 @@
-import { handleUsername, handlePassword, confirmPassword, handleDisplayName } from "./Validation";
+import { handleUsername, handlePassword, confirmPassword, handleDisplayName } from "./Validation.js";
 
 async function registerUser(event, setShowSuccessMessage, setShowErrorMessage) {
     event.preventDefault();

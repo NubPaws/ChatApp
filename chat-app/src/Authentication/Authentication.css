@@ -1,0 +1,52 @@
+
+body {
+	width: 100vw;
+	height: 100vh;
+	background-color: #22547D;
+	padding: 0;
+	margin: 0;
+}
+
+.fieldsContainer {
+	background: white;
+	display: flex;
+	flex-direction: column;
+	width: 70vw;
+	min-width: 500px;
+	padding: 1.5rem;
+	margin: 1.5rem auto 0 auto;
+}
+
+.field {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.fieldLabel {
+	width: 200px;
+}
+
+.fieldInput {
+	flex-grow: 1;
+	max-height: 26pt;
+	padding: 0.25rem;
+}
+
+.note {
+	font-size: 10pt;
+}
+
+.bottomText {
+	justify-content: center;
+	text-align: center;
+}
+
+@media screen and (max-width: 500px) {
+	.fieldsContainer {
+		padding: 2.5rem 0;
+	}
+	.fieldsLabel {
+		width: 100px;
+	}
+}

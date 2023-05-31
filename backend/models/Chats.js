@@ -1,9 +1,11 @@
-import { Chat, Message, getChatById, getChatsByUsername, getNextChatId, getNextMessageId, getUserByUsername } from "./DatabaseConnector.js";
+import { Chat, Message, getChatById, getChatsByUsername, getNextChatId,
+	getNextMessageId, getUserByUsername } from "./DatabaseConnector.js";
 import { getUser } from "./Users.js";
 
 export class ChatAlreadyExistsError extends Error {}
 export class UserNotPartOfChatError extends Error {}
 export class InvalidChatIdError extends Error {}
+export class InvalidMessageContentError extends Error {}
 
 function cleanUpChatObj(chatObj) {
 	delete chatObj._id;
@@ -138,7 +140,7 @@ export async function getChat(username, id) {
 	const chat = await getChatById(id);
 	
 	if (chat.length === 0) {
-		return new InvalidChatIdError();
+		throw new InvalidChatIdError();
 	}
 	
 	const chatObj = chat[0].toObject();
@@ -186,6 +188,9 @@ export async function addMessageToChat(username, chatId, messageContent) {
 	const chat = chats[0];
 	if (!isUserPartOfChat(username, chat)) {
 		throw new UserNotPartOfChatError();
+	}
+	if (messageContent.trim() === "") {
+		throw new InvalidMessageContentError();
 	}
 	
 	const users = await getUserByUsername(username);
@@ -249,13 +254,17 @@ export async function getLastMessageInChats(username) {
 	return result;
 }
 
-export async function getAllMessagesInChat(id) {
+export async function getAllMessagesInChat(username, id) {
 	const chats = await getChatById(id);
 	if (chats.length === 0) {
 		throw new InvalidChatIdError();
 	}
 	
 	const chat = chats[0];
+	
+	if (chat.users[0].username !== username && chat.users[1].username !== username) {
+		throw new UserNotPartOfChatError();
+	}
 	
 	if (chat.messages === null) {
 		return [];

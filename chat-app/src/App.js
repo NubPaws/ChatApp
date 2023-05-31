@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import './App.css';
 import { LoginScreen } from './Authentication/LoginScreen.js';
 import { RegistrationScreen } from './Authentication/RegistrationScreen.js';
 import { ChatScreen } from './ChatScreen/ChatScreen.js';
+import './App.css';
 
 function App() {
     const [userCredentials, setUserCredentials] = useState({});

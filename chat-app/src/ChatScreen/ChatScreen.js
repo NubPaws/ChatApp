@@ -12,8 +12,7 @@ export function ChatScreen(props) {
 			navigate("/login");
 		}
 	});
-
-
+	
 	const img = props.userCredentials["profilePic"];
 
 	const [activeChat, setActiveChat] = useState({});
@@ -22,16 +21,15 @@ export function ChatScreen(props) {
 		setUserCredentials({});
 		navigate("/login");
 	}
-
+	
 	return (
 		<div id="screen">
 			<div id="topBar">
 				<Button
 					className="logoutBtn"
-					text="Logout"
 					bgColor="red"
 					textColor="white"
-					onClick={() => logout(props.setUserCredentials)} />
+					onClick={() => logout(props.setUserCredentials)}>Logout</Button>
 			</div>
 			<div id="wrapper">
 				<div id="sidePanel">

@@ -12,7 +12,7 @@ export function Button(props) {
 			className={`btn ${props.className}`}
 			style={extraStyle}
 			onClick={props.onClick}
-		>{props.text}</button>
+		>{props.children}</button>
 	);
 }
 

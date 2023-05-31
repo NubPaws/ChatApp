@@ -1,0 +1,12 @@
+
+#chatField {
+	display: flex;
+}
+
+#chatFieldText {
+	flex: 1;
+	border-radius: 0;
+	border-width: 1px;
+	border-left-width: 0;
+	border-right-width: 0;
+}

@@ -7,6 +7,7 @@ import ErrorHandler from "./controllers/ErrorHandler.js";
 import chatsRouter from "./controllers/Chats.js";
 import tokensRouter from "./controllers/Tokens.js";
 import usersRouter from "./controllers/Users.js";
+import { Server } from "ws";
 
 config();
 

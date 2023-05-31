@@ -7,7 +7,6 @@ import ErrorHandler from "./controllers/ErrorHandler.js";
 import chatsRouter from "./controllers/Chats.js";
 import tokensRouter from "./controllers/Tokens.js";
 import usersRouter from "./controllers/Users.js";
-import { Server } from "ws";
 
 config();
 
@@ -66,7 +65,7 @@ app.use(ErrorHandler.users);
 // Define a catch-all error handler.
 app.use((err, req, res, next) => {
 	res.status(500).send("Internal server error");
-	console.log(err)
+	console.log(err);
 });
 
 // Start listening.

@@ -12,7 +12,7 @@ router.get("/:username", async (req, res, next) => {
 	}
 	const token = req.headers.authorization.split(" ")[1];
 	try {
-		const username = await getUsernameFromToken(token);
+		const username = getUsernameFromToken(token);
 		
 		if (req.params.username === username) {
 			res.json(await getUser(username));

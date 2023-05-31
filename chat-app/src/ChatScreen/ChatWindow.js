@@ -1,8 +1,8 @@
-import { Button } from "../UIElements/Button.js";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import "./ChatWindow.css";
+import { ChatTextField } from "./ChatTextField.js";
+import { SpeechBubble } from "./SpeechBubble.js";
 
 export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
@@ -11,26 +11,33 @@ export function ChatWindow(props) {
 	
 	const activeChat = props.activeChat;
 	
+	// Effect to update the messages in a given chat.
 	useEffect(() => {
-		async function sendMessage(message) {
-			const url = "http://localhost:5000/api/Chats/" + activeChat["chatId"]+ "/Messages/"
-			await fetch(url, {
-				'method': 'POST',
-				'headers': {
-					'Content-Type': 'application/json',
-					'Authorization': props.token
-				},
-				'body': JSON.stringify({"msg": message})
+		const text = inputText;
+		const url = "http://localhost:5000/api/Chats/" + activeChat["chatId"] + "/Messages/";
+		const request = {
+			'method': 'POST',
+			'headers': {
+				'Content-Type': 'application/json',
+				'Authorization': props.token
+			},
+			'body': JSON.stringify({"msg": text})
+		};
+		fetch(url, request)
+			.catch(() => {})
+			.finally(() => {
+				setSendClicked(false);
+				generateMessages(activeChat, setMessages, props.token);
+				setInputText("");
 			});
-		}
-		const text = inputText.trim();
-		if (text !== "" && sendClicked === true) {
-			sendMessage(text);
-			setInputText("")
-		}
-		setSendClicked(false);
-		generateMessages(activeChat, setMessages, props.token);
-	}, [sendClicked, setSendClicked, activeChat, inputText, props.token, setInputText]);
+	}, [sendClicked, activeChat, inputText, props.token]);
+	
+	// Effect to make sure that the scroll bar sticks to the bottom.
+	useEffect(() => {
+		const chatArea = document.getElementById("chatArea");
+		if (chatArea)
+			chatArea.scrollTo(0, chatArea.scrollHeight);
+	}, [messages]);
 	
 	if (Object.keys(activeChat).length === 0) {
 		return <div id="emptyChatBox"></div>;
@@ -47,22 +54,14 @@ export function ChatWindow(props) {
 			</div>
 		</div>
 		{messages}
-		<div id="chatField">
-			<input id="chatFieldText" type="text" placeholder="Write your message here..."
-				value={inputText}
-				onChange={(e) => { setInputText(e.target.value); }}
-				onKeyDown={(e) => { if (e.key === "Enter") setSendClicked(true) }} />
-			<Button text="Send" borderWidth="1px" borderRadius="0" onClick={(e) => {setSendClicked(true)}} />
-		</div>
+		<ChatTextField
+			setInputText={setInputText}
+			onSend={() => {
+				setSendClicked(true);
+			}}
+		/>
 	</div>
 	);
-}
-
-function SpeechBubble(props) {
-	return <div className={`speechBubble speechBubble${props.direction === "left" ? "Left" : "Right"}`}>
-		{props.text}
-		<span className="timestamp">{props.timestamp}</span>
-	</div>
 }
 
 async function generateMessages(activeChat, setMessages, token) {
@@ -97,14 +96,15 @@ async function generateMessages(activeChat, setMessages, token) {
 	const messageComps = [];
 	for (let i = 0; i < messages.length; i++) {
 		const date = new Date(messages[i].timestamp);
-		messageComps.push(<SpeechBubble
-			direction={messages[i].direction}
-			text={messages[i].message}
-			timestamp={`${date.getHours()}:${date.getMinutes()}`}
-			key={i.toString()} />);
+		messageComps.push(
+			<SpeechBubble
+				direction={messages[i].direction}
+				timestamp={`${date.getHours()}:${date.getMinutes()}`}
+				key={i.toString()}>
+					{messages[i].message}
+			</SpeechBubble>
+		);
 	}
 	
 	setMessages(<div id="chatArea">{messageComps}</div>);
-	const chatArea = document.getElementById("chatArea");
-	chatArea.scrollTo(0, chatArea.scrollHeight);
 }

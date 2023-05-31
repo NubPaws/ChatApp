@@ -27,10 +27,9 @@ export function ChatScreen(props) {
 			<div id="topBar">
 				<Button
 					className="logoutBtn"
-					text="Logout"
 					bgColor="red"
 					textColor="white"
-					onClick={() => logout(props.setUserCredentials)} />
+					onClick={() => logout(props.setUserCredentials)}>Logout</Button>
 			</div>
 			<div id="wrapper">
 				<div id="sidePanel">

@@ -1,4 +1,3 @@
-import "./authentication.css"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -6,6 +5,9 @@ import { Input } from "./Input.js";
 import { loginUser } from "./Login.js";
 import { Modal } from "../UIElements/Modal.js";
 
+
+import "./Authentication.css";
+import { Button } from "../UIElements/Button.js";
 
 export function LoginScreen(props) {
     const navigate = useNavigate();
@@ -19,15 +21,26 @@ export function LoginScreen(props) {
     }, [props.userCredentials, props.setUserCredentials, navigate]);
 
     return (
-        <div className="pane">
+        <div className="fieldsContainer">
             <form action="http://localhost:5000/api/Tokens" id="loginForm">
-                <Input id="username" type="text" name="username" inputText="Username"
-                    placeholder="Username" errorMessageId="usernameErrorMessage"></Input>
-                <Input id="password" type="password" name="password" inputText="Password"
-                    placeholder="Password" errorMessageId="passwordErrorMessage"></Input>
-                <button className="btn btn-primary" onClick={(event) => loginUser(event, setShowErrorMessage, props.setUserCredentials)}>Login</button>
+                <Input id="username" className="field" type="text" name="username"
+                    placeholder="Username" errorMessageId="usernameErrorMessage">
+                        Username
+                </Input>
+                <Input id="password" className="field" type="password" name="password"
+                    placeholder="Password" errorMessageId="passwordErrorMessage">
+                        Password
+                </Input>
+                <Button
+                    className="fieldLabel"
+                    bgColor="#007bff"
+                    textColor="white"
+                    borderWidth="1px"
+                    onClick={(event) => loginUser(event, setShowErrorMessage, props.setUserCredentials)}>
+                    Login
+                </Button>
             </form>
-            <div className="text-center">
+            <div className="bottomText">
                 <p>Not registered? <Link to='/registration'>click here</Link> to register</p>
             </div>
             <Modal title="Login Failed" show={showErrorMessage} onClose={() => { setShowErrorMessage(false) }}>

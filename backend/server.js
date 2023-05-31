@@ -48,7 +48,11 @@ app.use((req, res, next) => {
 })
 
 // Load the routes.
-app.use("/", express.static("../chat-app/build/"));
+const site = express.static("../chat-app/build/");
+app.use("/", site);
+app.use("/chat", site);
+app.use("/login", site);
+app.use("/register", site);
 app.use("/api/Chats", chatsRouter);
 app.use("/api/Tokens", tokensRouter);
 app.use("/api/Users", usersRouter);

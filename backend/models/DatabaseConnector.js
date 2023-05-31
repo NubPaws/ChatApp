@@ -122,7 +122,10 @@ export async function getChatsByUsername(username) {
  */
 export async function startMongoDB() {
 	try {
-		await mongoose.connect(MONGO_DB_ADDRESS + "chat");
+		await mongoose.connect(MONGO_DB_ADDRESS + "chat", {
+			useUnifiedTopology: true,
+			useNewUrlParser: true,
+		});
 		
 		let maxNumber;
 		

@@ -26,7 +26,7 @@ export function ChatWindow(props) {
 				'body': JSON.stringify({ "msg": text })
 			};
 			fetch(url, request)
-				.catch(() => { })
+				.catch(() => {})
 				.finally(() => {
 					setSendClicked(false);
 					generateMessages(activeChat, setMessages, props.token);
@@ -74,13 +74,18 @@ async function generateMessages(activeChat, setMessages, token) {
 	}
 
 	const url = "http://localhost:5000/api/Chats/" + activeChat.chatId + "/Messages/";
-	const res = await fetch(url, {
-		'method': 'GET',
-		'headers': {
-			'Content-Type': 'application/json',
-			'Authorization': token
-		},
-	});
+	let res = null;
+	try {
+		res = await fetch(url, {
+			'method': 'GET',
+			'headers': {
+				'Content-Type': 'application/json',
+				'Authorization': token
+			},
+		});
+	} catch (error) {
+		return;
+	}
 	const messagesJson = await res.json();
 
 	// Convert the JSON into a message array.

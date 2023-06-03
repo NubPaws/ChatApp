@@ -5,31 +5,31 @@ import { ChatTextField } from "./ChatTextField.js";
 import { SpeechBubble } from "./SpeechBubble.js";
 import { WebSocketContext } from "../Context/WebSocketContext.js";
 
+function sendMessageUrl(chatId) {
+	return "http://localhost:5000/api/Chats/" + chatId + "/Messages/";
+}
+
+function getMessagesUrl(chatId) {
+	return "http://localhost:5000/api/Chats/" + chatId + "/Messages/";
+}
+
 export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
 	const [sendClicked, setSendClicked] = useState(false);
 	const [messages, setMessages] = useState([]);
-	
 	const webSocket = useContext(WebSocketContext);
 	
 	const {activeChat, token} = props;
 	
+	// Load the messages for the first time the chat opens.
 	useEffect(() => {
 		generateMessages(activeChat, setMessages, token);
 	}, [activeChat, token]);
 	
 	// Effect to update the messages in a given chat.
 	useEffect(() => {
-		const text = inputText;
-		const url = "http://localhost:5000/api/Chats/" + activeChat["chatId"] + "/Messages/";
-		const request = {
-			'method': 'POST',
-			'headers': {
-				'Content-Type': 'application/json',
-				'Authorization': token
-			},
-			'body': JSON.stringify({"msg": text})
-		};
+		const url = sendMessageUrl(activeChat["chatId"]);
+		const request = generateMessageRequest(inputText, token);
 		
 		fetch(url, request)
 			.then((response) => {
@@ -55,6 +55,8 @@ export function ChatWindow(props) {
 			});
 	}, [messages, sendClicked, activeChat, inputText, token, webSocket]);
 	
+	// In charge of receiving messages from the other user and updating the chat
+	// if that chat is open.
 	useEffect(() => {
 		if (!webSocket.value || webSocket.value.sender !== activeChat.username)
 			return;
@@ -70,17 +72,17 @@ export function ChatWindow(props) {
 			chatArea.scrollTo(0, chatArea.scrollHeight);
 	}, [messages]);
 	
+	// If there is no user selected, show a blank screen.
 	if (Object.keys(activeChat).length === 0) {
 		return <div id="emptyChatBox"></div>;
 	}
 	
-	const chatImg = activeChat.profilePic;
 	return (
 	<div id="chatBox">
 		<div id="title">
-			<img id="profileImg" src={chatImg} alt="Raccoon" />
+			<img id="profileImg" src={activeChat.profilePic} alt="Raccoon" />
 			<div id="userInfo">
-				<span id="name">{activeChat["username"]}</span>
+				<span id="name">{activeChat.displayName}</span>
 				<span id="status">Online</span>
 			</div>
 		</div>
@@ -93,13 +95,25 @@ export function ChatWindow(props) {
 	);
 }
 
+function generateMessageRequest(text, token) {
+	const request = {
+		'method': 'POST',
+		'headers': {
+			'Content-Type': 'application/json',
+			'Authorization': token
+		},
+		'body': JSON.stringify({"msg": text})
+	};
+	return request;
+}
+
 async function generateMessages(activeChat, setMessages, token) {
 	if (Object.keys(activeChat).length === 0) {
 		setMessages(<div id="chatArea"></div>);
 		return;
 	}
 	
-	const url = "http://localhost:5000/api/Chats/" + activeChat.chatId + "/Messages/";
+	const url = getMessagesUrl(activeChat.chatId);
 	const res = await fetch(url, {
 		'method': 'GET',
 		'headers': {

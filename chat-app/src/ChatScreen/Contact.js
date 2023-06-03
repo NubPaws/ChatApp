@@ -6,7 +6,7 @@ export function Contact(props) {
 			onClick={props.onClick}
 		>
 			<img className="profileImg" alt="Profile" src={props.image} />
-			<h5 className="username">{props.username}</h5>
+			<h5 className="displayName">{props.displayName}</h5>
 			<span className="lastMessage">{props.lastMessage}</span>
 		</div>
 	);

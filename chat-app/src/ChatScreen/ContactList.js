@@ -1,6 +1,6 @@
 import { UserProfile } from "./UserProfile.js";
 import { Contact } from "./Contact.js";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import "./Contact.css";
 
@@ -40,14 +40,15 @@ export function ContactList(props) {
 			addChat(contactToAdd);
 		}
 	}, [contactToAdd, props.token]);
-
-	function createContact(username, image, time, i, chatId) {
+	
+	function createContact(username, displayName, image, time, i, chatId) {
 		let dateStr;
 		if (time !== "") {
 			const date = new Date(time);
 			const hm = `${date.getHours()}:${date.getMinutes()}`;
 			const day = date.getDate().toString().padStart(2, '0');
-			const month = (date.getMonth() + 1).toString().padStart(2, '0'); // The count starts at zero
+			// The count starts at zero
+			const month = (date.getMonth() + 1).toString().padStart(2, '0');
 			const year = date.getFullYear();
 			dateStr = `${hm} ${day}/${month}/${year}`;
 		} else {
@@ -56,12 +57,18 @@ export function ContactList(props) {
 
 		return <Contact
 			username={username}
+			displayName={displayName}
 			image={image}
 			lastMessage={dateStr}
 			key={i.toString()}
 			onClick={() => {
 				setSelected(i);
-				props.setActiveChat({ "username": username, "profilePic": image, "chatId": chatId });
+				props.setActiveChat({
+					"username": username,
+					"displayName": displayName,
+					"profilePic": image,
+					"chatId": chatId
+				});
 			}}
 			className={selected === i ? "selectedCard" : ""} />
 	}
@@ -79,7 +86,7 @@ export function ContactList(props) {
 				time = "";
 			}
 			const contact = createContact(
-				chat.user.username, chat.user.profilePic,
+				chat.user.username, chat.user.displayName, chat.user.profilePic,
 				time, i, chat.id
 			);
 			contactsList.push(contact);
@@ -91,7 +98,7 @@ export function ContactList(props) {
 	return (
 		<div id="contactList">
 			<UserProfile
-				username={props.displayName}
+				displayName={props.displayName}
 				image={props.image}
 				setContactToAdd={setContactToAdd}
 				token={props.token} />

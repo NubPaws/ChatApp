@@ -6,6 +6,7 @@ export class ChatAlreadyExistsError extends Error {}
 export class UserNotPartOfChatError extends Error {}
 export class InvalidChatIdError extends Error {}
 export class InvalidMessageContentError extends Error {}
+export class SameUserChatError extends Error {}
 
 function cleanUpChatObj(chatObj) {
 	delete chatObj._id;
@@ -94,6 +95,9 @@ export async function getChats(username) {
  * @param {string} otherUsername The user that we request to open a chat with.
  */
 export async function createChat(requestingUsername, otherUsername) {
+	if (requestingUsername === otherUsername)
+		throw new SameUserChatError();
+	
 	const chats = await getChatsByUsername(requestingUsername);
 	
 	for (let i = 0; i < chats.length; i++) {

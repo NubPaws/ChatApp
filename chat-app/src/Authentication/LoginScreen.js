@@ -12,6 +12,8 @@ import { Button } from "../UIElements/Button.js";
 export function LoginScreen(props) {
     const navigate = useNavigate();
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [showConnectionErrorMessage, setShowConnectionErrorMessage] = useState(false);
+    
 
     // Will change after successful login attempt
     useEffect(() => {
@@ -25,18 +27,18 @@ export function LoginScreen(props) {
             <form action="http://localhost:5000/api/Tokens" id="loginForm">
                 <Input id="username" className="field" type="text" name="username"
                     placeholder="Username" errorMessageId="usernameErrorMessage">
-                        Username
+                    Username
                 </Input>
                 <Input id="password" className="field" type="password" name="password"
                     placeholder="Password" errorMessageId="passwordErrorMessage">
-                        Password
+                    Password
                 </Input>
                 <Button
                     className="fieldLabel"
                     bgColor="#007bff"
                     textColor="white"
                     borderWidth="1px"
-                    onClick={(event) => loginUser(event, setShowErrorMessage, props.setUserCredentials)}>
+                    onClick={(event) => loginUser(event, setShowErrorMessage, setShowConnectionErrorMessage, props.setUserCredentials)}>
                     Login
                 </Button>
             </form>
@@ -45,6 +47,9 @@ export function LoginScreen(props) {
             </div>
             <Modal title="Login Failed" show={showErrorMessage} onClose={() => { setShowErrorMessage(false) }}>
                 <h5>Incorrect username/password</h5>
+            </Modal>
+            <Modal title="Failed to connect to server" show={showConnectionErrorMessage} onClose={() => { setShowConnectionErrorMessage(false) }}>
+                <h5>Unfortunately, we failed to reach our server.</h5>
             </Modal>
         </div>
     );

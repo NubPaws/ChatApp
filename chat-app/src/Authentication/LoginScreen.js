@@ -5,7 +5,6 @@ import { Input } from "./Input.js";
 import { loginUser } from "./Login.js";
 import { Modal } from "../UIElements/Modal.js";
 
-
 import "./Authentication.css";
 import { Button } from "../UIElements/Button.js";
 

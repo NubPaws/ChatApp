@@ -207,7 +207,7 @@ export async function addMessageToChat(username, chatId, messageContent) {
 		await Chat.findOneAndUpdate(
 			{id: chatId},
 			{$set: {messages: [message.toObject()]}}
-		)
+		);
 	} else {
 		await Chat.findOneAndUpdate(
 			{ id: chatId },

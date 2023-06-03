@@ -255,6 +255,18 @@ export async function getLastMessageInChats(username) {
 		});
 	}
 	
+	// Maybe sort the messages by the time they were sent, need to make sure
+	// that the chat app can handle changes.
+	/*result.sort((a, b) => {
+		if (a.lastMessage === null && b.lastMessage === null)
+			return 0;
+		if (a.lastMessage === null)
+			return 1;
+		if (b.lastMessage === null)
+			return -1;
+		return b.lastMessage.created - a.lastMessage.created;
+	});*/
+	
 	return result;
 }
 

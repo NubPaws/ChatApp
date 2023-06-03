@@ -25,20 +25,19 @@ export function ChatWindow(props) {
 	// Load the messages for the first time the chat opens.
 	useEffect(() => {
 		generateMessages(activeChat, setMessages, token);
-	}, [activeChat, token]);
+	}, [activeChat, activeChat.username, token]);
 	
 	// Effect to update the messages in a given chat.
 	useEffect(() => {
-		const url = sendMessageUrl(activeChat["chatId"]);
-		const request = generateMessageRequest(inputText, token);
-		
-		fetch(url, request)
-			.then((response) => {
-				if (response.ok)
-					return response.json();
-				throw new Error("Something when wrong.");
-			})
-			.then((response) => {
+		const setMessage = async () => {
+			if (!activeChat.chatId || inputText === "")
+				return;
+			const url = sendMessageUrl(activeChat["chatId"]);
+			const request = generateMessageRequest(inputText, token);
+			try {
+				const res = await fetch(url, request);
+				const response = await res.json();
+				
 				const {sender, content, created} = response;
 				webSocket.send({
 					sender: sender.username,
@@ -47,13 +46,12 @@ export function ChatWindow(props) {
 					timestamp: created,
 				});
 				sendMessage(content, created, messages, setMessages);
-			})
-			.catch((error) => {})
-			.finally(() => {
-				setSendClicked(false);
-				// generateMessages(activeChat, setMessages, token);
-				setInputText("");
-			});
+				webSocket.setLastSent(created);
+			} catch (err) {}
+		}
+		setMessage();
+		setSendClicked(false);
+		setInputText("");
 	}, [messages, sendClicked, activeChat, inputText, token, webSocket]);
 	
 	// In charge of receiving messages from the other user and updating the chat
@@ -64,6 +62,7 @@ export function ChatWindow(props) {
 		const { content, timestamp } = webSocket.value;
 		webSocket.clearValue()
 		receiveMessage(content, timestamp, messages, setMessages);
+		webSocket.setLastSent(timestamp);
 	}, [webSocket, webSocket.value, messages, activeChat]);
 	
 	// Effect to make sure that the scroll bar sticks to the bottom.
@@ -86,13 +85,6 @@ export function ChatWindow(props) {
 				<span id="name">{activeChat.displayName}</span>
 				<span id="status">Online</span>
 			</div>
-			{messages}
-			<ChatTextField
-				setInputText={setInputText}
-				onSend={() => {
-					setSendClicked(true);
-				}}
-			/>
 		</div>
 		<div id="chatArea">{messages}</div>
 		<ChatTextField
@@ -117,11 +109,12 @@ function generateMessageRequest(text, token) {
 
 async function generateMessages(activeChat, setMessages, token) {
 	if (Object.keys(activeChat).length === 0) {
-		setMessages(<div id="chatArea"></div>);
+		setMessages([]);
 		return;
 	}
   
 	const url = getMessagesUrl(activeChat.chatId);
+	let res = null;
 	try {
 		res = await fetch(url, {
 			'method': 'GET',
@@ -166,7 +159,7 @@ async function generateMessages(activeChat, setMessages, token) {
 	setMessages(messageComps);
 }
 
-function sendMessage(content, timestamp, messages, setMessages) {
+function sendMessage(content, timestamp, messages, setMessages, webSocket) {
 	const date = new Date(timestamp);
 	const hours = date.getHours().toString().padStart(2, "0");
 	const minutes = date.getMinutes().toString().padStart(2, "0");

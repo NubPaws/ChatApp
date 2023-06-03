@@ -3,11 +3,15 @@ import { Contact } from "./Contact.js";
 import { useContext, useEffect, useState } from "react";
 
 import "./Contact.css";
+import { WebSocketContext } from "../Context/WebSocketContext.js";
 
 export function ContactList(props) {
 	const [chats, setChats] = useState({});
 	const [contactToAdd, setContactToAdd] = useState("");
 	const [selected, setSelected] = useState(undefined);
+	
+	const webSocket = useContext(WebSocketContext);
+	
 	useEffect(() => {
 		async function fetchChats() {
 			const url = "http://localhost:5000/api/Chats"
@@ -20,10 +24,7 @@ export function ContactList(props) {
 						'Authorization': props.token
 					}
 				});
-			} catch (error) {
-				if (error instanceof TypeError) {
-				}
-			}
+			} catch (error) {}
 
 			if (res !== null) {
 				const json = await res.json();
@@ -31,7 +32,7 @@ export function ContactList(props) {
 			}
 		}
 		fetchChats();
-	}, [contactToAdd, props.token]);
+	}, [contactToAdd, props.token, webSocket.lastSent]);
 
 	useEffect(() => {
 		async function addChat(username) {
@@ -50,16 +51,18 @@ export function ContactList(props) {
 		if (contactToAdd !== "") {
 			addChat(contactToAdd);
 		}
+		setContactToAdd("");
 	}, [contactToAdd, props.token]);
 	
 	function createContact(username, displayName, image, time, i, chatId) {
 		let dateStr;
 		if (time !== "") {
+			const padder = (n) => n.toString().padStart(2, '0');
 			const date = new Date(time);
-			const hm = `${date.getHours()}:${date.getMinutes()}`;
-			const day = date.getDate().toString().padStart(2, '0');
+			const hm = `${padder(date.getHours())}:${padder(date.getMinutes())}`;
+			const day = padder(date.getDate());
 			// The count starts at zero
-			const month = (date.getMonth() + 1).toString().padStart(2, '0');
+			const month = padder(date.getMonth() + 1);
 			const year = date.getFullYear();
 			dateStr = `${hm} ${day}/${month}/${year}`;
 		} else {
@@ -86,7 +89,6 @@ export function ContactList(props) {
 
 	function generateContacts(props) {
 		const contactsList = [];
-		let i = 0;
 
 		for (const index in chats) {
 			let chat = chats[index];
@@ -98,10 +100,9 @@ export function ContactList(props) {
 			}
 			const contact = createContact(
 				chat.user.username, chat.user.displayName, chat.user.profilePic,
-				time, i, chat.id
+				time, Math.floor(Math.random() * 500), chat.id
 			);
 			contactsList.push(contact);
-			i++;
 		}
 		return contactsList;
 	}

@@ -4,12 +4,16 @@ import { io } from "socket.io-client";
 export const WebSocketContext = createContext({
 	isReady: false,
 	value: null,
-	send: (payload) => {}
+	clearValue: () => {},
+	send: (payload) => {},
+	lastSent: null,
+	setLastSent: () => {},
 });
 
 export function WebSocketProvider(props) {
 	const [ isReady, setIsReady ] = useState(false);
 	const [ val, setVal ] = useState(null);
+	const [ lastSent, setLastSent ] = useState(null);
 	const webSocket = useRef(null);
 	
 	const { username } = props;
@@ -42,6 +46,8 @@ export function WebSocketProvider(props) {
 		value: val,
 		clearValue: () => {setVal(undefined)},
 		send: send,
+		lastSent: lastSent,
+		setLastSent: setLastSent,
 	};
 	
 	return <WebSocketContext.Provider value={contextValue}>{props.children}</WebSocketContext.Provider>

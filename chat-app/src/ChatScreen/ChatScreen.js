@@ -38,7 +38,6 @@ export function ChatScreen(props) {
 							username={props.userCredentials["username"]}
 							token={props.userCredentials["token"]}
 							image={img}
-							databaseHook={props.databaseHook}
 							setActiveChat={setActiveChat}
 							displayName={props.userCredentials["displayName"]}/>
 					</div>

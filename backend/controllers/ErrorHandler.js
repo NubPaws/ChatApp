@@ -1,6 +1,7 @@
 import { InvalidCredentialsError, InvalidTokenError } from "../models/Tokens.js";
 import { ChatAlreadyExistsError, InvalidChatIdError,
-	InvalidMessageContentError, UserNotPartOfChatError } from "../models/Chats.js";
+	InvalidMessageContentError, UserNotPartOfChatError,
+	SameUserChatError } from "../models/Chats.js";
 import { InvalidPasswordError, InvalidUsernameError,
 	UserAlreadyExistsError, UserDoesNotExistsError } from "../models/Users.js";
 

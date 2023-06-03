@@ -19,7 +19,7 @@ export function UserProfile(props) {
 	return (
 		<div id="userProfile">
 			<img className="profileImg" alt="Profile" src={props.image} />
-			<h5 className="username">{props.username}</h5>
+			<h5 className="displayName">{props.displayName}</h5>
 			<IconButton
 				image={personAdd}
 				alt="Add Person"

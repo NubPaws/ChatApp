@@ -40,7 +40,7 @@ export async function getToken(username, password) {
  * @param {string} token The token of the user that attemps to make a request.
  * @returns The username hashed inside the token.
  */
-export async function getUsernameFromToken(token) {
+export function getUsernameFromToken(token) {
 	const key = process.env.JWT_KEY;
 	
 	try {

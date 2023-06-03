@@ -19,7 +19,7 @@ router.use(async (req, res, next) => {
 	}
 	try {
 		const token = req.headers.authorization.split(" ")[1];
-		const username = await getUsernameFromToken(token);
+		const username = getUsernameFromToken(token);
 		req.username = username;
 		
 		next();

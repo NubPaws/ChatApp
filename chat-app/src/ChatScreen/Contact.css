@@ -7,7 +7,7 @@
 	aspect-ratio: 1 / 1;
 }
 
-.username {
+.displayName {
 	margin: 0.5rem;
 	font-size: 16pt;
 	flex-grow: 1;

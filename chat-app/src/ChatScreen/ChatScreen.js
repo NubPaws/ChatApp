@@ -4,6 +4,7 @@ import { ChatWindow } from "./ChatWindow.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatScreen.css";
+import { WebSocketProvider } from "../Context/WebSocketContext.js";
 
 export function ChatScreen(props) {
 	const navigate = useNavigate();
@@ -31,21 +32,23 @@ export function ChatScreen(props) {
 					onClick={() => logout(props.setUserCredentials)}>Logout</Button>
 			</div>
 			<div id="wrapper">
-				<div id="sidePanel">
-					<ContactList
-						username={props.userCredentials["username"]}
-						token={props.userCredentials["token"]}
-						image={img}
-						databaseHook={props.databaseHook}
-						setActiveChat={setActiveChat}
-						displayName={props.userCredentials["displayName"]}/>
-				</div>
-				<div id="chatWindow">
-					<ChatWindow
-						username={props.userCredentials["username"]}
-						activeChat={activeChat}
-						token={props.userCredentials["token"]} />
-				</div>
+				<WebSocketProvider username={props.userCredentials["username"]}>
+					<div id="sidePanel">
+						<ContactList
+							username={props.userCredentials["username"]}
+							token={props.userCredentials["token"]}
+							image={img}
+							databaseHook={props.databaseHook}
+							setActiveChat={setActiveChat}
+							displayName={props.userCredentials["displayName"]}/>
+					</div>
+					<div id="chatWindow">
+						<ChatWindow
+							username={props.userCredentials["username"]}
+							activeChat={activeChat}
+							token={props.userCredentials["token"]} />
+					</div>
+				</WebSocketProvider>
 			</div>
 		</div>
 	);

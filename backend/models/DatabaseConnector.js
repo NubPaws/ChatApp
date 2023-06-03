@@ -1,4 +1,3 @@
-import { MongoClient } from "mongodb";
 import mongoose, { Schema } from "mongoose";
 
 const IP_ADDRESS = "127.0.0.1";

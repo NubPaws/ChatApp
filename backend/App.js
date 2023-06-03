@@ -1,12 +1,15 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
 import { config } from "dotenv";
 import { startMongoDB } from "./models/DatabaseConnector.js";
 import ErrorHandler from "./controllers/ErrorHandler.js";
 import chatsRouter from "./controllers/Chats.js";
 import tokensRouter from "./controllers/Tokens.js";
 import usersRouter from "./controllers/Users.js";
+import { onConnect } from "./controllers/ServerHandler.js";
 
 config();
 
@@ -65,10 +68,14 @@ app.use(ErrorHandler.users);
 // Define a catch-all error handler.
 app.use((err, req, res, next) => {
 	res.status(500).send("Internal server error");
-	console.log(err)
+	console.log(err);
 });
 
 // Start listening.
-app.listen(PORT, () => {
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
+io.on("connection", onConnect);
+
+httpServer.listen(PORT, () => {
 	console.log(`Listening on http://localhost:${PORT}/`);
 });

@@ -1,60 +1,90 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import "./ChatWindow.css";
 import { ChatTextField } from "./ChatTextField.js";
 import { SpeechBubble } from "./SpeechBubble.js";
+import { WebSocketContext } from "../Context/WebSocketContext.js";
+
+function sendMessageUrl(chatId) {
+	return "http://localhost:5000/api/Chats/" + chatId + "/Messages/";
+}
+
+function getMessagesUrl(chatId) {
+	return "http://localhost:5000/api/Chats/" + chatId + "/Messages/";
+}
 
 export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
 	const [sendClicked, setSendClicked] = useState(false);
-	const [messages, setMessages] = useState(<div id="chatArea"></div>);
-
-	const activeChat = props.activeChat;
-
+	const [messages, setMessages] = useState([]);
+  
+	const webSocket = useContext(WebSocketContext);
+	
+	const {activeChat, token} = props;
+	
+	// Load the messages for the first time the chat opens.
+	useEffect(() => {
+		generateMessages(activeChat, setMessages, token);
+	}, [activeChat, token]);
+	
 	// Effect to update the messages in a given chat.
 	useEffect(() => {
-		//Check if and active chat has been selected
-		if (Object.keys(activeChat).length !== 0) {
-			const text = inputText;
-			const url = "http://localhost:5000/api/Chats/" + activeChat["chatId"] + "/Messages/";
-			const request = {
-				'method': 'POST',
-				'headers': {
-					'Content-Type': 'application/json',
-					'Authorization': props.token
-				},
-				'body': JSON.stringify({ "msg": text })
-			};
-			fetch(url, request)
-				.catch(() => {})
-				.finally(() => {
-					setSendClicked(false);
-					generateMessages(activeChat, setMessages, props.token);
-					setInputText("");
+		const url = sendMessageUrl(activeChat["chatId"]);
+		const request = generateMessageRequest(inputText, token);
+		
+		fetch(url, request)
+			.then((response) => {
+				if (response.ok)
+					return response.json();
+				throw new Error("Something when wrong.");
+			})
+			.then((response) => {
+				const {sender, content, created} = response;
+				webSocket.send({
+					sender: sender.username,
+					receiver: activeChat.username,
+					content: content,
+					timestamp: created,
 				});
-		}
-	}, [sendClicked, activeChat, inputText, props.token]);
-
+				sendMessage(content, created, messages, setMessages);
+			})
+			.catch((error) => {})
+			.finally(() => {
+				setSendClicked(false);
+				// generateMessages(activeChat, setMessages, token);
+				setInputText("");
+			});
+	}, [messages, sendClicked, activeChat, inputText, token, webSocket]);
+	
+	// In charge of receiving messages from the other user and updating the chat
+	// if that chat is open.
+	useEffect(() => {
+		if (!webSocket.value || webSocket.value.sender !== activeChat.username)
+			return;
+		const { content, timestamp } = webSocket.value;
+		webSocket.clearValue()
+		receiveMessage(content, timestamp, messages, setMessages);
+	}, [webSocket, webSocket.value, messages, activeChat]);
+	
 	// Effect to make sure that the scroll bar sticks to the bottom.
 	useEffect(() => {
 		const chatArea = document.getElementById("chatArea");
 		if (chatArea)
 			chatArea.scrollTo(0, chatArea.scrollHeight);
 	}, [messages]);
-
+	
+	// If there is no user selected, show a blank screen.
 	if (Object.keys(activeChat).length === 0) {
 		return <div id="emptyChatBox"></div>;
 	}
-
-	const chatImg = activeChat.profilePic;
+	
 	return (
-		<div id="chatBox">
-			<div id="title">
-				<img id="profileImg" src={chatImg} alt="Raccoon" />
-				<div id="userInfo">
-					<span id="name">{activeChat["username"]}</span>
-					<span id="status">Online</span>
-				</div>
+	<div id="chatBox">
+		<div id="title">
+			<img id="profileImg" src={activeChat.profilePic} alt="Raccoon" />
+			<div id="userInfo">
+				<span id="name">{activeChat.displayName}</span>
+				<span id="status">Online</span>
 			</div>
 			{messages}
 			<ChatTextField
@@ -64,7 +94,25 @@ export function ChatWindow(props) {
 				}}
 			/>
 		</div>
+		<div id="chatArea">{messages}</div>
+		<ChatTextField
+			setInputText={setInputText}
+			onSend={() => setSendClicked(true)}
+		/>
+	</div>
 	);
+}
+
+function generateMessageRequest(text, token) {
+	const request = {
+		'method': 'POST',
+		'headers': {
+			'Content-Type': 'application/json',
+			'Authorization': token
+		},
+		'body': JSON.stringify({"msg": text})
+	};
+	return request;
 }
 
 async function generateMessages(activeChat, setMessages, token) {
@@ -72,9 +120,8 @@ async function generateMessages(activeChat, setMessages, token) {
 		setMessages(<div id="chatArea"></div>);
 		return;
 	}
-
-	const url = "http://localhost:5000/api/Chats/" + activeChat.chatId + "/Messages/";
-	let res = null;
+  
+	const url = getMessagesUrl(activeChat.chatId);
 	try {
 		res = await fetch(url, {
 			'method': 'GET',
@@ -104,15 +151,45 @@ async function generateMessages(activeChat, setMessages, token) {
 	const messageComps = [];
 	for (let i = 0; i < messages.length; i++) {
 		const date = new Date(messages[i].timestamp);
+		const hours = date.getHours().toString().padStart(2, "0");
+		const minutes = date.getMinutes().toString().padStart(2, "0");
 		messageComps.push(
 			<SpeechBubble
 				direction={messages[i].direction}
-				timestamp={`${date.getHours()}:${date.getMinutes()}`}
+				timestamp={`${hours}:${minutes}`}
 				key={i.toString()}>
 				{messages[i].message}
 			</SpeechBubble>
 		);
 	}
+  
+	setMessages(messageComps);
+}
 
-	setMessages(<div id="chatArea">{messageComps}</div>);
+function sendMessage(content, timestamp, messages, setMessages) {
+	const date = new Date(timestamp);
+	const hours = date.getHours().toString().padStart(2, "0");
+	const minutes = date.getMinutes().toString().padStart(2, "0");
+	setMessages([...messages,
+		<SpeechBubble
+			direction="right"
+			timestamp={`${hours}:${minutes}`}
+			key={(messages.length - 1).toString()}>
+				{content}
+		</SpeechBubble>
+	]);
+}
+
+function receiveMessage(content, timestamp, messages, setMessages) {
+	const date = new Date(timestamp);
+	const hours = date.getHours().toString().padStart(2, "0");
+	const minutes = date.getMinutes().toString().padStart(2, "0");
+	setMessages([...messages,
+		<SpeechBubble
+			direction="left"
+			timestamp={`${hours}:${minutes}`}
+			key={(messages.length - 1).toString()}>
+				{content}
+		</SpeechBubble>
+	]);
 }

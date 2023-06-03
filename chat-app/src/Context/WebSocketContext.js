@@ -27,7 +27,7 @@ export function WebSocketProvider(props) {
 		
 		socket.on("connect", () => setIsReady(true));
 		socket.on("disconnect", () => setIsReady(false));
-		socket.on("receive", (payload) => setVal(payload) );
+		socket.on("receive", (payload) => setVal(payload));
 		
 		webSocket.current = socket;
 		

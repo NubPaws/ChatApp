@@ -57,11 +57,12 @@ export function ChatWindow(props) {
 	// In charge of receiving messages from the other user and updating the chat
 	// if that chat is open.
 	useEffect(() => {
-		if (!webSocket.value || webSocket.value.sender !== activeChat.username)
+		if (!webSocket.value)
 			return;
 		const { content, timestamp } = webSocket.value;
-		webSocket.clearValue()
-		receiveMessage(content, timestamp, messages, setMessages);
+		webSocket.clearValue();
+		if (webSocket.value.sender === activeChat.username)
+			receiveMessage(content, timestamp, messages, setMessages);
 		webSocket.setLastSent(timestamp);
 	}, [webSocket, webSocket.value, messages, activeChat]);
 	

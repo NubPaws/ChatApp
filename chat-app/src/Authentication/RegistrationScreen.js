@@ -13,6 +13,7 @@ export function RegistrationScreen(props) {
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [showConnectionErrorMessage, setShowConnectionErrorMessage] = useState(false);
 
     useEffect(() => {
         if (shouldRedirect === true) {
@@ -51,7 +52,7 @@ export function RegistrationScreen(props) {
                     bgColor="#007bff"
                     textColor="white"
                     borderWidth="1px"
-                    onClick={(event) => registerUser(event, setShowSuccessMessage, setShowErrorMessage)}>
+                    onClick={(event) => registerUser(event, setShowSuccessMessage, setShowErrorMessage, setShowConnectionErrorMessage)}>
                     Register
                 </Button>
             </form>
@@ -63,6 +64,9 @@ export function RegistrationScreen(props) {
             </Modal>
             <Modal title="Registration Failed" show={showErrorMessage} onClose={() => { setShowErrorMessage(false); }}>
                 <h5>Error while registering</h5>
+            </Modal>
+            <Modal title="Failed to connect to server" show={showConnectionErrorMessage} onClose={() => { setShowConnectionErrorMessage(false) }}>
+                <h5>Unfortunately, we failed to reach our server.</h5>
             </Modal>
 
         </div>

@@ -17,6 +17,7 @@ export function ChatWindow(props) {
 	const [inputText, setInputText] = useState("");
 	const [sendClicked, setSendClicked] = useState(false);
 	const [messages, setMessages] = useState([]);
+  
 	const webSocket = useContext(WebSocketContext);
 	
 	const {activeChat, token} = props;
@@ -85,6 +86,13 @@ export function ChatWindow(props) {
 				<span id="name">{activeChat.displayName}</span>
 				<span id="status">Online</span>
 			</div>
+			{messages}
+			<ChatTextField
+				setInputText={setInputText}
+				onSend={() => {
+					setSendClicked(true);
+				}}
+			/>
 		</div>
 		<div id="chatArea">{messages}</div>
 		<ChatTextField
@@ -112,17 +120,21 @@ async function generateMessages(activeChat, setMessages, token) {
 		setMessages(<div id="chatArea"></div>);
 		return;
 	}
-	
+  
 	const url = getMessagesUrl(activeChat.chatId);
-	const res = await fetch(url, {
-		'method': 'GET',
-		'headers': {
-			'Content-Type': 'application/json',
-			'Authorization': token
-		},
-	});
+	try {
+		res = await fetch(url, {
+			'method': 'GET',
+			'headers': {
+				'Content-Type': 'application/json',
+				'Authorization': token
+			},
+		});
+	} catch (error) {
+		return;
+	}
 	const messagesJson = await res.json();
-	
+
 	// Convert the JSON into a message array.
 	const messages = messagesJson.map(msg => {
 		return {
@@ -131,10 +143,10 @@ async function generateMessages(activeChat, setMessages, token) {
 			direction: (msg.sender.username === activeChat.username) ? "left" : "right",
 		};
 	});
-	
+
 	// Sort messages by the date.
 	messages.sort((a, b) => a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0);
-	
+
 	// Add the elements to the array.
 	const messageComps = [];
 	for (let i = 0; i < messages.length; i++) {
@@ -146,11 +158,11 @@ async function generateMessages(activeChat, setMessages, token) {
 				direction={messages[i].direction}
 				timestamp={`${hours}:${minutes}`}
 				key={i.toString()}>
-					{messages[i].message}
+				{messages[i].message}
 			</SpeechBubble>
 		);
 	}
-	
+  
 	setMessages(messageComps);
 }
 

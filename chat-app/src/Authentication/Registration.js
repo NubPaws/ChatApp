@@ -1,6 +1,6 @@
 import { handleUsername, handlePassword, confirmPassword, handleDisplayName } from "./Validation.js";
 
-async function registerUser(event, setShowSuccessMessage, setShowErrorMessage) {
+async function registerUser(event, setShowSuccessMessage, setShowErrorMessage, setShowConnectionErrorMessage) {
     event.preventDefault();
     // Checking for registration success
     if (handleUsername() && handlePassword() && confirmPassword() && handleDisplayName()) {
@@ -19,14 +19,21 @@ async function registerUser(event, setShowSuccessMessage, setShowErrorMessage) {
             "profilePic": base64ProfileImage
         };
 
-        const res = await fetch(document.getElementById("registrationForm").action, {
-            'method': 'POST',
-            'headers': {
-                'Content-Type': 'application/json',
-            },
-            'body': JSON.stringify(userData)
+        let res = null;
+        try {
+            res = await fetch(document.getElementById("registrationForm").action, {
+                'method': 'POST',
+                'headers': {
+                    'Content-Type': 'application/json',
+                },
+                'body': JSON.stringify(userData)
+            })
+        } catch (error) {
+            if (error instanceof TypeError) {
+                setShowConnectionErrorMessage(true);
+                return;
+            }
         }
-        )
         if (res.status !== 200) {
             setShowErrorMessage(true);
         }

@@ -1,22 +1,21 @@
 import { Button } from "../UIElements/Button.js";
 import { ContactList } from "./ContactList.js";
 import { ChatWindow } from "./ChatWindow.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatScreen.css";
 import { WebSocketProvider } from "../Context/WebSocketContext.js";
 
 export function ChatScreen(props) {
 	const navigate = useNavigate();
-	useEffect(() => {
-		if (Object.keys(props.userCredentials).length === 0) {
-			navigate("/login");
-		}
-	});
+	const [activeChat, setActiveChat] = useState({});
+	if (Object.keys(props.userCredentials).length === 0) {
+		props.setUserCredentials({});
+		return navigate("/login");
+	}
 	
 	const img = props.userCredentials["profilePic"];
 
-	const [activeChat, setActiveChat] = useState({});
 
 	function logout(setUserCredentials) {
 		setUserCredentials({});

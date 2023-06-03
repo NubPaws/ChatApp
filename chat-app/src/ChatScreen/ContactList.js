@@ -11,30 +11,41 @@ export function ContactList(props) {
 	useEffect(() => {
 		async function fetchChats() {
 			const url = "http://localhost:5000/api/Chats"
-			const res = await fetch(url, {
-				'method': 'GET',
-				'headers': {
-					'Content-Type': 'application/json',
-					'Authorization': props.token
+			let res = null;
+			try {
+				res = await fetch(url, {
+					'method': 'GET',
+					'headers': {
+						'Content-Type': 'application/json',
+						'Authorization': props.token
+					}
+				});
+			} catch (error) {
+				if (error instanceof TypeError) {
 				}
-			});
-			const json = await res.json();
-			setChats(json);
+			}
+
+			if (res !== null) {
+				const json = await res.json();
+				setChats(json);
+			}
 		}
 		fetchChats();
 	}, [contactToAdd, props.token]);
 
 	useEffect(() => {
 		async function addChat(username) {
-			const url = "http://localhost:5000/api/Chats"
-			await fetch(url, {
-				'method': 'POST',
-				'headers': {
-					'Content-Type': 'application/json',
-					'Authorization': props.token
-				},
-				'body': JSON.stringify({ username })
-			});
+			try {
+				const url = "http://localhost:5000/api/Chats"
+				await fetch(url, {
+					'method': 'POST',
+					'headers': {
+						'Content-Type': 'application/json',
+						'Authorization': props.token
+					},
+					'body': JSON.stringify({ username })
+				});
+			} catch (error) {}
 		}
 		if (contactToAdd !== "") {
 			addChat(contactToAdd);

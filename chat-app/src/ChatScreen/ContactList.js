@@ -87,7 +87,7 @@ export function ContactList(props) {
 			className={selected === i ? "selectedCard" : ""} />
 	}
 
-	function generateContacts(props) {
+	function generateContacts() {
 		const contactsList = [];
 
 		for (const index in chats) {

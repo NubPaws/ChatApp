@@ -1,5 +1,4 @@
 import { Socket } from "socket.io";
-import { isEmpty } from "./Validator.js";
 
 const userConnections = new Map();
 

@@ -4,6 +4,7 @@ import "./ChatWindow.css";
 import { ChatTextField } from "./ChatTextField.js";
 import { SpeechBubble } from "./SpeechBubble.js";
 import { WebSocketContext } from "../Context/WebSocketContext.js";
+import { createTimeString } from "../Utilities/DatesHandler.js";
 
 function sendMessageUrl(chatId) {
 	return "http://localhost:5000/api/Chats/" + chatId + "/Messages/";
@@ -144,13 +145,10 @@ async function generateMessages(activeChat, setMessages, token) {
 	// Add the elements to the array.
 	const messageComps = [];
 	for (let i = 0; i < messages.length; i++) {
-		const date = new Date(messages[i].timestamp);
-		const hours = date.getHours().toString().padStart(2, "0");
-		const minutes = date.getMinutes().toString().padStart(2, "0");
 		messageComps.push(
 			<SpeechBubble
 				direction={messages[i].direction}
-				timestamp={`${hours}:${minutes}`}
+				timestamp={createTimeString(messages[i].timestamp)}
 				key={i.toString()}>
 				{messages[i].message}
 			</SpeechBubble>

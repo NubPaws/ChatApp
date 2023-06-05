@@ -4,11 +4,14 @@ import { useContext, useEffect, useState } from "react";
 
 import "./Contact.css";
 import { WebSocketContext } from "../Context/WebSocketContext.js";
+import { compareDates, createDateString } from "../Utilities/DatesHandler.js";
 
 export function ContactList(props) {
-	const [chats, setChats] = useState({});
+	const [chats, setChats] = useState([]);
+	const [unreadChats, setUnreadChats] = useState([]);
 	const [contactToAdd, setContactToAdd] = useState("");
 	const [selected, setSelected] = useState(undefined);
+	const { setActiveChat } = props;
 	
 	const webSocket = useContext(WebSocketContext);
 	
@@ -28,11 +31,16 @@ export function ContactList(props) {
 
 			if (res !== null) {
 				const json = await res.json();
-				setChats(json);
+				
+				const contacts = generateContacts(
+					json, [selected, setSelected], setActiveChat, [unreadChats, setUnreadChats]
+				);
+				
+				setChats(contacts);
 			}
 		}
 		fetchChats();
-	}, [contactToAdd, props.token, webSocket.lastSent]);
+	}, [contactToAdd, props.token, selected, setSelected, setActiveChat, unreadChats, setUnreadChats]);
 
 	useEffect(() => {
 		async function addChat(username) {
@@ -54,59 +62,24 @@ export function ContactList(props) {
 		setContactToAdd("");
 	}, [contactToAdd, props.token]);
 	
-	function createContact(username, displayName, image, time, i, chatId) {
-		let dateStr;
-		if (time !== "") {
-			const padder = (n) => n.toString().padStart(2, '0');
-			const date = new Date(time);
-			const hm = `${padder(date.getHours())}:${padder(date.getMinutes())}`;
-			const day = padder(date.getDate());
-			// The count starts at zero
-			const month = padder(date.getMonth() + 1);
-			const year = date.getFullYear();
-			dateStr = `${hm} ${day}/${month}/${year}`;
-		} else {
-			dateStr = "";
+	useEffect(() => {
+		if (!webSocket.value) {
+			return;
 		}
-
-		return <Contact
-			username={username}
-			displayName={displayName}
-			image={image}
-			lastMessage={dateStr}
-			key={i.toString()}
-			onClick={() => {
-				setSelected(i);
-				props.setActiveChat({
-					"username": username,
-					"displayName": displayName,
-					"profilePic": image,
-					"chatId": chatId
-				});
-			}}
-			className={selected === i ? "selectedCard" : ""} />
-	}
-
-	function generateContacts() {
-		const contactsList = [];
-
-		for (const index in chats) {
-			let chat = chats[index];
-			let time;
-			if (chat.lastMessage !== undefined && chat.lastMessage !== null) {
-				time = chat.lastMessage.created;
-			} else {
-				time = "";
-			}
-			const contact = createContact(
-				chat.user.username, chat.user.displayName, chat.user.profilePic,
-				time, Math.floor(Math.random() * 500), chat.id
-			);
-			contactsList.push(contact);
+		const { sender, timestamp } = webSocket.value;
+		
+		// Update the timestamp.
+		const contacts = [...chats];
+		const index = contacts.findIndex(obj => obj.username === sender);
+		contacts[index].time = timestamp;
+		setChats(contacts);
+		
+		// Update the unread chats set.
+		if (sender !== selected && !unreadChats.includes(sender)) {
+			setUnreadChats([...unreadChats, sender]);
 		}
-		return contactsList;
-	}
-
+	}, [webSocket.value, chats, selected, unreadChats, setUnreadChats]);
+	
 	return (
 		<div id="contactList">
 			<UserProfile
@@ -115,8 +88,61 @@ export function ContactList(props) {
 				setContactToAdd={setContactToAdd}
 				token={props.token} />
 			<div id="listOfContacts">
-				{generateContacts()}
+				{chats.map(contact => <Contact
+					username={contact.username}
+					displayName={contact.displayName + (unreadChats.includes(contact.username) ? " 🟢" : "")}
+					image={contact.image}
+					lastMessage={createDateString(contact.time)}
+					key={contact.key}
+					onClick={contact.onClick}
+					className={contact.className}
+				/>)}
 			</div>
 		</div>
 	);
+}
+
+function generateContacts(chatsJson, selectedHook, setActiveChat, unreadChatsHook) {
+	const contactsList = [];
+	
+	for (const index in chatsJson) {
+		const chat = chatsJson[index];
+		const time = (chat.lastMessage != null) ? chat.lastMessage.created : "";
+		contactsList.push(
+			createContact(chat.user, time, chat.id, selectedHook, setActiveChat, unreadChatsHook)
+		);
+	}
+	
+	contactsList.sort((a, b) => compareDates(a.time, b.time));
+	
+	return contactsList;
+}
+
+function createContact(user, time, chatId, selectedHook, setActiveChat, unreadChatsHook) {
+	const { username, displayName, profilePic } = user;
+	const [ selected, setSelected ] = selectedHook;
+	const [ unreadChats, setUnreadChats ] = unreadChatsHook;
+	return {
+		username: username,
+		displayName: displayName,
+		image: profilePic,
+		time: time,
+		key: username,
+		onClick: () => {
+			setSelected(username);
+			setActiveChat({
+				"username": username,
+				"displayName": displayName,
+				"profilePic": profilePic,
+				"chatId": chatId
+			});
+			if (unreadChats.includes(username)) {
+				const unread = [...unreadChats];
+				const index = unread.indexOf(username);
+				unread.splice(index, 1);
+				setUnreadChats(unread);
+			}
+		},
+		className: selected === username ? "selectedCard" : "",
+	};
 }

@@ -27,8 +27,8 @@ The server uses the `JWT_KEY` and `PORT` variables. In cases when `.env` file is
 ## Running the backend server
 Afterwards you can run the server that connects to the database using `npm run server` (or you can use `node server.js` if you are not interested in running the server using nodemon).
 
-## Running the chat application
-To run the chat application you'll need to `cd` into the `chat-app` folder and run `npm run build`. Copy the contents of the `chat-app/build` to `backed/public` app. Afterwards, connect to the server using `http://localhost:5000/`. <br/> Alternatively, You may run `npm run start` from the `chat-app` folder by accessing  `http://localhost:3000/`.
+## Running the chat application alone
+To run the chat application you'll need to `cd` into the `chat-app` folder and run `npm start` to launch the React application, it will automatically open up in your default browser. Make sure to run the backend server first.
 
 # About
 This project attempts to make a chat application that will be accessible on multiple platforms:

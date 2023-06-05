@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 })
 
 // Load the routes.
-const site = express.static("../chat-app/build/");
+const site = express.static("public/");
 app.use("/", site);
 app.use("/chat", site);
 app.use("/login", site);

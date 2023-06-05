@@ -21,5 +21,7 @@ chat-app/yarn-debug.log*
 chat-app/yarn-error.log*
 
 backend/.env
+backend/public
+chat-app/build
 task-server/
 database/

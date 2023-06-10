@@ -1,5 +1,6 @@
-package com.example.androidapp.chatscreen;
+package com.example.androidapp.chats;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 public class ContactCard {
@@ -17,7 +18,7 @@ public class ContactCard {
     }
 
     public int getId() {
-        return id;
+        return 0;
     }
 
     public void setId(int id) {
@@ -40,8 +41,10 @@ public class ContactCard {
         this.displayName = displayName;
     }
 
-    public Date getLastMessage() {
-        return lastMessage;
+    public String getLastMessage() {
+        String time = DateFormat.getDateTimeInstance().format(lastMessage);
+
+        return time;
     }
 
     public void setLastMessage(Date lastMessage) {

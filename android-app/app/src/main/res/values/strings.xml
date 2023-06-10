@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="display_name_tmp">Display Name Here</string>
+    <string name="last_message_tmp">Last Message Date Here</string>
 </resources>

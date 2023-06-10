@@ -1,4 +1,4 @@
-package com.example.androidapp.chatscreen;
+package com.example.androidapp.chats;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,4 +13,5 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
     }
+
 }

@@ -1,5 +1,6 @@
-package com.example.androidapp.chatscreen;
+package com.example.androidapp.chats;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,7 @@ public class ContactsAdapter extends BaseAdapter {
 
     private List<ContactCard> cards;
 
-    private class ViewHolder {
-        
+    private static class ViewHolder {
         ImageView profileImage;
         TextView displayName;
         TextView lastMessage;
@@ -47,13 +47,22 @@ public class ContactsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.contact_card_view, parent, false);
 
-            ViewHolder cardHolder = new ViewHolder();
-            cardHolder.profileImage = convertView.findViewById(R.id.contact_profile_pic);
-            cardHolder.displayName = convertView.findViewById(R.id.display_name);
-            cardHolder.lastMessage = convertView.findViewById(R.id.last_message);
+            ViewHolder viewHolder = new ViewHolder();
+            viewHolder.profileImage = convertView.findViewById(R.id.contact_profile_pic_container)
+                    .findViewById(R.id.contact_profile_pic);
+            viewHolder.displayName = convertView.findViewById(R.id.display_name);
+            viewHolder.lastMessage = convertView.findViewById(R.id.last_message);
+
+            convertView.setTag(viewHolder);
         }
 
-        return null;
+        ContactCard cc = cards.get(position);
+        ViewHolder viewHolder = (ViewHolder)convertView.getTag();
+        viewHolder.profileImage.setImageResource(cc.getProfileImage());
+        viewHolder.displayName.setText(cc.getDisplayName());
+        viewHolder.lastMessage.setText(cc.getLastMessage());
+
+        return convertView;
     }
 
 }

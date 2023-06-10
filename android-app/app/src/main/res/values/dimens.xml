@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="profile_pic_size">64dp</dimen>
-    <dimen name="display_name_text_size">8pt</dimen>
-    <dimen name="last_message_text_size">6pt</dimen>
+    <dimen name="display_name_text_size">16dp</dimen>
+    <dimen name="last_message_text_size">12dp</dimen>
     <dimen name="contact_card_margin">8dp</dimen>
     <dimen name="contact_list_divider_height">3dp</dimen>
+    <dimen name="bar_elevation">10dp</dimen>
+    <dimen name="action_bar_height">48dp</dimen>
 </resources>

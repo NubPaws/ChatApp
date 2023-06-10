@@ -1,15 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".chats.ContactListActivity">
 
-    <ListView
-        android:id="@+id/contact_list_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="@dimen/contact_list_divider_height"/>
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/contact_list_action_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:elevation="@dimen/bar_elevation"
+            android:background="@color/white"
+            android:weightSum="10">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:clickable="true"
+                android:contentDescription="@string/logout_img_btn_content_desc"
+                android:focusable="true"
+                android:minHeight="@dimen/action_bar_height"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_left_arrow" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contact_list_title"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:layout_weight="7"/>
+
+            <!-- This TextView is here to center the TextView above this one.
+            We use the weights in the LinearLayout to do it. -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/contact_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:dividerHeight="@dimen/contact_list_divider_height"
+            android:layout_marginStart="@dimen/contact_card_margin"
+            android:layout_marginEnd="@dimen/contact_card_margin"
+            app:layout_constraintTop_toBottomOf="@+id/contact_list_action_bar_container"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/contact_add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_add_img"
+        android:contentDescription="@string/add_contact_btn_content_desc"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

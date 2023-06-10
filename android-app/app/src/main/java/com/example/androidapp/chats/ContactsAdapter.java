@@ -48,8 +48,7 @@ public class ContactsAdapter extends BaseAdapter {
                     .inflate(R.layout.contact_card_view, parent, false);
 
             ViewHolder viewHolder = new ViewHolder();
-            viewHolder.profileImage = convertView.findViewById(R.id.contact_profile_pic_container)
-                    .findViewById(R.id.contact_profile_pic);
+            viewHolder.profileImage = convertView.findViewById(R.id.contact_profile_pic);
             viewHolder.displayName = convertView.findViewById(R.id.display_name);
             viewHolder.lastMessage = convertView.findViewById(R.id.last_message);
 

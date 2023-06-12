@@ -18,7 +18,8 @@
             android:layout_width="@dimen/profile_pic_size"
             android:layout_height="@dimen/profile_pic_size"
             android:src="@mipmap/ic_launcher_round"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"
+            android:contentDescription="@string/card_view_image_content_desc"/>
 
     </androidx.cardview.widget.CardView>
 

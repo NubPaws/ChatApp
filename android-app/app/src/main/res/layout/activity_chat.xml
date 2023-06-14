@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".chats.ChatActivity">
+
+    <LinearLayout
+        android:id="@+id/chat_screen_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_height"
+        android:orientation="horizontal"
+        android:elevation="@dimen/bar_elevation"
+        android:background="@color/white">
+
+        <ImageButton
+            android:layout_width="@dimen/action_bar_height"
+            android:layout_height="@dimen/action_bar_height"
+            android:src="@drawable/ic_left_arrow"
+            android:background="@android:color/transparent"
+            android:scaleType="fitStart"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/logout_img_btn_content_desc"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/action_bar_height"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:contentDescription="@string/logout_img_btn_content_desc"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_launcher_background" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/chat_user_display_name"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
+
+    <!-- The layout width is here in order for the layout to take as much
+     of the available space that it will have. That way we can just
+     configure the sire of the above layout and the bottom layout.
+     Meaning we can configure the height of the action bar and the height
+     of the chat bar and we are basically done. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_chat_screen"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_messages_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_message_area_height"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/chat_et_hint"
+            android:importantForAutofill="no" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/send_btn_side_padding"
+            android:paddingEnd="@dimen/send_btn_side_padding"
+            android:src="@drawable/ic_send"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/send_btn_content_desc"/>
+
+    </LinearLayout>
+
+</LinearLayout>

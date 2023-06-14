@@ -54,9 +54,9 @@
 
     </LinearLayout>
 
-    <!-- The layput width is here in order for the layout to take as much
+    <!-- The layout width is here in order for the layout to take as much
      of the available space that it will have. That way we can just
-     cnfigure the sire of the above layout and the bottom layout.
+     configure the sire of the above layout and the bottom layout.
      Meaning we can configure the height of the action bar and the height
      of the chat bar and we are basically done. -->
     <LinearLayout
@@ -64,10 +64,12 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:background="@drawable/bg_chat_screen"
-
         android:layout_weight="1">
 
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_messages_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -81,7 +83,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="@string/chat_et_hint" />
+            android:hint="@string/chat_et_hint"
+            android:importantForAutofill="no" />
 
         <ImageButton
             android:layout_width="wrap_content"

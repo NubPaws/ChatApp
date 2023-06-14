@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General app dimensions -->
+    <dimen name="bar_elevation">10dp</dimen>
+    <dimen name="action_bar_height">48dp</dimen>
+
+    <!-- Contact view dimensions including the contact card. -->
     <dimen name="profile_pic_size">64dp</dimen>
     <dimen name="display_name_text_size">18sp</dimen>
     <dimen name="last_message_text_size">14sp</dimen>
     <dimen name="contact_card_margin">8dp</dimen>
     <dimen name="contact_list_divider_height">3dp</dimen>
-    <dimen name="bar_elevation">10dp</dimen>
-    <dimen name="action_bar_height">48dp</dimen>
+
+    <!-- Chat view dimensions -->
     <dimen name="chat_message_area_height">48dp</dimen>
     <dimen name="send_btn_side_padding">16dp</dimen>
+    <dimen name="text_message_font_size">18sp</dimen>
 </resources>

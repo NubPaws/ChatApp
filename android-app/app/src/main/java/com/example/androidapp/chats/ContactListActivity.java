@@ -1,12 +1,16 @@
 package com.example.androidapp.chats;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -36,6 +40,8 @@ public class ContactListActivity extends AppCompatActivity implements AbsListVie
 
         fab = findViewById(R.id.contact_add_btn);
         contactListView.setOnScrollListener(this);
+
+        startActivity(new Intent(ContactListActivity.this, ChatActivity.class));
     }
 
     private List<ContactCard> generateContacts() {
@@ -48,9 +54,7 @@ public class ContactListActivity extends AppCompatActivity implements AbsListVie
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        
-    }
+    public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {

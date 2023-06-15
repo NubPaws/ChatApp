@@ -10,4 +10,7 @@
     <string name="send_btn_content_desc">Send</string>
     <string name="chat_et_hint">Enter your message...</string>
     <string name="chat_profile_pic_content_desc">Profile Picture</string>
+    <string name="add_contact_enter_name_hint">Enter contact name...</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
 </resources>

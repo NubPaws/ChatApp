@@ -24,6 +24,7 @@
             android:weightSum="10">
 
             <ImageButton
+                android:id="@+id/contact_list_back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

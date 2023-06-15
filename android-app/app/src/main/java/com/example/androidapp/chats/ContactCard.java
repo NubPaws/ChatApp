@@ -10,11 +10,13 @@ public class ContactCard {
     private int profileImage;
     private String displayName;
     private Date lastMessage;
+    private String username;
 
-    public ContactCard(int profileImage, String displayName, Date lastMessage) {
+    public ContactCard(int profileImage, String displayName, Date lastMessage, String username) {
         this.profileImage = profileImage;
         this.displayName = displayName;
         this.lastMessage = lastMessage;
+        this.username = username;
     }
 
     public int getId() {
@@ -42,13 +44,19 @@ public class ContactCard {
     }
 
     public String getLastMessage() {
-        String time = DateFormat.getDateTimeInstance().format(lastMessage);
-
-        return time;
+        return DateFormat.getDateTimeInstance().format(lastMessage);
     }
 
     public void setLastMessage(Date lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

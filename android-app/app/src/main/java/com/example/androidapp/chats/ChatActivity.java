@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.androidapp.R;
@@ -33,6 +34,9 @@ public class ChatActivity extends AppCompatActivity {
 
         adapter = new ChatMessageAdapter(messages);
         recyclerView.setAdapter(adapter);
+
+        ImageButton backButton = findViewById(R.id.chat_screen_back_button);
+        backButton.setOnClickListener(v -> finish());
     }
 
     private List<ChatMessage> generateChatMessages() {

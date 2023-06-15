@@ -18,7 +18,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
-        intent.putExtra(JWT_TOKEN_KEY, "token_goes_here_from_login");
+        // TMP Token that is used only for testing :D
+        intent.putExtra(JWT_TOKEN_KEY, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJhbWkiLCJpYXQiOjE2ODY4NDY2NjZ9.-nkW9lAbBX30fuBZm1RD0z8cK8yD2C2VCnkZEeB04MU");
         startActivity(intent);
     }
 }

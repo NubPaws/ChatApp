@@ -1,12 +1,16 @@
 package com.example.androidapp.chats;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ContactListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
+public class ContactListActivity extends AppCompatActivity
+        implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+
+    // chosen at random.
+    private static final int ADD_CONTACT_REQUEST = 0x5;
 
     private String jwtToken;
 
@@ -30,31 +38,51 @@ public class ContactListActivity extends AppCompatActivity implements AbsListVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
-        this.jwtToken = (String)savedInstanceState.get(MainActivity.JWT_TOKEN_KEY);
+        // Get that sweet sweet JWT token as we love it.
+        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
 
-        ListView contactListView = findViewById(R.id.contact_list_view);
+        // Load the data for the contacts, also load up the adapter.
         contacts = generateContacts();
-        final ContactsAdapter adapter = new ContactsAdapter(contacts);
-        contactListView.setAdapter(adapter);
+        ContactsAdapter contactsAdapter = new ContactsAdapter(contacts);
 
-        contactListView.setOnItemClickListener((parent, view, pos, id) -> {
-            ContactCard cc = contacts.get(pos);
-            Toast.makeText(this, cc.getDisplayName(), Toast.LENGTH_SHORT).show();
+        // The contact list view's scroll listener will be using the fab so we want to
+        // have it created already.
+        fab = findViewById(R.id.contact_add_btn);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddContactActivity.class);
+            // TODO
+            // https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative
         });
 
-        fab = findViewById(R.id.contact_add_btn);
+        // Setup the contacts' list view.
+        ListView contactListView = findViewById(R.id.contact_list_view);
+        contactListView.setAdapter(contactsAdapter);
+        contactListView.setOnItemClickListener(this);
         contactListView.setOnScrollListener(this);
 
-        startActivity(new Intent(ContactListActivity.this, ChatActivity.class));
+        // Make the back button work :D.
+        ImageButton backBtn = findViewById(R.id.contact_list_back_button);
+        backBtn.setOnClickListener(v -> finish());
+
+        // Make our contact list updatable.
+        SwipeRefreshLayout swiper = findViewById(R.id.swiper_layout);
+        swiper.setOnRefreshListener(this);
     }
 
     private List<ContactCard> generateContacts() {
         List<ContactCard> cards = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++)
-            cards.add(new ContactCard(R.drawable.ic_launcher_background, "A" + i, new Date()));
+        for (int i = 0; i < 25; i++)
+            cards.add(new ContactCard(R.drawable.ic_launcher_background, "A" + i, new Date(), "A" + i));
 
         return cards;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_CONTACT_REQUEST &&)
     }
 
     @Override
@@ -66,5 +94,19 @@ public class ContactListActivity extends AppCompatActivity implements AbsListVie
             fab.hide();
         else
             fab.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ContactCard cc = contacts.get(position);
+        Intent intent = new Intent(ContactListActivity.this, ChatActivity.class);
+        intent.putExtra("contact", cc.getUsername());
+        intent.putExtra(MainActivity.JWT_TOKEN_KEY, jwtToken);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRefresh() {
+        // TODO: Add the updating of the characters.
     }
 }

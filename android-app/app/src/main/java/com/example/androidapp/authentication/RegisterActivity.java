@@ -1,9 +1,6 @@
-package com.example.androidapp;
+package com.example.androidapp.authentication;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,11 +10,16 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.example.androidapp.R;
 
 import java.io.IOException;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -55,6 +57,22 @@ public class RegisterActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             imagePickerActivity.launch(intent);
         });
-    }
 
+        Button btnRegister = findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(view -> {
+            EditText etUsername = findViewById(R.id.etUsername);
+            EditText etPassword = findViewById(R.id.etPassword);
+            EditText etConfirmPassword = findViewById(R.id.etConfirmPassword);
+            EditText etDisplayName = findViewById(R.id.etDisplayName);
+
+            if (Validation.validateUsername(etUsername)
+                    && Validation.validatePassword(etPassword)
+                    && Validation.validatePassword(etConfirmPassword)
+                    && Validation.confirmPasswordsMatch(etPassword, etConfirmPassword) &&
+                    Validation.validateDisplayName(etDisplayName)
+                    && Validation.validateProfilePicture(imPreviewPicture, this.getApplicationContext())) {
+
+            }
+        });
+    }
 }

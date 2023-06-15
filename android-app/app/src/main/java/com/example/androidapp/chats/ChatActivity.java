@@ -24,7 +24,10 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         RecyclerView recyclerView = findViewById(R.id.chat_messages_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        // This will make the messages be anchored to the bottom of the page.
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
 
         messages = generateChatMessages();
 

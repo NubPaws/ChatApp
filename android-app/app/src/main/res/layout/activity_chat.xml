@@ -24,7 +24,7 @@
             android:scaleType="fitStart"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/logout_img_btn_content_desc"/>
+            android:contentDescription="@string/chat_profile_pic_content_desc"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="@dimen/action_bar_height"
@@ -37,13 +37,14 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="48dp"
                 android:background="@color/white"
                 android:contentDescription="@string/logout_img_btn_content_desc"
                 android:clickable="true"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/ic_launcher_background"
+                tools:ignore="VisualLintBounds" />
 
         </androidx.cardview.widget.CardView>
 
@@ -61,19 +62,32 @@
      configure the sire of the above layout and the bottom layout.
      Meaning we can configure the height of the action bar and the height
      of the chat bar and we are basically done. -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:background="@drawable/bg_chat_screen"
         android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_chat_screen"
+            android:scaleType="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_messages_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,6 +99,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:hint="@string/chat_et_hint"
             android:importantForAutofill="no" />
 

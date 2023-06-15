@@ -20,6 +20,8 @@ import java.util.List;
 
 public class ContactListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
+    private String jwtToken;
+
     private List<ContactCard> contacts;
     private FloatingActionButton fab;
 
@@ -27,6 +29,8 @@ public class ContactListActivity extends AppCompatActivity implements AbsListVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
+
+        this.jwtToken = (String)savedInstanceState.get(MainActivity.JWT_TOKEN_KEY);
 
         ListView contactListView = findViewById(R.id.contact_list_view);
         contacts = generateContacts();

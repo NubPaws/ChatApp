@@ -1,4 +1,4 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.contacts;
 
 import android.view.LayoutInflater;
 import android.view.View;

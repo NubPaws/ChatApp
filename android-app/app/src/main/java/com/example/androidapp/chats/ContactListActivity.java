@@ -1,12 +1,17 @@
 package com.example.androidapp.chats;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -16,11 +21,17 @@ import android.widget.Toast;
 
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
+import com.example.androidapp.chats.contacts.AddContactActivity;
+import com.example.androidapp.chats.contacts.ContactCard;
+import com.example.androidapp.chats.contacts.ContactsAdapter;
+import com.example.androidapp.chats.database.AppDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ContactListActivity extends AppCompatActivity
         implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -30,8 +41,10 @@ public class ContactListActivity extends AppCompatActivity
 
     private String jwtToken;
 
+    private AppDB db;
     private List<ContactCard> contacts;
     private FloatingActionButton fab;
+    private SwipeRefreshLayout swiper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +54,23 @@ public class ContactListActivity extends AppCompatActivity
         // Get that sweet sweet JWT token as we love it.
         jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
 
-        // Load the data for the contacts, also load up the adapter.
-        contacts = generateContacts();
-        ContactsAdapter contactsAdapter = new ContactsAdapter(contacts);
-
-        // The contact list view's scroll listener will be using the fab so we want to
-        // have it created already.
-        fab = findViewById(R.id.contact_add_btn);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddContactActivity.class);
-            // TODO
-            // https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative
-        });
+        initAddContactFAB();
 
         // Setup the contacts' list view.
+        // Load the data for the contacts, also load up the adapter.
         ListView contactListView = findViewById(R.id.contact_list_view);
-        contactListView.setAdapter(contactsAdapter);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "ChatDB").build();
+            contacts = db.contactCardDao().index();
+            handler.post(() -> {
+                contactListView.setAdapter(new ContactsAdapter(contacts));
+            });
+        });
+
         contactListView.setOnItemClickListener(this);
         contactListView.setOnScrollListener(this);
 
@@ -65,24 +79,48 @@ public class ContactListActivity extends AppCompatActivity
         backBtn.setOnClickListener(v -> finish());
 
         // Make our contact list updatable.
-        SwipeRefreshLayout swiper = findViewById(R.id.swiper_layout);
+        swiper = findViewById(R.id.swiper_layout);
         swiper.setOnRefreshListener(this);
+
     }
 
     private List<ContactCard> generateContacts() {
         List<ContactCard> cards = new ArrayList<>();
 
         for (int i = 0; i < 25; i++)
-            cards.add(new ContactCard(R.drawable.ic_launcher_background, "A" + i, new Date(), "A" + i));
+            cards.add(new ContactCard(
+                    "A" + i,
+                    R.drawable.ic_launcher_background,
+                    "A" + i,
+                    new Date().toString()
+            ));
 
         return cards;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void initAddContactFAB() {
+        // Create an activity result launcher so that we can get the information back
+        // from the user once the activity closes.
+        ActivityResultLauncher<Intent> addContactActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data == null)
+                            return;
 
-        if (requestCode == ADD_CONTACT_REQUEST &&)
+                        String username = data.getStringExtra("username");
+                        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // The contact list view's scroll listener will be using the fab so we want to
+        // have it created already.
+        fab = findViewById(R.id.contact_add_btn);
+        fab.setOnClickListener(v -> {
+            addContactActivityLauncher.launch(new Intent(this, AddContactActivity.class));
+        });
     }
 
     @Override
@@ -107,6 +145,10 @@ public class ContactListActivity extends AppCompatActivity
 
     @Override
     public void onRefresh() {
+        Toast.makeText(this, "Refreshing... [not really though]", Toast.LENGTH_SHORT).show();
+        // Stop the refreshing animation.
+        swiper.setRefreshing(false);
         // TODO: Add the updating of the characters.
     }
+
 }

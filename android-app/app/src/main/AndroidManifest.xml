@@ -13,7 +13,7 @@
         android:theme="@style/Theme.AndroidApp"
         tools:targetApi="31">
         <activity
-            android:name=".chats.AddContactActivity"
+            android:name=".chats.contacts.AddContactActivity"
             android:exported="false" />
         <activity
             android:name=".chats.ContactListActivity"

@@ -1,4 +1,4 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.contacts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 
 public class AddContactActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class AddContactActivity extends AppCompatActivity {
             }
             Intent intent = new Intent();
             intent.putExtra("username", username);
-            setResult(RESULT_CANCELED, intent);
+            setResult(RESULT_OK, intent);
             finish();
         });
 

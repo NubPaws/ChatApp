@@ -63,4 +63,8 @@ public class ContactsAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void setContacts(List<ContactCard> cards) {
+        this.cards = cards;
+    }
+
 }

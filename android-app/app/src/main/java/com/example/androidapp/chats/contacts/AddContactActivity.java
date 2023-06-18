@@ -62,11 +62,7 @@ public class AddContactActivity extends AppCompatActivity {
 
             ContactCard card = new ContactCard(username, R.drawable.ic_add_img, username, new Date().toString());
             List<ContactCard> cards = contactsDao.index();
-            if (cards == null || cards.size() == 0) {
-                contactsDao.insert(card);
-            } else {
-                contactsDao.update(card);
-            }
+            contactsDao.insert(card);
 
             handler.post(this::finish);
         });

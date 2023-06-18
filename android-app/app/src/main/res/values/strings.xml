@@ -3,7 +3,7 @@
     <string name="display_name_tmp">Display Name Here</string>
     <string name="last_message_tmp">Last Message Date Here</string>
     <string name="add_contact_btn_content_desc">Add Contact</string>
-    <string name="contact_list_title">Chat App</string>
+    <string name="contact_list_title">Contact List</string>
     <string name="logout_img_btn_content_desc">Logout</string>
     <string name="chat_user_display_name">Display Name</string>
     <string name="card_view_image_content_desc">User\'s profile image.</string>

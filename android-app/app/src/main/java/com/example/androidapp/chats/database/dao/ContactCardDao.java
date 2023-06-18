@@ -22,7 +22,7 @@ public interface ContactCardDao {
     @Query("SELECT * FROM contacts WHERE username = :username LIMIT 1")
     ContactCard get(String username);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM users WHERE username = :username LIMIT 1)")
+    @Query("SELECT EXISTS(SELECT 1 FROM contacts WHERE username = :username LIMIT 1)")
     boolean exists(String username);
 
     @Insert

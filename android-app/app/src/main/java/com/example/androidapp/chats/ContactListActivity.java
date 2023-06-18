@@ -50,7 +50,7 @@ public class ContactListActivity extends AppCompatActivity
     private AppDB db;
     private ContactCardDao contactsDao;
     private List<ContactCard> contacts;
-    private final ContactsAdapter adapter = new ContactsAdapter(null);
+    private ContactsAdapter adapter;
     private FloatingActionButton fab;
     private SwipeRefreshLayout swiper;
 
@@ -64,6 +64,13 @@ public class ContactListActivity extends AppCompatActivity
         jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
         username = intent.getStringExtra(MainActivity.USERNAME_KEY);
 
+        // Make our contact list updatable.
+        swiper = findViewById(R.id.swiper_layout);
+        swiper.setOnRefreshListener(this);
+
+        // Build the Room Database
+        db = AppDB.create(getApplicationContext());
+
         initAddContactFAB();
 
         loadContacts();
@@ -71,10 +78,6 @@ public class ContactListActivity extends AppCompatActivity
         // Make the back button work :D.
         ImageButton backBtn = findViewById(R.id.contact_list_back_button);
         backBtn.setOnClickListener(v -> finish());
-
-        // Make our contact list updatable.
-        swiper = findViewById(R.id.swiper_layout);
-        swiper.setOnRefreshListener(this);
     }
 
     private void initAddContactFAB() {
@@ -94,40 +97,29 @@ public class ContactListActivity extends AppCompatActivity
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
+        swiper.setRefreshing(true);
         // Create the db and the contactsDao.
         executor.execute(() -> {
-            db = AppDB.create(getApplicationContext());
             contactsDao = db.contactCardDao();
 
-            User user = db.userDao().getUser();
-            if (user == null) {
-                db.userDao().insert(new User(username, jwtToken));
-            } else if (!user.getUsername().equals(username)) {
-                contactsDao.deleteTable();
-            }
+            checkToDeleteUserTable();
 
-            // Set the contact list.
-            contacts = contactsDao.index();
-            adapter.setContacts(contacts);
-
-            // Show that we are loading the new contacts.
-            runOnUiThread(() -> {
-                swiper.setRefreshing(true);
-                contactListView.setAdapter(adapter);
-            });
+            // Set the contact list adapter.
+            adapter = new ContactsAdapter(contactsDao.index());
 
             // Load the contacts from the backend.
             ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
             Call<LastMessageResponse[]> call = api.lastMessages(jwtToken);
 
+            // Do the API call.
             call.enqueue(new Callback<LastMessageResponse[]>() {
                 @Override
                 public void onResponse(Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
-                    Log.e("onResponse", "Value of response body length : " + response.body().length);
                     LastMessageResponse[] lastMessages = response.body();
                     if (lastMessages == null)
                         return;
                     addContactCardResponseToList(lastMessages);
+                    updateContactList();
                 }
 
                 @Override
@@ -135,11 +127,23 @@ public class ContactListActivity extends AppCompatActivity
             });
 
             // Stop refreshing and set the adapter accordingly.
-            handler.post(() -> swiper.setRefreshing(false));
+            handler.post(() ->{
+                swiper.setRefreshing(false);
+                contactListView.setAdapter(adapter);
+            });
         });
 
         contactListView.setOnItemClickListener(this);
         contactListView.setOnScrollListener(this);
+    }
+
+    private void checkToDeleteUserTable() {
+        User user = db.userDao().getUser();
+        if (user == null) {
+            db.userDao().insert(new User(username, jwtToken));
+        } else if (!user.getUsername().equals(username)) {
+            contactsDao.deleteTable();
+        }
     }
 
     private void addContactCardResponseToList(LastMessageResponse[] lastMessages) {
@@ -162,7 +166,6 @@ public class ContactListActivity extends AppCompatActivity
                 }
             }
         });
-
     }
 
     @Override
@@ -197,6 +200,10 @@ public class ContactListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        updateContactList();
+    }
+
+    private void updateContactList() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 

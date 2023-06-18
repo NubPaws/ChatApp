@@ -22,7 +22,7 @@ public class ContactCard {
 
     public ContactCard(String username, String profileImage, String displayName, String lastMessage) {
         this.username = username;
-        this.profileImage = profileImage;
+        setProfileImage(profileImage);
         this.displayName = displayName;
         this.lastMessage = lastMessage;
     }
@@ -45,7 +45,9 @@ public class ContactCard {
     }
 
     public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+        String pureBase64 = profileImage.substring(profileImage.indexOf(",") + 1);
+
+        this.profileImage = pureBase64;
     }
 
     public String getDisplayName() {

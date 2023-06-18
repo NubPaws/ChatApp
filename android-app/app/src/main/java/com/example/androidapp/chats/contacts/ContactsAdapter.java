@@ -1,5 +1,8 @@
 package com.example.androidapp.chats.contacts;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.androidapp.R;
-import com.example.androidapp.chats.database.ContactCard;
+import com.example.androidapp.chats.database.entities.ContactCard;
 
 import java.util.List;
 
@@ -57,7 +60,7 @@ public class ContactsAdapter extends BaseAdapter {
 
         ContactCard cc = cards.get(position);
         ViewHolder viewHolder = (ViewHolder)convertView.getTag();
-        viewHolder.profileImage.setImageResource(cc.getProfileImage());
+        viewHolder.profileImage.setImageBitmap(cc.getProfileImageBitmap());
         viewHolder.displayName.setText(cc.getDisplayName());
         viewHolder.lastMessage.setText(cc.getLastMessage());
 

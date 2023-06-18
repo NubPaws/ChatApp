@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -17,24 +18,34 @@ import android.widget.Toast;
 
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
+import com.example.androidapp.api.ChatAppAPI;
+import com.example.androidapp.api.responses.LastMessageResponse;
 import com.example.androidapp.chats.contacts.AddContactActivity;
-import com.example.androidapp.chats.database.ContactCard;
+import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.contacts.ContactsAdapter;
 import com.example.androidapp.chats.database.AppDB;
-import com.example.androidapp.chats.database.ContactCardDao;
+import com.example.androidapp.chats.database.dao.ContactCardDao;
+import com.example.androidapp.chats.database.entities.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ContactListActivity extends AppCompatActivity
         implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener {
 
     private String jwtToken;
+    private String username;
 
     private AppDB db;
     private ContactCardDao contactsDao;
@@ -49,11 +60,13 @@ public class ContactListActivity extends AppCompatActivity
         setContentView(R.layout.activity_contact_list);
 
         // Get that sweet sweet JWT token as we love it.
-        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
+        Intent intent = getIntent();
+        jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
+        username = intent.getStringExtra(MainActivity.USERNAME_KEY);
 
         initAddContactFAB();
 
-        initContactListView();
+        loadContacts();
 
         // Make the back button work :D.
         ImageButton backBtn = findViewById(R.id.contact_list_back_button);
@@ -62,20 +75,6 @@ public class ContactListActivity extends AppCompatActivity
         // Make our contact list updatable.
         swiper = findViewById(R.id.swiper_layout);
         swiper.setOnRefreshListener(this);
-    }
-
-    private List<ContactCard> generateContacts() {
-        List<ContactCard> cards = new ArrayList<>();
-
-        for (int i = 0; i < 25; i++)
-            cards.add(new ContactCard(
-                    "A" + i,
-                    R.drawable.ic_launcher_background,
-                    "A" + i,
-                    new Date().toString()
-            ));
-
-        return cards;
     }
 
     private void initAddContactFAB() {
@@ -87,7 +86,7 @@ public class ContactListActivity extends AppCompatActivity
         });
     }
 
-    private void initContactListView() {
+    private void loadContacts() {
         // Setup the contacts' list view.
         // Load the data for the contacts, also load up the adapter.
         ListView contactListView = findViewById(R.id.contact_list_view);
@@ -97,15 +96,73 @@ public class ContactListActivity extends AppCompatActivity
 
         // Create the db and the contactsDao.
         executor.execute(() -> {
-            db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "ChatDB").build();
+            db = AppDB.create(getApplicationContext());
             contactsDao = db.contactCardDao();
+
+            User user = db.userDao().getUser();
+            if (user == null) {
+                db.userDao().insert(new User(username, jwtToken));
+            } else if (!user.getUsername().equals(username)) {
+                contactsDao.deleteTable();
+            }
+
+            // Set the contact list.
             contacts = contactsDao.index();
             adapter.setContacts(contacts);
-            handler.post(() -> contactListView.setAdapter(adapter));
+
+            // Show that we are loading the new contacts.
+            runOnUiThread(() -> {
+                swiper.setRefreshing(true);
+                contactListView.setAdapter(adapter);
+            });
+
+            // Load the contacts from the backend.
+            ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
+            Call<LastMessageResponse[]> call = api.lastMessages(jwtToken);
+
+            call.enqueue(new Callback<LastMessageResponse[]>() {
+                @Override
+                public void onResponse(Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
+                    Log.e("onResponse", "Value of response body length : " + response.body().length);
+                    LastMessageResponse[] lastMessages = response.body();
+                    if (lastMessages == null)
+                        return;
+                    addContactCardResponseToList(lastMessages);
+                }
+
+                @Override
+                public void onFailure(Call<LastMessageResponse[]> call, Throwable t) {}
+            });
+
+            // Stop refreshing and set the adapter accordingly.
+            handler.post(() -> swiper.setRefreshing(false));
         });
 
         contactListView.setOnItemClickListener(this);
         contactListView.setOnScrollListener(this);
+    }
+
+    private void addContactCardResponseToList(LastMessageResponse[] lastMessages) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            for (LastMessageResponse msg : lastMessages) {
+                if (contactsDao.exists(msg.getUser().getUsername())) {
+                    ContactCard card = contactsDao.get(msg.getUser().getUsername());
+                    card.setLastMessage(msg.getLastMessage().getCreated());
+                    contactsDao.update(card);
+                } else {
+                    ContactCard card = new ContactCard(
+                            msg.getUser().getUsername(),
+                            msg.getUser().getProfilePic(),
+                            msg.getUser().getDisplayName(),
+                            msg.getLastMessage().getCreated()
+                    );
+                    contactsDao.insert(card);
+                }
+            }
+        });
+
     }
 
     @Override

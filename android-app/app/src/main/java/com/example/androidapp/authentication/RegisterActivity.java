@@ -111,8 +111,13 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
                         if (response.code() == 200) {
                             RegisterResponse userDate = response.body();
-                        }
+                        } else {
+                            CharSequence text = "Error while trying to register";
+                            int duration = Toast.LENGTH_SHORT;
 
+                            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                            toast.show();
+                        }
                     }
 
                     @Override

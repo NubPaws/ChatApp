@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
@@ -43,7 +44,16 @@ public class LoginActivity extends AppCompatActivity {
                 loginAttempt.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                        String jwt = response.body();
+                        if (response.code() == 200) {
+                            String jwt = response.body();
+                        } else {
+                            CharSequence text = "Error while trying to login";
+                            int duration = Toast.LENGTH_SHORT;
+
+                            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                            toast.show();
+                        }
+
                     }
 
                     @Override

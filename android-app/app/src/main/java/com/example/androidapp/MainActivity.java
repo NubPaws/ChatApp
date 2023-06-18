@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import com.example.androidapp.authentication.LoginActivity;
 import com.example.androidapp.authentication.RegisterActivity;
+import com.example.androidapp.chats.ChatActivity;
+import com.example.androidapp.chats.ContactListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,5 +20,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
+        // startActivity(new Intent(MainActivity.this, ContactListActivity.class));
     }
 }

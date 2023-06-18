@@ -3,9 +3,11 @@ package com.example.androidapp.authentication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.androidapp.R;
@@ -26,6 +28,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        TextView tvSignUp = findViewById(R.id.tvSignUp);
+        tvSignUp.setOnClickListener(view -> {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(view -> {
             EditText etLoginUsername = findViewById(R.id.etLoginUsername);
@@ -44,13 +53,21 @@ public class LoginActivity extends AppCompatActivity {
                 loginAttempt.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                        int duration = Toast.LENGTH_SHORT;
+                        CharSequence text;
+                        Toast toast;
+
                         if (response.code() == 200) {
                             String jwt = response.body();
-                        } else {
-                            CharSequence text = "Error while trying to login";
-                            int duration = Toast.LENGTH_SHORT;
+                            text = "Successfully logged in";
+                            toast = Toast.makeText(getApplicationContext(), text, duration);
+                            toast.show();
 
-                            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+
+                        } else {
+                            text = "Error while trying to login";
+
+                            toast = Toast.makeText(getApplicationContext(), text, duration);
                             toast.show();
                         }
 

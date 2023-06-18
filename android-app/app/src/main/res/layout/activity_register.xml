@@ -85,11 +85,5 @@
             android:layout_gravity="center"
             android:text="@string/register" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:text="@string/already_registered_sign_in" />
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

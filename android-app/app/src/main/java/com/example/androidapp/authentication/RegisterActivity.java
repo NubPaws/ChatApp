@@ -109,13 +109,19 @@ public class RegisterActivity extends AppCompatActivity {
                 registerAttempt.enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
+                        CharSequence text;
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast;
+
                         if (response.code() == 200) {
                             RegisterResponse userDate = response.body();
+                            text = "Successfully registered";
+                            toast = Toast.makeText(getApplicationContext(), text, duration);
+                            toast.show();
+                            finish();
                         } else {
-                            CharSequence text = "Error while trying to register";
-                            int duration = Toast.LENGTH_SHORT;
-
-                            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                            text = "Error while trying to register";
+                            toast = Toast.makeText(getApplicationContext(), text, duration);
                             toast.show();
                         }
                     }

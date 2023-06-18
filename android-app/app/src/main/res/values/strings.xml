@@ -10,5 +10,6 @@
     <string name="display_name">Display Name</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="user_profile_picture">User Profile Picture</string>
+    <string name="BaseUrl">http://192.168.6.128:5000/api/</string>
 
 </resources>

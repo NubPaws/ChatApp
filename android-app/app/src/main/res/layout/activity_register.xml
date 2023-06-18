@@ -63,7 +63,7 @@
             android:autofillHints="@string/display_name"
             android:drawableStart="@drawable/ic_person"
             android:hint="@string/display_name"
-            android:inputType="textPassword" />
+            android:inputType="text" />
 
         <Button
             android:id="@+id/btnSelectPicture"

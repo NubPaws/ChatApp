@@ -10,4 +10,8 @@ public interface ChatAppAPI {
     @POST("Tokens")
     Call<String> login(@Body LoginRequest request);
 
+    @Headers({"Content-Type: application/json"})
+    @POST("Users")
+    Call<RegisterResponse> register(@Body RegisterRequest request);
+
 }

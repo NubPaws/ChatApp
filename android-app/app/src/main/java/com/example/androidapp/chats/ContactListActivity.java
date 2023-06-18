@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.chats.contacts.AddContactActivity;
-import com.example.androidapp.chats.contacts.ContactCard;
+import com.example.androidapp.chats.database.ContactCard;
 import com.example.androidapp.chats.contacts.ContactsAdapter;
 import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.ContactCardDao;

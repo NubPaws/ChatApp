@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
@@ -18,6 +18,7 @@ import java.util.List;
 public class ChatActivity extends AppCompatActivity {
 
     private String jwtToken;
+    private String username;
     private ChatMessageAdapter adapter;
     private List<ChatMessage> messages;
 
@@ -26,7 +27,9 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
+        Intent intent = getIntent();
+        jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
+        username = intent.getStringExtra("username");
 
         RecyclerView recyclerView = findViewById(R.id.chat_messages_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

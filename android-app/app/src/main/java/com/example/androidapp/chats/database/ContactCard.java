@@ -1,4 +1,4 @@
-package com.example.androidapp.chats.contacts;
+package com.example.androidapp.chats.database;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

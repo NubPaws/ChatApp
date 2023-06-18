@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.androidapp.R;
+import com.example.androidapp.chats.database.ContactCard;
 
 import java.util.List;
 

@@ -3,7 +3,6 @@ package com.example.androidapp.chats.contacts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,14 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.chats.database.AppDB;
+import com.example.androidapp.chats.database.ContactCard;
 import com.example.androidapp.chats.database.ContactCardDao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

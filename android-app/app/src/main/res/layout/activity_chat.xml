@@ -17,6 +17,7 @@
         android:background="@color/white">
 
         <ImageButton
+            android:id="@+id/chat_screen_back_button"
             android:layout_width="@dimen/action_bar_height"
             android:layout_height="@dimen/action_bar_height"
             android:src="@drawable/ic_left_arrow"

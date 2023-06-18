@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private String jwtToken;
     private ChatMessageAdapter adapter;
     private List<ChatMessage> messages;
 
@@ -22,6 +25,8 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
 
         RecyclerView recyclerView = findViewById(R.id.chat_messages_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -33,6 +38,9 @@ public class ChatActivity extends AppCompatActivity {
 
         adapter = new ChatMessageAdapter(messages);
         recyclerView.setAdapter(adapter);
+
+        ImageButton backButton = findViewById(R.id.chat_screen_back_button);
+        backButton.setOnClickListener(v -> finish());
     }
 
     private List<ChatMessage> generateChatMessages() {

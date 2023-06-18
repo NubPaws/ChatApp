@@ -1,4 +1,4 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.contacts;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +61,10 @@ public class ContactsAdapter extends BaseAdapter {
         viewHolder.lastMessage.setText(cc.getLastMessage());
 
         return convertView;
+    }
+
+    public void setContacts(List<ContactCard> cards) {
+        this.cards = cards;
     }
 
 }

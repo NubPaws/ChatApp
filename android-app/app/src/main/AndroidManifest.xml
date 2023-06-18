@@ -21,6 +21,10 @@
             android:name=".authentication.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".chats.contacts.AddContactActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".chats.ContactListActivity"
             android:exported="false" />
         <activity

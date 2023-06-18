@@ -1,24 +1,30 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.contacts;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.text.DateFormat;
 import java.util.Date;
 
+@Entity(tableName = "contacts")
 public class ContactCard {
 
-    // Will be automatically generated when we add Room.
+    @PrimaryKey(autoGenerate = true)
     private int id;
+    private String username;
     private int profileImage;
     private String displayName;
-    private Date lastMessage;
+    private String lastMessage;
 
-    public ContactCard(int profileImage, String displayName, Date lastMessage) {
+    public ContactCard(String username, int profileImage, String displayName, String lastMessage) {
         this.profileImage = profileImage;
         this.displayName = displayName;
         this.lastMessage = lastMessage;
+        this.username = username;
     }
 
     public int getId() {
-        return 0;
+        return id;
     }
 
     public void setId(int id) {
@@ -42,13 +48,19 @@ public class ContactCard {
     }
 
     public String getLastMessage() {
-        String time = DateFormat.getDateTimeInstance().format(lastMessage);
-
-        return time;
+        return lastMessage;
     }
 
-    public void setLastMessage(Date lastMessage) {
+    public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

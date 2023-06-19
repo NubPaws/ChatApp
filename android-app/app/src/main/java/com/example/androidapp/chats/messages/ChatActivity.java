@@ -14,16 +14,11 @@ import android.widget.Toast;
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
-import com.example.androidapp.api.responses.LastMessage;
-import com.example.androidapp.api.responses.Message;
+import com.example.androidapp.api.responses.MessageResponse;
 import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.dao.ChatMessageDao;
-import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.ChatMessage;
-import com.example.androidapp.chats.database.entities.ContactCard;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity implements Callback<Message[]> {
+public class ChatActivity extends AppCompatActivity implements Callback<MessageResponse[]> {
 
     // Constant used to define an invalid chat id as the default value.
     private static final int INVALID_CHAT_ID = -1;
@@ -111,13 +106,13 @@ public class ChatActivity extends AppCompatActivity implements Callback<Message[
         });
     }
 
-    private void addChatMessagesToList(Message[] allMessages) {
+    private void addChatMessagesToList(MessageResponse[] allMessages) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
-            Message lastSentMsg = messagesDao.getLastChatMessage();
+            ChatMessage lastSentMsg = messagesDao.getLastChatMessage();
             boolean startAdding = false;
-            for (Message msg : allMessages) {
+            for (MessageResponse msg : allMessages) {
                 if (lastSentMsg.getId() == msg.getId()) {
                     startAdding = true;
                     continue;
@@ -138,13 +133,13 @@ public class ChatActivity extends AppCompatActivity implements Callback<Message[
     }
 
     @Override
-    public void onResponse(Call<Message[]> call, Response<Message[]> response) {
+    public void onResponse(Call<MessageResponse[]> call, Response<MessageResponse[]> response) {
         if (response.code() != ChatAppAPI.OK_STATUS) {
             Toast.makeText(this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Message[] allMessages = response.body();
+        MessageResponse[] allMessages = response.body();
         if (allMessages == null) {
             return;
         }
@@ -153,6 +148,6 @@ public class ChatActivity extends AppCompatActivity implements Callback<Message[
     }
 
     @Override
-    public void onFailure(Call<Message[]> call, Throwable t) {}
+    public void onFailure(Call<MessageResponse[]> call, Throwable t) {}
 
 }

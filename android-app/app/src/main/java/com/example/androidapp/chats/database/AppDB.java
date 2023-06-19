@@ -9,10 +9,15 @@ import androidx.room.RoomDatabase;
 import com.example.androidapp.chats.database.dao.ChatMessageDao;
 import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.dao.UserDao;
+import com.example.androidapp.chats.database.entities.ChatMessage;
 import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.entities.User;
 
-@Database(entities = {ContactCard.class, User.class}, version = 3)
+@Database(
+        entities = {ContactCard.class, User.class, ChatMessage.class},
+        exportSchema = false,
+        version = 5
+)
 public abstract class AppDB extends RoomDatabase {
 
     public static final String NAME = "ChatDB";

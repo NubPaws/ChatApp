@@ -5,8 +5,8 @@ import android.content.Context;
 import com.example.androidapp.R;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.api.requests.RegisterRequest;
-import com.example.androidapp.api.responses.LastMessage;
-import com.example.androidapp.api.responses.Message;
+import com.example.androidapp.api.responses.LastMessageResponse;
+import com.example.androidapp.api.responses.MessageResponse;
 import com.example.androidapp.api.responses.RegisterResponse;
 
 import retrofit2.Call;
@@ -34,11 +34,11 @@ public interface ChatAppAPI {
 
     @Headers({"Content-Type: application/json"})
     @GET("Chats")
-    Call<LastMessage[]> lastMessages(@Header("Authorization") String token);
+    Call<LastMessageResponse[]> lastMessages(@Header("Authorization") String token);
 
     @Headers({"Content-Type: application/json"})
     @GET("Chats/{id}/Messages")
-    Call<Message[]> getMessages(@Path("id") int id);
+    Call<MessageResponse[]> getMessages(@Path("id") int id);
 
     static Retrofit createRetrofit(Context context) {
         return new Retrofit.Builder()

@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
-import com.example.androidapp.api.responses.LastMessage;
+import com.example.androidapp.api.responses.LastMessageResponse;
 import com.example.androidapp.chats.messages.ChatActivity;
 import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.AppDB;
@@ -35,7 +35,7 @@ import retrofit2.Response;
 
 public class ContactListActivity extends AppCompatActivity
         implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, Callback<LastMessage[]> {
+        SwipeRefreshLayout.OnRefreshListener, Callback<LastMessageResponse[]> {
 
     private String jwtToken;
     private String username;
@@ -135,11 +135,11 @@ public class ContactListActivity extends AppCompatActivity
         }
     }
 
-    private void addContactCardResponseToList(LastMessage[] lastMessages) {
+    private void addContactCardResponseToList(LastMessageResponse[] lastMessages) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
-            for (LastMessage msg : lastMessages) {
+            for (LastMessageResponse msg : lastMessages) {
                 if (contactsDao.exists(msg.getUser().getUsername())) {
                     ContactCard card = contactsDao.get(msg.getUser().getUsername());
                     card.setLastMessage(msg.getLastMessage().getCreated());
@@ -211,12 +211,12 @@ public class ContactListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(Call<LastMessage[]> call, Response<LastMessage[]> response) {
+    public void onResponse(Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
         if (response.code() != ChatAppAPI.OK_STATUS) {
             swiper.setRefreshing(false);
             return;
         }
-        LastMessage[] lastMessages = response.body();
+        LastMessageResponse[] lastMessages = response.body();
         if (lastMessages == null) {
             swiper.setRefreshing(false);
             return;
@@ -227,7 +227,7 @@ public class ContactListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFailure(Call<LastMessage[]> call, Throwable t) {
+    public void onFailure(Call<LastMessageResponse[]> call, Throwable t) {
         Toast.makeText(this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
         swiper.setRefreshing(false);;
     }

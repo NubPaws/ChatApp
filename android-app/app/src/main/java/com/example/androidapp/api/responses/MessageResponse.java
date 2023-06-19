@@ -2,7 +2,7 @@ package com.example.androidapp.api.responses;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Message {
+public class MessageResponse {
 
     @SerializedName("id")
     private int id;
@@ -16,7 +16,7 @@ public class Message {
     @SerializedName("content")
     private String content;
 
-    public Message(int id, String created, Sender sender, String content) {
+    public MessageResponse(int id, String created, Sender sender, String content) {
         this.id = id;
         this.created = created;
         this.sender = sender;

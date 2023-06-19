@@ -126,6 +126,12 @@ public class ContactListActivity extends AppCompatActivity
             db.userDao().insert(new User(username, jwtToken));
         } else if (!user.getUsername().equals(username)) {
             contactsDao.deleteTable();
+            db.userDao().deleteTable();
+            db.chatMessageDao().deleteTable();
+            db.userDao().insert(new User(username, jwtToken));
+        } else {
+            user.setToken(jwtToken);
+            db.userDao().update(user);
         }
     }
 
@@ -171,6 +177,7 @@ public class ContactListActivity extends AppCompatActivity
         // Load the payload!
         intent.putExtra(MainActivity.JWT_TOKEN_KEY, "token");
         intent.putExtra(MainActivity.CHAT_ID_KEY, cc.getChatId());
+        intent.putExtra(MainActivity.USERNAME_KEY, username);
 
         // Send 'em away bois!
         startActivity(intent);

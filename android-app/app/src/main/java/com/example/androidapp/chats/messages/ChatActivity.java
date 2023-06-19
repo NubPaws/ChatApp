@@ -9,9 +9,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
+import com.example.androidapp.api.ChatAppAPI;
+import com.example.androidapp.api.responses.LastMessage;
+import com.example.androidapp.api.responses.Message;
+import com.example.androidapp.chats.database.AppDB;
+import com.example.androidapp.chats.database.dao.ChatMessageDao;
+import com.example.androidapp.chats.database.dao.ContactCardDao;
+import com.example.androidapp.chats.database.entities.ChatMessage;
+import com.example.androidapp.chats.database.entities.ContactCard;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,37 +28,42 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ChatActivity extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ChatActivity extends AppCompatActivity implements Callback<Message[]> {
 
     // Constant used to define an invalid chat id as the default value.
     private static final int INVALID_CHAT_ID = -1;
 
     private String jwtToken;
     private int chatId;
+    private String username;
     private ChatMessageAdapter adapter;
     private List<ChatMessage> messages;
+
+    private AppDB db;
+    private ChatMessageDao messagesDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        db = AppDB.create(getApplicationContext());
+
         Intent intent = getIntent();
         jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
         chatId = intent.getIntExtra(MainActivity.CHAT_ID_KEY, INVALID_CHAT_ID);
+        username = intent.getStringExtra(MainActivity.USERNAME_KEY);
+
+        if (chatId == INVALID_CHAT_ID) {
+            Toast.makeText(this, "Invalid Chat ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         loadMessages();
-
-        RecyclerView recyclerView = findViewById(R.id.chat_messages_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        // This will make the messages be anchored to the bottom of the page.
-        layoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(layoutManager);
-
-        messages = generateChatMessages();
-
-        adapter = new ChatMessageAdapter(messages);
-        recyclerView.setAdapter(adapter);
 
         ImageButton backButton = findViewById(R.id.chat_screen_back_button);
         backButton.setOnClickListener(v -> finish());
@@ -67,19 +81,78 @@ public class ChatActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
+            messagesDao = db.chatMessageDao();
 
+            adapter = new ChatMessageAdapter(messagesDao.index());
+
+            ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
+
+            api.getMessages(chatId).enqueue(this);
+
+            handler.post(() -> {
+                recyclerView.setAdapter(adapter);
+            });
         });
     }
 
-    private List<ChatMessage> generateChatMessages() {
-        List<ChatMessage> messages = new ArrayList<>();
+    private void updateChatMessages() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
-        for (int i = 0; i < 10; i++) {
-            messages.add(new ChatMessage("Hello", new Date(), ChatMessage.Direction.Right));
-            messages.add(new ChatMessage("Hello", new Date(), ChatMessage.Direction.Left));
+        executor.execute(() -> {
+            if (db == null)
+                return;
+            messages = db.chatMessageDao().index();
+            handler.post(() -> {
+                int index = adapter.getItemCount();
+                adapter.addMessages(messages);
+                adapter.notifyItemRangeInserted(index, adapter.getItemCount());
+            });
+        });
+    }
+
+    private void addChatMessagesToList(Message[] allMessages) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Message lastSentMsg = messagesDao.getLastChatMessage();
+            boolean startAdding = false;
+            for (Message msg : allMessages) {
+                if (lastSentMsg.getId() == msg.getId()) {
+                    startAdding = true;
+                    continue;
+                }
+                if (startAdding) {
+                    ChatMessage cMsg = new ChatMessage(
+                            msg.getId(),
+                            msg.getContent(),
+                            msg.getCreated(),
+                            0);
+                    if (msg.getSender().getUsername().equals(username))
+                        cMsg.setDirection(ChatMessage.DIR_RIGHT);
+                    else cMsg.setDirection(ChatMessage.DIR_LEFT);
+                    messagesDao.insert(cMsg);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onResponse(Call<Message[]> call, Response<Message[]> response) {
+        if (response.code() != ChatAppAPI.OK_STATUS) {
+            Toast.makeText(this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        return messages;
+        Message[] allMessages = response.body();
+        if (allMessages == null) {
+            return;
+        }
+        addChatMessagesToList(allMessages);
+        updateChatMessages();
     }
+
+    @Override
+    public void onFailure(Call<Message[]> call, Throwable t) {}
 
 }

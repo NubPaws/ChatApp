@@ -1,4 +1,4 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.messages;
 
 import com.example.androidapp.R;
 

@@ -25,10 +25,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".chats.ContactListActivity"
+            android:name=".chats.contacts.ContactListActivity"
             android:exported="false" />
         <activity
-            android:name=".chats.ChatActivity"
+            android:name=".chats.messages.ChatActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

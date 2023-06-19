@@ -15,12 +15,14 @@ public class ContactCard {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int chatId;
     private String username;
     private String profileImage;
     private String displayName;
     private String lastMessage;
 
-    public ContactCard(String username, String profileImage, String displayName, String lastMessage) {
+    public ContactCard(int chatId, String username, String profileImage, String displayName, String lastMessage) {
+        this.chatId = chatId;
         this.username = username;
         setProfileImage(profileImage);
         this.displayName = displayName;
@@ -33,6 +35,14 @@ public class ContactCard {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
     }
 
     public String getProfileImage() {

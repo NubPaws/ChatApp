@@ -5,15 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.androidapp.authentication.LoginActivity;
-import com.example.androidapp.authentication.RegisterActivity;
-import com.example.androidapp.chats.ChatActivity;
-import com.example.androidapp.chats.ContactListActivity;
+import com.example.androidapp.chats.contacts.ContactListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String JWT_TOKEN_KEY = "JWT_TOKEN";
     public static final String USERNAME_KEY = "username";
+    public static final String CHAT_ID_KEY = "other_username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

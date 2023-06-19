@@ -1,4 +1,4 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.messages;
 
 import java.text.DateFormat;
 import java.util.Date;

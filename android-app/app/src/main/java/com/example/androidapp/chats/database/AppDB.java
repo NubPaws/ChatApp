@@ -12,7 +12,7 @@ import com.example.androidapp.chats.database.dao.UserDao;
 import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.entities.User;
 
-@Database(entities = {ContactCard.class, User.class}, version = 2)
+@Database(entities = {ContactCard.class, User.class}, version = 3)
 public abstract class AppDB extends RoomDatabase {
 
     public static final String NAME = "ChatDB";

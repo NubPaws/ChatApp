@@ -25,6 +25,8 @@ import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +37,7 @@ import retrofit2.Response;
 
 public class ContactListActivity extends AppCompatActivity
         implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, Callback<LastMessageResponse[]> {
+        SwipeRefreshLayout.OnRefreshListener {
 
     private String jwtToken;
     private String username;
@@ -108,12 +110,10 @@ public class ContactListActivity extends AppCompatActivity
             // Load the contacts from the backend.
             ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
             // Do the API call.
-            api.lastMessages(jwtToken).enqueue(this);
+            api.lastMessages(jwtToken).enqueue(new LastMessageResposeHandler(this));
 
             // Stop refreshing and set the adapter accordingly.
-            handler.post(() ->{
-                contactListView.setAdapter(adapter);
-            });
+            handler.post(() -> contactListView.setAdapter(adapter));
         });
 
         contactListView.setOnItemClickListener(this);
@@ -135,8 +135,9 @@ public class ContactListActivity extends AppCompatActivity
         }
     }
 
-    private void addContactCardResponseToList(LastMessageResponse[] lastMessages) {
+    private synchronized void addContactCardResponseToList(LastMessageResponse[] lastMessages) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
             for (LastMessageResponse msg : lastMessages) {
@@ -155,6 +156,9 @@ public class ContactListActivity extends AppCompatActivity
                     contactsDao.insert(card);
                 }
             }
+
+            updateContactList();
+            handler.post(() -> swiper.setRefreshing(false));
         });
     }
 
@@ -175,7 +179,7 @@ public class ContactListActivity extends AppCompatActivity
         Intent intent = new Intent(ContactListActivity.this, ChatActivity.class);
 
         // Load the payload!
-        intent.putExtra(MainActivity.JWT_TOKEN_KEY, "token");
+        intent.putExtra(MainActivity.JWT_TOKEN_KEY, jwtToken);
         intent.putExtra(MainActivity.CHAT_ID_KEY, cc.getChatId());
         intent.putExtra(MainActivity.USERNAME_KEY, username);
 
@@ -185,7 +189,6 @@ public class ContactListActivity extends AppCompatActivity
 
     @Override
     public void onRefresh() {
-        Toast.makeText(this, "Refreshing contact list", Toast.LENGTH_SHORT).show();
         loadContacts();
     }
 
@@ -210,25 +213,34 @@ public class ContactListActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public void onResponse(Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
-        if (response.code() != ChatAppAPI.OK_STATUS) {
-            swiper.setRefreshing(false);
-            return;
+    private static class LastMessageResposeHandler implements Callback<LastMessageResponse[]> {
+
+        private ContactListActivity activity;
+
+        public LastMessageResposeHandler(ContactListActivity activity) {
+            this.activity = activity;
         }
-        LastMessageResponse[] lastMessages = response.body();
-        if (lastMessages == null) {
-            swiper.setRefreshing(false);
-            return;
+
+        @Override
+        public void onResponse(@NotNull Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
+            if (response.code() != ChatAppAPI.OK_STATUS) {
+                activity.swiper.setRefreshing(false);
+                return;
+            }
+            LastMessageResponse[] lastMessages = response.body();
+            if (lastMessages == null) {
+                activity.swiper.setRefreshing(false);
+                return;
+            }
+            activity.addContactCardResponseToList(lastMessages);
         }
-        addContactCardResponseToList(lastMessages);
-        updateContactList();
-        swiper.setRefreshing(false);
+
+        @Override
+        public void onFailure(@NotNull Call<LastMessageResponse[]> call, @NotNull Throwable t) {
+            Toast.makeText(activity, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+            activity.swiper.setRefreshing(false);;
+        }
     }
 
-    @Override
-    public void onFailure(Call<LastMessageResponse[]> call, Throwable t) {
-        Toast.makeText(this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
-        swiper.setRefreshing(false);;
-    }
+
 }

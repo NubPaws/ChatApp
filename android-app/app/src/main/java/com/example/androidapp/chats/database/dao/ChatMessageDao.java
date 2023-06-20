@@ -28,6 +28,6 @@ public interface ChatMessageDao {
     @Query("DELETE FROM chat_messages")
     void deleteTable();
 
-    @Query("SELECT * FROM chat_messages ORDER BY timestamp DESC LIMIT 1")
-    ChatMessage getLastChatMessage();
+    @Query("SELECT * FROM chat_messages WHERE chatId = :chatId ORDER BY id DESC LIMIT 1")
+    ChatMessage getLastChatMessage(int chatId);
 }

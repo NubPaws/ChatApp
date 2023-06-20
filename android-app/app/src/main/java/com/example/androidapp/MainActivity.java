@@ -9,9 +9,9 @@ import com.example.androidapp.chats.contacts.ContactListActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String JWT_TOKEN_KEY = "JWT_TOKEN";
+    public static final String JWT_TOKEN_KEY = "jwt_token";
     public static final String USERNAME_KEY = "username";
-    public static final String CHAT_ID_KEY = "other_username";
+    public static final String CHAT_ID_KEY = "chat_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
         // TMP Token that is used only for testing :D
-        intent.putExtra(JWT_TOKEN_KEY, "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJhbWkiLCJpYXQiOjE2ODcxMjIyOTN9.SvrmYHrzt2O3svPDay10a8nx3qDxu9ibT3GeU08Os1M");
+        intent.putExtra(JWT_TOKEN_KEY, "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJhbWkiLCJpYXQiOjE2ODcyMTExNTB9.asvk1JfN_FzL4QkT0TvFUROwokuyuFbwL0LLvm4Fcoc");
         intent.putExtra(USERNAME_KEY, "rami");
         startActivity(intent);
       

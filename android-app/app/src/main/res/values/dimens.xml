@@ -15,4 +15,5 @@
     <dimen name="chat_message_area_height">48dp</dimen>
     <dimen name="send_btn_side_padding">16dp</dimen>
     <dimen name="text_message_font_size">18sp</dimen>
+    <dimen name="chat_messages_divider_size">4dp</dimen>
 </resources>

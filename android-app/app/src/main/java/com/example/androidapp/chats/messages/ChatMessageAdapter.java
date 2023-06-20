@@ -1,6 +1,7 @@
-package com.example.androidapp.chats;
+package com.example.androidapp.chats.messages;
 
 import com.example.androidapp.R;
+import com.example.androidapp.chats.database.entities.ChatMessage;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +23,18 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         this.messages = messages;
     }
 
+    public void setMessages(List<ChatMessage> messages) {
+        this.messages = messages;
+    }
+
+    public void addMessages(List<ChatMessage> messages) {
+        this.messages.addAll(messages);
+    }
+
+    public List<ChatMessage> getMessages() {
+        return messages;
+    }
+
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,13 +47,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ChatMessage message = messages.get(position);
 
         holder.messageView.setText(message.getContent());
-        holder.timestampView.setText(message.getSent());
+        holder.timestampView.setText(message.getTimestamp());
         switch (message.getDirection()) {
-            case Left:
+            case ChatMessage.DIR_LEFT:
                 holder.layout.setGravity(Gravity.START);
                 holder.msgContainer.setBackgroundResource(R.color.chat_msg_left_bg);
                 break;
-            case Right:
+            case ChatMessage.DIR_RIGHT:
                 holder.layout.setGravity(Gravity.END);
                 holder.msgContainer.setBackgroundResource(R.color.chat_msg_right_bg);
                 break;

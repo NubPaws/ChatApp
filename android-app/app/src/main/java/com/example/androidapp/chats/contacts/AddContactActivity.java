@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.example.androidapp.R;
 import com.example.androidapp.chats.database.AppDB;
-import com.example.androidapp.chats.database.ContactCard;
-import com.example.androidapp.chats.database.ContactCardDao;
+import com.example.androidapp.chats.database.entities.ContactCard;
+import com.example.androidapp.chats.database.dao.ContactCardDao;
 
 import java.util.Date;
 import java.util.List;
@@ -58,9 +58,12 @@ public class AddContactActivity extends AppCompatActivity {
             ContactCardDao contactsDao = db.contactCardDao();
             // TODO: Check that the username is indeed in the database.
 
-            ContactCard card = new ContactCard(username, R.drawable.ic_add_img, username, new Date().toString());
-            List<ContactCard> cards = contactsDao.index();
-            contactsDao.insert(card);
+            /* TODO: After checking that the username exists load the proper information which is -
+                : chatId, username, profilePic, displayName, lastMessage
+            */
+            // ContactCard card = new ContactCard(username, "", username, new Date().toString());
+            // List<ContactCard> cards = contactsDao.index();
+            // contactsDao.insert(card);
 
             handler.post(this::finish);
         });

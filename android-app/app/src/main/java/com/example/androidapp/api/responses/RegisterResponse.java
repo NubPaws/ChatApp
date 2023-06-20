@@ -1,14 +1,10 @@
-package com.example.androidapp.api;
+package com.example.androidapp.api.responses;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RegisterRequest {
-
+public class RegisterResponse {
     @SerializedName("username")
     private String username;
-
-    @SerializedName("password")
-    private String password;
 
     @SerializedName("displayName")
     private String displayName;
@@ -16,9 +12,8 @@ public class RegisterRequest {
     @SerializedName("profilePic")
     private String profilePic;
 
-    public RegisterRequest(String username, String password, String displayName, String profilePic) {
+    public RegisterResponse(String username, String displayName, String profilePic) {
         this.username = username;
-        this.password = password;
         this.displayName = displayName;
         this.profilePic = profilePic;
     }
@@ -29,14 +24,6 @@ public class RegisterRequest {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getDisplayName() {

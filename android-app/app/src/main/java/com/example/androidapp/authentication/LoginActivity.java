@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
-import com.example.androidapp.api.LoginRequest;
+import com.example.androidapp.api.requests.LoginRequest;
 
 import retrofit2.Call;
 import retrofit2.Callback;

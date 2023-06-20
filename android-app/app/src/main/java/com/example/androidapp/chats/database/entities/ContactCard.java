@@ -1,4 +1,8 @@
-package com.example.androidapp.chats.database;
+package com.example.androidapp.chats.database.entities;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,16 +15,18 @@ public class ContactCard {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int chatId;
     private String username;
-    private int profileImage;
+    private String profileImage;
     private String displayName;
     private String lastMessage;
 
-    public ContactCard(String username, int profileImage, String displayName, String lastMessage) {
-        this.profileImage = profileImage;
+    public ContactCard(int chatId, String username, String profileImage, String displayName, String lastMessage) {
+        this.chatId = chatId;
+        this.username = username;
+        setProfileImage(profileImage);
         this.displayName = displayName;
         this.lastMessage = lastMessage;
-        this.username = username;
     }
 
     public int getId() {
@@ -31,12 +37,27 @@ public class ContactCard {
         this.id = id;
     }
 
-    public int getProfileImage() {
+    public int getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getProfileImage() {
         return profileImage;
     }
 
-    public void setProfileImage(int profileImage) {
-        this.profileImage = profileImage;
+    public Bitmap getProfileImageBitmap() {
+        byte[] decodes = Base64.decode(profileImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodes, 0, decodes.length);
+    }
+
+    public void setProfileImage(String profileImage) {
+        String pureBase64 = profileImage.substring(profileImage.indexOf(",") + 1);
+
+        this.profileImage = pureBase64;
     }
 
     public String getDisplayName() {
@@ -62,5 +83,4 @@ public class ContactCard {
     public void setUsername(String username) {
         this.username = username;
     }
-
 }

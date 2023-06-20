@@ -8,13 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +20,8 @@ import android.widget.Toast;
 
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
-import com.example.androidapp.api.RegisterRequest;
-import com.example.androidapp.api.RegisterResponse;
+import com.example.androidapp.api.requests.RegisterRequest;
+import com.example.androidapp.api.responses.RegisterResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,8 +31,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
-
 
 public class RegisterActivity extends AppCompatActivity {
 

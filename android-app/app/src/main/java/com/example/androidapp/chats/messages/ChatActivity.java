@@ -1,7 +1,13 @@
 package com.example.androidapp.chats.messages;
 
+import static com.example.androidapp.MainActivity.JWT_TOKEN_KEY;
+import static com.example.androidapp.MainActivity.USERNAME_KEY;
+import static com.example.androidapp.MainActivity.CHAT_ID_KEY;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,18 +23,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.SendMessageRequest;
 import com.example.androidapp.api.responses.MessageResponse;
 import com.example.androidapp.api.responses.SendMessageResponse;
 import com.example.androidapp.chats.database.AppDB;
+import com.example.androidapp.chats.database.ChatViewModel;
 import com.example.androidapp.chats.database.dao.ChatMessageDao;
 import com.example.androidapp.chats.database.entities.ChatMessage;
 import com.example.androidapp.chats.database.entities.ContactCard;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +43,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChatActivity extends AppCompatActivity
+        implements View.OnClickListener, Observer<List<ChatMessage>> {
 
     // Constant used to define an invalid chat id as the default value.
     private static final int INVALID_CHAT_ID = -1;
@@ -51,13 +56,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     // Information regarding the view.
     private ChatMessageAdapter adapter;
-    private List<ChatMessage> messages;
     private EditText messageEditText;
     private RecyclerView recyclerView;
 
     // Information regarding the database.
     private AppDB db;
-    private ChatMessageDao messagesDao;
+    private ChatViewModel chatViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,28 +71,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         // Build an instance of the app database.
         db = AppDB.create(getApplicationContext());
 
-        // Get the jwtToken, the chatId and the username form the intent.
-        Intent intent = getIntent();
-        jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
-        chatId = intent.getIntExtra(MainActivity.CHAT_ID_KEY, INVALID_CHAT_ID);
-        username = intent.getStringExtra(MainActivity.USERNAME_KEY);
+        // Load the view model.
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+        chatViewModel.getMessages().observe(this, this);
 
-        if (chatId == INVALID_CHAT_ID) {
-            Toast.makeText(this, "Invalid Chat ID", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        loadIntentInformation();
 
-        // Once everything is okay, we can init the recycler view for the chat messages.
-        initializeRecyclerView();
-        // Load the messages up.
+        // Load the chat bar with the proper information.
+        loadChatBar();
+
+        initRecyclerView();
         loadMessages();
 
         // Setup the back button to work, as you know, it should.
         ImageButton backButton = findViewById(R.id.chat_screen_back_button);
         backButton.setOnClickListener(v -> finish());
-
-        // Load the chat bar with the proper information.
-        loadChatBar();
 
         // Load the button with the proper listener for sending messages.
         ImageButton sendButton = findViewById(R.id.send_message_btn);
@@ -98,12 +95,30 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         sendButton.setOnClickListener(this);
     }
 
+    private void loadIntentInformation() {
+        Intent intent = getIntent();
+        jwtToken = intent.getStringExtra(JWT_TOKEN_KEY);
+        chatId = intent.getIntExtra(CHAT_ID_KEY, INVALID_CHAT_ID);
+        username = intent.getStringExtra(USERNAME_KEY);
+
+        if (chatId == INVALID_CHAT_ID) {
+            Toast.makeText(this, "Invalid Chat ID", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    /**
+     * Loads the data from the dao and updates the chat activity bar accordingly.
+     */
     private void loadChatBar() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
             ContactCard cc = db.contactCardDao().getByChatId(chatId);
+
+            if (cc == null)
+                return;
 
             handler.post(() -> {
                 TextView displayNameView = findViewById(R.id.chat_screen_title);
@@ -115,7 +130,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private RecyclerView initializeRecyclerView() {
+    /**
+     * Initializes the recycler view with the proper styling and also initializes
+     * the list's adapter.
+     */
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.chat_messages_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         // This will make the messages be anchored to the bottom of the page.
@@ -136,7 +155,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        return recyclerView;
+        // Load up the adapter.
+        adapter = new ChatMessageAdapter(new ArrayList<>());
+        recyclerView.setAdapter(adapter);
     }
 
     private void loadMessages() {
@@ -144,59 +165,32 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
-            messagesDao = db.chatMessageDao();
+            // Update the adapter.
+            // Make sure to update the adapter only on the main thread... RecyclerView...
+            List<ChatMessage> chatMessages = db.chatMessageDao().index();
+            handler.post(() -> adapter.setMessages(chatMessages));
 
-            adapter = new ChatMessageAdapter(messagesDao.getChatMessages(chatId));
-
+            // Load the API call, here we goooooo!
             ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
-
-            api.getMessages(jwtToken, chatId).enqueue(new MessageResponseHandler(this));
-
-            handler.post(() -> {
-                recyclerView.setAdapter(adapter);
-            });
-            updateChatMessages();
+            // Queue the API call and watch out for raccoons, and their followers.
+            api.getMessages(jwtToken, chatId).enqueue(new MessageResponseHandler());
         });
     }
 
-    private synchronized void updateChatMessages() {
+    private void addChatMessagesToList(MessageResponse[] allMessages) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
             if (db == null)
                 return;
-            messages = db.chatMessageDao().getChatMessages(chatId);
-            handler.post(() -> {
-                int index = adapter.getItemCount();
-                adapter.setMessages(messages);
-                adapter.notifyItemRangeInserted(index, adapter.getItemCount());
 
-                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            });
-        });
-    }
-
-    private void addChatMessagesToList(MessageResponse[] allMessages) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        executor.execute(() -> {
-            ChatMessage lastSentMsg = messagesDao.getLastChatMessage(chatId);
-            boolean startAdding = false;
-
+            List<ChatMessage> messages = new ArrayList<>();
             for (MessageResponse msg : allMessages) {
-                if (lastSentMsg == null) {
-                    startAdding = true;
-                } else if (lastSentMsg.getMessageId() == msg.getId()) {
-                    startAdding = true;
-                    continue;
-                }
-                if (startAdding) {
-                    messagesDao.insert(ChatMessage.build(chatId, username, msg));
-                }
+                messages.add(ChatMessage.build(chatId, username, msg));
             }
 
-            updateChatMessages();
+            handler.post(() -> chatViewModel.setChatMessages(messages));
         });
     }
 
@@ -208,13 +202,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 message.getCreated(),
                 ChatMessage.DIR_RIGHT
         );
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        executor.execute(() -> {
-            messagesDao.insert(toAdd);
-            updateChatMessages();
-        });
+        chatViewModel.addChatMessages(toAdd);
     }
 
     @Override
@@ -225,21 +213,41 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
         api.sendMessage(jwtToken, chatId, new SendMessageRequest(content))
-                .enqueue(new SendMessageResponseHandler(this));
+                .enqueue(new SendMessageResponseHandler());
+    }
+
+    @Override
+    public void onChanged(List<ChatMessage> messages) {
+        // Update the dao.
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (db == null)
+                return;
+
+            ChatMessageDao dao = db.chatMessageDao();
+
+            for (ChatMessage msg : messages) {
+                ChatMessage fromDB = dao.get(msg.getChatId(), msg.getMessageId());
+                if (fromDB == null) {
+                    dao.insert(msg);
+                }
+            }
+        });
+
+        // Update the adapter with the new set of messages.
+        int prevSize = adapter.getItemCount();
+        adapter.setMessages(messages);
+        // Notify only on those that we added that there was a change,
+        // as the rest stayed the same (they really shouldn't change).
+        adapter.notifyItemRangeInserted(prevSize, adapter.getItemCount());
+        // Bump the scroll of the recycler view to the bottom of the screen.
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     private class MessageResponseHandler implements Callback<MessageResponse[]> {
-
-        private ChatActivity chatActivity;
-
-        public MessageResponseHandler(ChatActivity chatActivity) {
-            this.chatActivity = chatActivity;
-        }
-
         @Override
         public void onResponse(@NonNull Call<MessageResponse[]> call, Response<MessageResponse[]> response) {
             if (response.code() != ChatAppAPI.OK_STATUS) {
-                Toast.makeText(chatActivity, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -255,17 +263,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private class SendMessageResponseHandler implements Callback<SendMessageResponse> {
-
-        private ChatActivity chatActivity;
-
-        public SendMessageResponseHandler(ChatActivity chatActivity) {
-            this.chatActivity = chatActivity;
-        }
-
         @Override
         public void onResponse(@NonNull Call<SendMessageResponse> call, Response<SendMessageResponse> response) {
             if (response.code() != ChatAppAPI.OK_STATUS) {
-                Toast.makeText(chatActivity, "Failed to connect to server.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatActivity.this, "Failed to connect to server.", Toast.LENGTH_SHORT).show();
                 return;
             }
 

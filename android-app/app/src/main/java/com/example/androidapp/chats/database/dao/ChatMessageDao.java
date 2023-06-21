@@ -19,6 +19,9 @@ public interface ChatMessageDao {
     @Query("SELECT * FROM chat_messages WHERE chatId = :chatId")
     List<ChatMessage> getChatMessages(int chatId);
 
+    @Query("SELECT * FROM chat_messages WHERE chatId = :chatId AND messageId = :msgId LIMIT 1")
+    ChatMessage get(int chatId, int msgId);
+
     @Insert
     void insert(ChatMessage... messages);
 
@@ -30,4 +33,8 @@ public interface ChatMessageDao {
 
     @Query("SELECT * FROM chat_messages WHERE chatId = :chatId ORDER BY id DESC LIMIT 1")
     ChatMessage getLastChatMessage(int chatId);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM chat_messages WHERE chatId = :chatId AND messageId = :msgId LIMIT 1)")
+    boolean exists(int chatId, int msgId);
+
 }

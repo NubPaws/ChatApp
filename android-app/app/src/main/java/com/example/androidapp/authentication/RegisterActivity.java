@@ -1,5 +1,7 @@
 package com.example.androidapp.authentication;
 
+import static com.example.androidapp.authentication.Validation.validateRegister;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -29,8 +31,6 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -76,24 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
             EditText etConfirmPassword = findViewById(R.id.etConfirmPassword);
             EditText etDisplayName = findViewById(R.id.etDisplayName);
 
-            if (Validation.validateUsername(etUsername)
-                    && Validation.validatePassword(etPassword)
-                    && Validation.validatePassword(etConfirmPassword)
-                    && Validation.confirmPasswordsMatch(etPassword, etConfirmPassword) &&
-                    Validation.validateDisplayName(etDisplayName)
-                    && Validation.validateProfilePicture(imPreviewPicture, this.getApplicationContext())) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(this.getApplicationContext().getString(R.string.BaseUrl))
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                ChatAppAPI api = retrofit.create(ChatAppAPI.class);
+            boolean isRegisterValid = validateRegister(etUsername, etPassword, etConfirmPassword,
+                    etDisplayName, imPreviewPicture, getApplicationContext());
+            if (isRegisterValid) {
+                ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
 
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                Bitmap bitmap = ((BitmapDrawable) imPreviewPicture.getDrawable()).getBitmap();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-                String fullImageUri = "data:image/jpeg;base64," + imageString;
+                String fullImageUri = generateFullImageUri(imPreviewPicture);
 
                 Call<RegisterResponse> registerAttempt = api.register(
                         new RegisterRequest(etUsername.getText().toString(),
@@ -101,33 +89,36 @@ public class RegisterActivity extends AppCompatActivity {
                                 etDisplayName.getText().toString(),
                                 fullImageUri));
 
-                registerAttempt.enqueue(new Callback<RegisterResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
-                        CharSequence text;
-                        int duration = Toast.LENGTH_SHORT;
-                        Toast toast;
-
-                        if (response.code() == 200) {
-                            RegisterResponse userDate = response.body();
-                            text = "Successfully registered";
-                            toast = Toast.makeText(getApplicationContext(), text, duration);
-                            toast.show();
-                            finish();
-                        } else {
-                            text = "Error while trying to register";
-                            toast = Toast.makeText(getApplicationContext(), text, duration);
-                            toast.show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<RegisterResponse> call, @NonNull Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
+                registerAttempt.enqueue(new RegisterResponseHandler());
             }
         });
     }
+
+    private String generateFullImageUri(ImageView imageView) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return "data:image/jpeg;base64," + imageString;
+    }
+
+    public class RegisterResponseHandler implements Callback<RegisterResponse> {
+        @Override
+        public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
+            if (response.code() == 200) {
+                RegisterResponse userDate = response.body();
+                Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(RegisterActivity.this, "Error while trying to register", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call<RegisterResponse> call, @NonNull Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
 }

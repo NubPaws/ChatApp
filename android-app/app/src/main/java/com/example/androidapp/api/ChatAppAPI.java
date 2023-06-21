@@ -3,6 +3,7 @@ package com.example.androidapp.api;
 import android.content.Context;
 
 import com.example.androidapp.R;
+import com.example.androidapp.api.requests.AddContactRequest;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.api.requests.RegisterRequest;
 import com.example.androidapp.api.requests.SendMessageRequest;
@@ -47,6 +48,10 @@ public interface ChatAppAPI {
     Call<SendMessageResponse> sendMessage(
             @Header("Authorization") String token, @Path("id") int id, @Body SendMessageRequest msg
     );
+
+    @Headers({"Content-Type: application/json"})
+    @POST("Chats/")
+    Call<Void> addContact(@Header("Authorization") String token, @Body AddContactRequest req);
 
     static Retrofit createRetrofit(Context context) {
         return new Retrofit.Builder()

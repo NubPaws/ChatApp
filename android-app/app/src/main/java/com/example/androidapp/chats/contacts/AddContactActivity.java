@@ -1,31 +1,36 @@
 package com.example.androidapp.chats.contacts;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
-import com.example.androidapp.chats.database.AppDB;
-import com.example.androidapp.chats.database.entities.ContactCard;
-import com.example.androidapp.chats.database.dao.ContactCardDao;
+import com.example.androidapp.api.ChatAppAPI;
+import com.example.androidapp.api.requests.AddContactRequest;
 
-import java.util.Date;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class AddContactActivity extends AppCompatActivity {
+
+    private String jwtToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
+
+        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
 
         final EditText editText = findViewById(R.id.add_contact_edit_text);
         Button cancelBtn = findViewById(R.id.add_contact_cancel_btn);
@@ -51,22 +56,32 @@ public class AddContactActivity extends AppCompatActivity {
 
     private void handleSave(String username) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
 
         executor.execute(() -> {
-            AppDB db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "ChatDB").build();
-            ContactCardDao contactsDao = db.contactCardDao();
-            // TODO: Check that the username is indeed in the database.
+            ChatAppAPI.createAPI(getApplicationContext())
+                    .addContact(jwtToken, new AddContactRequest(username))
+                    .enqueue(new AddContactResponseHandler());
 
-            /* TODO: After checking that the username exists load the proper information which is -
-                : chatId, username, profilePic, displayName, lastMessage
-            */
-            // ContactCard card = new ContactCard(username, "", username, new Date().toString());
-            // List<ContactCard> cards = contactsDao.index();
-            // contactsDao.insert(card);
-
-            handler.post(this::finish);
         });
+    }
+
+    public class AddContactResponseHandler implements Callback<Void> {
+
+        @Override
+        public void onResponse(@NotNull Call<Void> call, @NotNull Response<Void> response) {
+            if (response.isSuccessful()) {
+                Toast.makeText(AddContactActivity.this, "Successfully added contact", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(AddContactActivity.this, "Failed to add contact", Toast.LENGTH_SHORT).show();
+            }
+
+            finish();
+        }
+
+        @Override
+        public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
+
+        }
     }
 
 }

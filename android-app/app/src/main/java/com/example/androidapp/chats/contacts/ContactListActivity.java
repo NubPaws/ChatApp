@@ -80,7 +80,9 @@ public class ContactListActivity extends AppCompatActivity
         // have it created already.
         fab = findViewById(R.id.contact_add_btn);
         fab.setOnClickListener(v -> {
-            startActivity(new Intent(this, AddContactActivity.class));
+            Intent intent = new Intent(this, AddContactActivity.class);
+            intent.putExtra(MainActivity.JWT_TOKEN_KEY, jwtToken);
+            startActivity(intent);
         });
     }
 
@@ -141,9 +143,13 @@ public class ContactListActivity extends AppCompatActivity
 
         executor.execute(() -> {
             for (LastMessageResponse msg : lastMessages) {
+                String lastMessage = "";
+                if (msg.getLastMessage() != null)
+                    lastMessage = msg.getLastMessage().getContent();
+
                 if (contactsDao.exists(msg.getUser().getUsername())) {
                     ContactCard card = contactsDao.get(msg.getUser().getUsername());
-                    card.setLastMessage(msg.getLastMessage().getCreated());
+                    card.setLastMessage(lastMessage);
                     contactsDao.update(card);
                 } else {
                     ContactCard card = new ContactCard(
@@ -151,7 +157,7 @@ public class ContactListActivity extends AppCompatActivity
                             msg.getUser().getUsername(),
                             msg.getUser().getProfilePic(),
                             msg.getUser().getDisplayName(),
-                            msg.getLastMessage().getCreated()
+                            lastMessage
                     );
                     contactsDao.insert(card);
                 }

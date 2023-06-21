@@ -53,4 +53,16 @@ public class Validation {
         }
         return true;
     }
+
+    public static boolean validateRegister(EditText username, EditText password,
+                                           EditText password2, EditText displayName,
+                                           ImageView profilePic, Context context) {
+        return validateUsername(username)
+                && validatePassword(password)
+                && validatePassword(password2)
+                && confirmPasswordsMatch(password, password2)
+                && validateDisplayName(displayName)
+                && Validation.validateProfilePicture(profilePic, context);
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.example.androidapp.authentication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,18 +9,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
+import com.example.androidapp.chats.contacts.ContactListActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private EditText etLoginUsername;
+    private EditText etLoginPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,52 +37,49 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        etLoginUsername = findViewById(R.id.etLoginUsername);
+        etLoginPassword = findViewById(R.id.etLoginPassword);
 
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(view -> {
-            EditText etLoginUsername = findViewById(R.id.etLoginUsername);
-            EditText etLoginPassword = findViewById(R.id.etLoginPassword);
             if (Validation.validateUsername(etLoginUsername) && Validation.validatePassword(etLoginPassword)) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(this.getApplicationContext().getString(R.string.BaseUrl))
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                ChatAppAPI api = retrofit.create(ChatAppAPI.class);
+                ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
 
                 Call<String> loginAttempt = api.login(new LoginRequest(etLoginUsername.getText().toString(),
                         etLoginPassword.getText().toString()));
 
-                loginAttempt.enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                        int duration = Toast.LENGTH_SHORT;
-                        CharSequence text;
-                        Toast toast;
-
-                        if (response.code() == 200) {
-                            String jwt = response.body();
-                            text = "Successfully logged in";
-                            toast = Toast.makeText(getApplicationContext(), text, duration);
-                            toast.show();
-
-
-                        } else {
-                            text = "Error while trying to login";
-
-                            toast = Toast.makeText(getApplicationContext(), text, duration);
-                            toast.show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
+                loginAttempt.enqueue(new LoginResponseHandler());
             }
         });
     }
+
+    private void successfulLogin(String jwtToken) {
+        Intent intent = new Intent(this, ContactListActivity.class);
+
+        // Load the payload, make sure no raccoons are near by.
+        intent.putExtra(MainActivity.JWT_TOKEN_KEY, "bearer " + jwtToken);
+        intent.putExtra(MainActivity.USERNAME_KEY, etLoginUsername.getText().toString());
+
+        this.startActivity(intent);
+    }
+
+    public class LoginResponseHandler implements Callback<String> {
+
+        @Override
+        public void onResponse(@NotNull Call<String> call, Response<String> response) {
+            if (response.code() == 200) {
+                String jwt = response.body();
+                Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
+                successfulLogin(jwt);
+            } else {
+                Toast.makeText(LoginActivity.this, "Error while trying to login", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(@NotNull Call<String> call, @NotNull Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
 }

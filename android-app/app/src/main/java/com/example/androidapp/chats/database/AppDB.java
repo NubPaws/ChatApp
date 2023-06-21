@@ -16,7 +16,7 @@ import com.example.androidapp.chats.database.entities.User;
 @Database(
         entities = {ContactCard.class, User.class, ChatMessage.class},
         exportSchema = false,
-        version = 6
+        version = 7
 )
 public abstract class AppDB extends RoomDatabase {
 

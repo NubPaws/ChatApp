@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.AddContactRequest;
@@ -29,7 +28,7 @@ public class AddContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
-        jwtToken = getIntent().getStringExtra(MainActivity.JWT_TOKEN_KEY);
+        jwtToken = getIntent().getStringExtra(getString(R.string.jwt_token_key));
 
         final EditText editText = findViewById(R.id.add_contact_edit_text);
         Button cancelBtn = findViewById(R.id.add_contact_cancel_btn);
@@ -68,7 +67,7 @@ public class AddContactActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-            if (response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 Toast.makeText(AddContactActivity.this, "Successfully added contact", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(AddContactActivity.this, "Failed to add contact", Toast.LENGTH_SHORT).show();

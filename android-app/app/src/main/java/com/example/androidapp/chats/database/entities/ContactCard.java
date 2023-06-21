@@ -55,9 +55,7 @@ public class ContactCard {
     }
 
     public void setProfileImage(String profileImage) {
-        String pureBase64 = profileImage.substring(profileImage.indexOf(",") + 1);
-
-        this.profileImage = pureBase64;
+        this.profileImage = profileImage.substring(profileImage.indexOf(",") + 1);
     }
 
     public String getDisplayName() {

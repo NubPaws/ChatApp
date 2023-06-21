@@ -12,10 +12,16 @@ import android.widget.TextView;
 
 import com.example.androidapp.R;
 import com.example.androidapp.chats.database.entities.ContactCard;
+import com.example.androidapp.utils.JSDateParser;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
 public class ContactsAdapter extends BaseAdapter {
+
+    private JSDateParser dateParser = new JSDateParser();
 
     private List<ContactCard> cards;
 
@@ -62,7 +68,13 @@ public class ContactsAdapter extends BaseAdapter {
         ViewHolder viewHolder = (ViewHolder)convertView.getTag();
         viewHolder.profileImage.setImageBitmap(cc.getProfileImageBitmap());
         viewHolder.displayName.setText(cc.getDisplayName());
-        viewHolder.lastMessage.setText(cc.getLastMessage());
+
+        if (cc.getLastMessage() == null || cc.getLastMessage().isEmpty())
+            viewHolder.lastMessage.setText("");
+        else {
+            dateParser.setDateStr(cc.getLastMessage());
+            viewHolder.lastMessage.setText(dateParser.getFullDate());
+        }
 
         return convertView;
     }

@@ -2,6 +2,7 @@ package com.example.androidapp.chats.messages;
 
 import com.example.androidapp.R;
 import com.example.androidapp.chats.database.entities.ChatMessage;
+import com.example.androidapp.utils.JSDateParser;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.ChatViewHolder> {
+
+    private JSDateParser dateParser = new JSDateParser();
 
     private List<ChatMessage> messages;
 
@@ -47,7 +50,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ChatMessage message = messages.get(position);
 
         holder.messageView.setText(message.getContent());
-        holder.timestampView.setText(message.getTimestamp());
+
+        dateParser.setDateStr(message.getTimestamp());
+        holder.timestampView.setText(dateParser.getTimeOfDay());
         switch (message.getDirection()) {
             case ChatMessage.DIR_LEFT:
                 holder.layout.setGravity(Gravity.START);

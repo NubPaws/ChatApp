@@ -1,6 +1,7 @@
 package com.example.androidapp.chats.contacts;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.androidapp.MainActivity;
 import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.responses.LastMessageResponse;
@@ -59,8 +59,8 @@ public class ContactListActivity extends AppCompatActivity
 
         // Get that sweet sweet JWT token as we love it.
         Intent intent = getIntent();
-        jwtToken = intent.getStringExtra(MainActivity.JWT_TOKEN_KEY);
-        username = intent.getStringExtra(MainActivity.USERNAME_KEY);
+        jwtToken = intent.getStringExtra(getString(R.string.jwt_token_key));
+        username = intent.getStringExtra(getString(R.string.username_key));
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.getContacts().observe(this, this);
@@ -88,7 +88,7 @@ public class ContactListActivity extends AppCompatActivity
 
         // Make the back button work :D.
         ImageButton backBtn = findViewById(R.id.contact_list_back_button);
-        backBtn.setOnClickListener(v -> finish());
+        backBtn.setOnClickListener(new HandleLogout());
     }
 
     private void initAddContactFAB() {
@@ -97,7 +97,7 @@ public class ContactListActivity extends AppCompatActivity
         fab = findViewById(R.id.contact_add_btn);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContactActivity.class);
-            intent.putExtra(MainActivity.JWT_TOKEN_KEY, jwtToken);
+            intent.putExtra(getString(R.string.jwt_token_key), jwtToken);
             startActivity(intent);
         });
     }
@@ -192,9 +192,9 @@ public class ContactListActivity extends AppCompatActivity
         Intent intent = new Intent(ContactListActivity.this, ChatActivity.class);
 
         // Load the payload!
-        intent.putExtra(MainActivity.JWT_TOKEN_KEY, jwtToken);
-        intent.putExtra(MainActivity.CHAT_ID_KEY, card.getChatId());
-        intent.putExtra(MainActivity.USERNAME_KEY, username);
+        intent.putExtra(getString(R.string.jwt_token_key), jwtToken);
+        intent.putExtra(getString(R.string.chat_id_key), card.getChatId());
+        intent.putExtra(getString(R.string.username_key), username);
 
         // Send 'em away bois!
         startActivity(intent);
@@ -240,7 +240,7 @@ public class ContactListActivity extends AppCompatActivity
     private class LastMessageResponseHandler implements Callback<LastMessageResponse[]> {
         @Override
         public void onResponse(@NonNull Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
-            if (response.code() != ChatAppAPI.OK_STATUS) {
+            if (!response.isSuccessful()) {
                 swiper.setRefreshing(false);
                 return;
             }
@@ -259,5 +259,19 @@ public class ContactListActivity extends AppCompatActivity
         }
     }
 
+    public class HandleLogout implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ContactListActivity.this);
+
+            builder.setTitle("Confirm Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Confirm", (dialog, which) -> finish())
+                    .setNegativeButton("Cancel", (dialog, which) -> {});
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
 
 }

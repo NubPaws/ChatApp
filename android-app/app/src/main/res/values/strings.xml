@@ -11,7 +11,7 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="user_profile_picture">User Profile Picture</string>
 <!--    <string name="BaseUrl">http://192.168.6.128:5000/api/</string>-->
-    <string name="BaseUrl">http://10.0.2.2:5000/api/</string>
+    <string name="BaseUrl">http://10.0.0.11:5000/api/</string>
     <string name="display_name_tmp">Display Name Here</string>
     <string name="last_message_tmp">Last Message Date Here</string>
     <string name="add_contact_btn_content_desc">Add Contact</string>
@@ -25,5 +25,11 @@
     <string name="add_contact_enter_name_hint">Enter contact name…</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
+
+    <string name="jwt_token_key">jwt_token</string>
+    <string name="username_key">username</string>
+    <string name="chat_id_key">chat_id</string>
+    <string name="logged_in_key">logged_in</string>
+    <string name="shared_prefs_name">MyPrefs</string>
 </resources>
 

@@ -1,9 +1,5 @@
 package com.example.androidapp.chats.messages;
 
-import static com.example.androidapp.MainActivity.JWT_TOKEN_KEY;
-import static com.example.androidapp.MainActivity.USERNAME_KEY;
-import static com.example.androidapp.MainActivity.CHAT_ID_KEY;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -97,9 +93,9 @@ public class ChatActivity extends AppCompatActivity
 
     private void loadIntentInformation() {
         Intent intent = getIntent();
-        jwtToken = intent.getStringExtra(JWT_TOKEN_KEY);
-        chatId = intent.getIntExtra(CHAT_ID_KEY, INVALID_CHAT_ID);
-        username = intent.getStringExtra(USERNAME_KEY);
+        jwtToken = intent.getStringExtra(getString(R.string.jwt_token_key));
+        chatId = intent.getIntExtra(getString(R.string.chat_id_key), INVALID_CHAT_ID);
+        username = intent.getStringExtra(getString(R.string.username_key));
 
         if (chatId == INVALID_CHAT_ID) {
             Toast.makeText(this, "Invalid Chat ID", Toast.LENGTH_SHORT).show();
@@ -246,7 +242,7 @@ public class ChatActivity extends AppCompatActivity
     private class MessageResponseHandler implements Callback<MessageResponse[]> {
         @Override
         public void onResponse(@NonNull Call<MessageResponse[]> call, Response<MessageResponse[]> response) {
-            if (response.code() != ChatAppAPI.OK_STATUS) {
+            if (!response.isSuccessful()) {
                 Toast.makeText(ChatActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -265,7 +261,7 @@ public class ChatActivity extends AppCompatActivity
     private class SendMessageResponseHandler implements Callback<SendMessageResponse> {
         @Override
         public void onResponse(@NonNull Call<SendMessageResponse> call, Response<SendMessageResponse> response) {
-            if (response.code() != ChatAppAPI.OK_STATUS) {
+            if (!response.isSuccessful()) {
                 Toast.makeText(ChatActivity.this, "Failed to connect to server.", Toast.LENGTH_SHORT).show();
                 return;
             }

@@ -10,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ import com.example.androidapp.api.responses.RegisterResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,12 +52,10 @@ public class RegisterActivity extends AppCompatActivity {
                         if (data != null && data.getData() != null) {
                             Uri selectedImageUri = data.getData();
                             Bitmap selectedImageBitmap = null;
-                            try {
-                                selectedImageBitmap = MediaStore.Images.Media.getBitmap(
-                                        this.getContentResolver(),
-                                        selectedImageUri);
+                            try (InputStream inputStream = getContentResolver().openInputStream(selectedImageUri)) {
+                                selectedImageBitmap = BitmapFactory.decodeStream(inputStream);
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                Log.e("IOException convert to bitmap", e.toString());
                             }
                             imPreviewPicture.setImageBitmap(selectedImageBitmap);
                         }
@@ -107,7 +108,6 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
             if (response.code() == 200) {
-                RegisterResponse userDate = response.body();
                 Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
                 finish();
             } else {

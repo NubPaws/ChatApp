@@ -1,5 +1,6 @@
 package com.example.androidapp.chats.contacts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class AddContactActivity extends AppCompatActivity {
     public class AddContactResponseHandler implements Callback<Void> {
 
         @Override
-        public void onResponse(@NotNull Call<Void> call, @NotNull Response<Void> response) {
+        public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
             if (response.isSuccessful()) {
                 Toast.makeText(AddContactActivity.this, "Successfully added contact", Toast.LENGTH_SHORT).show();
             } else {
@@ -79,7 +80,7 @@ public class AddContactActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
+        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
         }
     }

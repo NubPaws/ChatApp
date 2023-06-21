@@ -1,5 +1,6 @@
 package com.example.androidapp.authentication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     public class LoginResponseHandler implements Callback<String> {
 
         @Override
-        public void onResponse(@NotNull Call<String> call, Response<String> response) {
+        public void onResponse(@NonNull Call<String> call, Response<String> response) {
             if (response.code() == 200) {
                 String jwt = response.body();
                 Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(@NotNull Call<String> call, @NotNull Throwable t) {
+        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
             t.printStackTrace();
         }
     }

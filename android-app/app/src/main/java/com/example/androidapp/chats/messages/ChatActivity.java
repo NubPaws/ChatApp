@@ -237,7 +237,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public void onResponse(@NotNull Call<MessageResponse[]> call, Response<MessageResponse[]> response) {
+        public void onResponse(@NonNull Call<MessageResponse[]> call, Response<MessageResponse[]> response) {
             if (response.code() != ChatAppAPI.OK_STATUS) {
                 Toast.makeText(chatActivity, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
                 return;
@@ -251,7 +251,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public void onFailure(@NotNull Call<MessageResponse[]> call, @NotNull Throwable t) {}
+        public void onFailure(@NonNull Call<MessageResponse[]> call, @NonNull Throwable t) {}
     }
 
     private class SendMessageResponseHandler implements Callback<SendMessageResponse> {
@@ -263,7 +263,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public void onResponse(@NotNull Call<SendMessageResponse> call, Response<SendMessageResponse> response) {
+        public void onResponse(@NonNull Call<SendMessageResponse> call, Response<SendMessageResponse> response) {
             if (response.code() != ChatAppAPI.OK_STATUS) {
                 Toast.makeText(chatActivity, "Failed to connect to server.", Toast.LENGTH_SHORT).show();
                 return;
@@ -275,7 +275,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public void onFailure(@NotNull Call<SendMessageResponse> call, @NotNull Throwable t) {}
+        public void onFailure(@NonNull Call<SendMessageResponse> call, @NonNull Throwable t) {}
     }
 
 }

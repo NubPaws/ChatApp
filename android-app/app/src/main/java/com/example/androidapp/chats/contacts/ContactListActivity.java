@@ -1,5 +1,6 @@
 package com.example.androidapp.chats.contacts;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -228,7 +229,7 @@ public class ContactListActivity extends AppCompatActivity
         }
 
         @Override
-        public void onResponse(@NotNull Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
+        public void onResponse(@NonNull Call<LastMessageResponse[]> call, Response<LastMessageResponse[]> response) {
             if (response.code() != ChatAppAPI.OK_STATUS) {
                 activity.swiper.setRefreshing(false);
                 return;
@@ -242,7 +243,7 @@ public class ContactListActivity extends AppCompatActivity
         }
 
         @Override
-        public void onFailure(@NotNull Call<LastMessageResponse[]> call, @NotNull Throwable t) {
+        public void onFailure(@NonNull Call<LastMessageResponse[]> call, @NonNull Throwable t) {
             Toast.makeText(activity, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
             activity.swiper.setRefreshing(false);;
         }

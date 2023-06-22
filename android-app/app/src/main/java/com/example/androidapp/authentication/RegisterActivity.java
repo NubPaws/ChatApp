@@ -24,6 +24,7 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.RegisterRequest;
 import com.example.androidapp.api.responses.RegisterResponse;
+import com.example.androidapp.settings.SettingsActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -91,6 +92,12 @@ public class RegisterActivity extends AppCompatActivity {
 
                 registerAttempt.enqueue(new RegisterResponseHandler());
             }
+        });
+
+        Button btnSettingsFromRegister = findViewById(R.id.btnSettingsFromRegister);
+        btnSettingsFromRegister.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         });
     }
 

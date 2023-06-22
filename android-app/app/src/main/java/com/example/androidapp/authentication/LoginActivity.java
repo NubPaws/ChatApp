@@ -15,6 +15,7 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.example.androidapp.settings.SettingsActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 loginAttempt.enqueue(new LoginResponseHandler());
             }
+        });
+
+        Button btnSettingsFromLogin = findViewById(R.id.btnSettingsFromLogin);
+        btnSettingsFromLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         });
     }
 

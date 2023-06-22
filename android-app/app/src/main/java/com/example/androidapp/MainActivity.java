@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.example.androidapp.authentication.LoginActivity;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.example.androidapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 

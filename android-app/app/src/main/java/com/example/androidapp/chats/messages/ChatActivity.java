@@ -222,8 +222,7 @@ public class ChatActivity extends AppCompatActivity
             ChatMessageDao dao = db.chatMessageDao();
 
             for (ChatMessage msg : messages) {
-                ChatMessage fromDB = dao.get(msg.getChatId(), msg.getMessageId());
-                if (fromDB == null) {
+                if (!dao.exists(msg.getChatId(), msg.getMessageId())) {
                     dao.insert(msg);
                 }
             }

@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(@NonNull Call<String> call, Response<String> response) {
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 String jwt = response.body();
                 Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                 successfulLogin(jwt);

@@ -27,6 +27,7 @@ import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.User;
+import com.example.androidapp.utils.PushNotificationsHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -45,12 +46,13 @@ public class ContactListActivity extends AppCompatActivity
     private String jwtToken;
     private String username;
 
+    private PushNotificationsHandler notifications;
+
     private AppDB db;
     private ChatViewModel chatViewModel;
     private ContactsAdapter adapter;
     private FloatingActionButton fab;
     private SwipeRefreshLayout swiper;
-    private ListView contactListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,10 @@ public class ContactListActivity extends AppCompatActivity
         Intent intent = getIntent();
         jwtToken = intent.getStringExtra(getString(R.string.jwt_token_key));
         username = intent.getStringExtra(getString(R.string.username_key));
+
+        notifications = new PushNotificationsHandler(this, "push_id", "Chat App Push Notifications");
+        if (notifications.needPermissions())
+            notifications.requestNotificationPermission();
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.getContacts().observe(this, this);
@@ -76,7 +82,7 @@ public class ContactListActivity extends AppCompatActivity
         initAddContactFAB();
 
         // Setup the contacts list view with all of our fancy listeners.
-        contactListView = findViewById(R.id.contact_list_view);
+        ListView contactListView = findViewById(R.id.contact_list_view);
         contactListView.setOnItemClickListener(this);
         contactListView.setOnScrollListener(this);
 
@@ -209,6 +215,13 @@ public class ContactListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         loadContacts();
+        if (notifications.needPermissions())
+            notifications.requestNotificationPermission();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

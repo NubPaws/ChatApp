@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.User;
+import com.example.androidapp.settings.SettingsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +76,12 @@ public class ContactListActivity extends AppCompatActivity
         // Make the back button work :D.
         ImageButton backBtn = findViewById(R.id.contact_list_back_button);
         backBtn.setOnClickListener(v -> finish());
+
+        Button btnSettingsFromContactList = findViewById(R.id.btnSettingsFromContactList);
+        btnSettingsFromContactList.setOnClickListener(view -> {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+        });
     }
 
     private void initAddContactFAB() {

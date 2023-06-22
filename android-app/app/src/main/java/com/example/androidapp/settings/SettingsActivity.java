@@ -40,9 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
             url += getString(R.string.ApiPath);
             editor.putString(getString(R.string.BaseUrl), url);
             editor.apply();
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
         });
     }
 

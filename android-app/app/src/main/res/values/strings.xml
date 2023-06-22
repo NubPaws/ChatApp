@@ -33,5 +33,6 @@
     <string name="chat_app_settings">Chat App Settings</string>
     <string name="server_address">Server Address</string>
     <string name="select">Select</string>
+    <string name="settings">Settings</string>
 </resources>
 

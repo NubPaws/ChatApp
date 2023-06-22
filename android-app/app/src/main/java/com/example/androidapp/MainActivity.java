@@ -26,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
 //        intent.putExtra(USERNAME_KEY, "rami");
 //        startActivity(intent);
       
-//        Intent intent = new Intent(this, LoginActivity.class);
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 }

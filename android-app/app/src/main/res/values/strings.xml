@@ -11,7 +11,12 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="user_profile_picture">User Profile Picture</string>
 <!--    <string name="BaseUrl">http://192.168.6.128:5000/api/</string>-->
-    <string name="BaseUrl">http://10.0.2.2:5000/api/</string>
+    <string name="DefaultBaseUrl">http://10.0.2.2:5000/api/</string>
+
+    <string name="ApiPath">/api/</string>
+    <string name="BaseUrl">BaseUrl</string>
+    <string name="preference_file_key">com.example.androidapp.PREFERENCE_FILE_KEY</string>
+    <!--    <string name="BaseUrl">http://10.0.2.2:5000/api/</string>-->
     <string name="display_name_tmp">Display Name Here</string>
     <string name="last_message_tmp">Last Message Date Here</string>
     <string name="add_contact_btn_content_desc">Add Contact</string>
@@ -25,5 +30,8 @@
     <string name="add_contact_enter_name_hint">Enter contact name…</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
+    <string name="chat_app_settings">Chat App Settings</string>
+    <string name="server_address">Server Address</string>
+    <string name="select">Select</string>
 </resources>
 

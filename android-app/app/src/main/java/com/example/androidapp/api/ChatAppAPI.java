@@ -1,6 +1,7 @@
 package com.example.androidapp.api;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.example.androidapp.R;
 import com.example.androidapp.api.requests.AddContactRequest;
@@ -54,8 +55,15 @@ public interface ChatAppAPI {
     Call<Void> addContact(@Header("Authorization") String token, @Body AddContactRequest req);
 
     static Retrofit createRetrofit(Context context) {
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        String defaultBaseUrl = context.getResources().getString(R.string.DefaultBaseUrl);
+        String baseUrl = sharedPref.getString(context.getString(R.string.BaseUrl), defaultBaseUrl);
+
         return new Retrofit.Builder()
-                .baseUrl(context.getString(R.string.BaseUrl))
+                .baseUrl(baseUrl)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

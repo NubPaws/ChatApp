@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.example.androidapp.authentication.LoginActivity;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.example.androidapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
 //        intent.putExtra(USERNAME_KEY, "rami");
 //        startActivity(intent);
       
-        Intent intent = new Intent(this, LoginActivity.class);
+//        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }

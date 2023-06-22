@@ -130,7 +130,7 @@ public class ContactListActivity extends AppCompatActivity
      * If a new user has connected we will delete all of the previous data, otherwise
      * the data stays and no deletion is done. Just updating the user's jwtToken.
      */
-    private void checkToDeleteUserTable() {
+    private synchronized void checkToDeleteUserTable() {
         User user = db.userDao().getUser();
         if (user == null) {
             db.userDao().insert(new User(username, jwtToken));

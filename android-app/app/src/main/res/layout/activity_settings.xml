@@ -40,6 +40,46 @@
             android:layout_gravity="center"
             android:text="@string/select" />
 
+        <TextView
+            android:id="@+id/idtvTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="Select App Theme"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/rgThemeSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <RadioButton
+                android:onClick="onThemeSelected"
+                android:id="@+id/rbLight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="Light" />
+
+            <RadioButton
+                android:onClick="onThemeSelected"
+                android:id="@+id/rbDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Dark" />
+
+        </RadioGroup>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

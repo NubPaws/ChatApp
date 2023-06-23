@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <service
-            android:name=".chats.connectivity.ChatMessagesService"
+            android:name=".connectivity.ChatMessagesService"
             android:enabled="true"
             android:exported="true"></service>
         <!-- The main activity is now the login activity. The raccoons have taken over. -->

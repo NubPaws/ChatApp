@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,12 +17,13 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText etLoginUsername;
     private EditText etLoginPassword;
@@ -43,16 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         etLoginPassword = findViewById(R.id.etLoginPassword);
 
         Button btnLogin = findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(view -> {
-            if (Validation.validateUsername(etLoginUsername) && Validation.validatePassword(etLoginPassword)) {
-                ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
-
-                Call<String> loginAttempt = api.login(new LoginRequest(etLoginUsername.getText().toString(),
-                        etLoginPassword.getText().toString()));
-
-                loginAttempt.enqueue(new LoginResponseHandler());
-            }
-        });
+        btnLogin.setOnClickListener(this);
     }
 
     private void checkUserAlreadyLoggedIn() {
@@ -118,6 +111,20 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    @Override
+    public void onClick(View v) {
+        if (Validation.validateUsername(etLoginUsername) && Validation.validatePassword(etLoginPassword)) {
+            Toast.makeText(this, "Invalid username and/or password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create the api and do the api request.
+        ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
+        Call<String> loginAttempt = api.login(new LoginRequest(etLoginUsername.getText().toString(),
+                etLoginPassword.getText().toString()));
+        loginAttempt.enqueue(new LoginResponseHandler());
+    }
+
     public class LoginResponseHandler implements Callback<String> {
 
         @Override
@@ -138,3 +145,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
+
+/*
+A raccoon walks into a cat bar.
+The bartender tells the raccoon "You're not welcomed here, this place is only for cats".
+The raccoon response "When you think about it I am a cat".
+Bartender: "Home come?"
+Raccoon: "Well I got 4 feet, I'm cute, I like eating and when I am out and about I tend to visit the local dumpster
+    for some decent dinner"
+Bartender: "Hmm... you got a point. In that case what would you like to order?"
+Raccoon: "I dunno, got any garbage liquor?"
+
+No one knows how this story ended, as the raccoons shortly after tried controlling the world.
+That's why we make sure there are no raccoons nearby when we are preparing the payload.
+Cats are way better anyways!
+*/

@@ -66,7 +66,7 @@ public class ContactListActivity extends AppCompatActivity
 
         notifications = new PushNotificationsHandler(this, "push_id", "Chat App Push Notifications");
         if (notifications.needPermissions())
-            notifications.requestNotificationPermission();
+            notifications.requestNotificationPermission(this);
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.getContacts().observe(this, this);
@@ -216,7 +216,7 @@ public class ContactListActivity extends AppCompatActivity
         super.onResume();
         loadContacts();
         if (notifications.needPermissions())
-            notifications.requestNotificationPermission();
+            notifications.requestNotificationPermission(this);
     }
 
     @Override

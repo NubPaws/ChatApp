@@ -39,13 +39,8 @@ export function ChatWindow(props) {
 				const res = await fetch(url, request);
 				const response = await res.json();
 				
-				const {sender, content, created} = response;
-				webSocket.send({
-					sender: sender.username,
-					receiver: activeChat.username,
-					content: content,
-					timestamp: created,
-				});
+				const {content, created} = response;
+				
 				sendMessage(content, created, messages, setMessages);
 				webSocket.setLastSent(created);
 			} catch (err) {}

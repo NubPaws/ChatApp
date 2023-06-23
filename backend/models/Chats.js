@@ -71,6 +71,19 @@ function getMessagesInChat(chat) {
 	return messages;
 }
 
+export async function getReceiver(username, chatId) {
+	const chats = await getChatById(chatId);
+	if (chats.length < 0)
+		throw new InvalidChatIdError();
+	
+	const chat = chats[0];
+	const users = chat.users;
+	
+	if (users[0].username == username)
+		return users[1].username;
+	return users[0].username;c
+}
+
 /**
  * Returns all of the chats a given user has.
  * @param {string} username The username to get all of the chats of.
@@ -193,6 +206,7 @@ export async function addMessageToChat(username, chatId, messageContent) {
 	if (!isUserPartOfChat(username, chat)) {
 		throw new UserNotPartOfChatError();
 	}
+	messageContent = messageContent.trim();
 	if (messageContent.trim() === "") {
 		throw new InvalidMessageContentError();
 	}

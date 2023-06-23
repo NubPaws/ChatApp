@@ -18,8 +18,11 @@
         tools:targetApi="33">
         <service
             android:name=".connectivity.ChatMessagesService"
-            android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <!-- The main activity is now the login activity. The raccoons have taken over. -->
         <activity
             android:name=".authentication.LoginActivity"

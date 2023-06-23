@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { getUsernameFromToken } from "../models/Tokens.js";
 import { createChat, getChat, deleteChat, addMessageToChat, getLastMessageInChats,
-	getAllMessagesInChat } from "../models/Chats.js";
+	getAllMessagesInChat, getReceiver} from "../models/Chats.js";
 import { generateError } from "./Validator.js";
+import { sendInstantMessage } from "./ServerHandler.js";
 
 const router = new Router();
 
@@ -73,12 +74,17 @@ router.delete("/:id", async (req, res, next) => {
 
 router.post("/:id/Messages", async (req, res, next) => {
 	const username = req.username;
-	
 	if (generateError({message: req.body.msg}, res)) {
 		return;
 	}
 	try {
 		const message = await addMessageToChat(username, req.params.id, req.body.msg);
+		// Get the information to send the message for the user live.
+		const chat = await getChat(username, req.params.id);
+		const receiver = await getReceiver(username, req.params.id);
+		console.log(receiver);
+		sendInstantMessage(username, receiver, message.content, message.created);
+		// Return the result to the sender.
 		res.json(message);
 	} catch (err) {
 		next(err);

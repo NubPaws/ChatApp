@@ -17,6 +17,9 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.example.androidapp.connectivity.ChatMessagesService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
@@ -95,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra(jwtTokenKey, fullToken);
         intent.putExtra(usernameKey, username);
 
-        this.startActivity(intent);
+        startActivity(intent);
     }
 
     @Override
@@ -113,15 +116,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (Validation.validateUsername(etLoginUsername) && Validation.validatePassword(etLoginPassword)) {
+        if (!Validation.validateUsername(etLoginUsername) || !Validation.validatePassword(etLoginPassword)) {
             Toast.makeText(this, "Invalid username and/or password", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Create the api and do the api request.
+        final String username = etLoginUsername.getText().toString();
+        final String password = etLoginPassword.getText().toString();
+
+        // Firebase Cloud Messaging token.
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
+        final String fcmToken = prefs.getString(getString(R.string.fcm_token_key), "");
+
         ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
-        Call<String> loginAttempt = api.login(new LoginRequest(etLoginUsername.getText().toString(),
-                etLoginPassword.getText().toString()));
+        Call<String> loginAttempt = api.login(fcmToken, new LoginRequest(username, password));
         loginAttempt.enqueue(new LoginResponseHandler());
     }
 

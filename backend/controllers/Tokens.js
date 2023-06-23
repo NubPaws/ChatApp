@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getToken } from "../models/Tokens.js";
 import { generateError } from "./Validator.js";
+import { addFcmToken } from "./ServerHandler.js";
 
 const router = new Router();
 
@@ -20,6 +21,12 @@ router.post("/", async (req, res, next) => {
 		res.send(token);
 	} catch (err) {
 		next(err);
+	}
+	
+	// Handle FCM token.
+	if (req.headers.fcmtoken) {
+		const fcmToken = req.headers.fcmtoken;
+		addFcmToken(username, fcmToken);
 	}
 });
 

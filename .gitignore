@@ -1,27 +1,27 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # React Application
-/react-app/node_modules
-/react-app/build
+react-app/node_modules
+react-app/build
 
 # Backend Server
-/backend/node_modules
-/backend/.env
+backend/node_modules
+backend/.env
 
 # Other
 /task-server/
 /database/
 
 # Android Studio / Android App
-/android-app/*.iml
-/android-app/.gradle
-/android-app/local.properties
-/android-app/.idea
-/android-app/.DS_Store
-/android-app/build
-/android-app/captures
-/android-app/.externalNativeBuild
-/android-app/.cxx
+android-app/*.iml
+android-app/.gradle
+android-app/local.properties
+android-app/.idea
+android-app/.DS_Store
+android-app/build
+android-app/captures
+android-app/.externalNativeBuild
+android-app/.cxx
 
 
 # IntelliJ

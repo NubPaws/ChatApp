@@ -1,6 +1,6 @@
 import { Chat, Message, getChatById, getChatsByUsername, getNextChatId,
 	getNextMessageId, getUserByUsername } from "./DatabaseConnector.js";
-import { getUser } from "./Users.js";
+import { InvalidUsernameError, getUser } from "./Users.js";
 
 export class ChatAlreadyExistsError extends Error {}
 export class UserNotPartOfChatError extends Error {}
@@ -82,6 +82,15 @@ export async function getReceiver(username, chatId) {
 	if (users[0].username == username)
 		return users[1].username;
 	return users[0].username;c
+}
+
+export async function getDisplayName(username) {
+	const users = await getUserByUsername(username);
+	if (users.length == 0) {
+		throw new InvalidUsernameError();
+	}
+	
+	return users[0].displayName;
 }
 
 /**

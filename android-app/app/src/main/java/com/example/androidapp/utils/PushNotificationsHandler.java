@@ -23,11 +23,11 @@ public class PushNotificationsHandler {
     private final Context context;
     private final String channelId;
 
-    public PushNotificationsHandler(Context context, String channelId, String channelName) {
+    public PushNotificationsHandler(Context context) {
         this.context = context;
-        this.channelId = channelId;
+        this.channelId = "push_chat_app_id";
 
-        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel = new NotificationChannel(channelId, "push_chat_app_name", NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("Push notifications channel for incoming messages.");
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         manager.createNotificationChannel(channel);

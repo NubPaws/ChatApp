@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +32,8 @@ import com.example.androidapp.chats.database.ChatViewModel;
 import com.example.androidapp.chats.database.dao.ChatMessageDao;
 import com.example.androidapp.chats.database.entities.ChatMessage;
 import com.example.androidapp.chats.database.entities.ContactCard;
+import com.example.androidapp.connectivity.ChatMessagesService;
+import com.example.androidapp.utils.PushNotificationsHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +64,17 @@ public class ChatActivity extends AppCompatActivity
     private AppDB db;
     private ChatViewModel chatViewModel;
 
+    private PushNotificationsHandler notificationsHandler;
+    private ChatFirebaseCloudMessageReceiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        notificationsHandler = new PushNotificationsHandler(this);
+
+        receiver = new ChatFirebaseCloudMessageReceiver();
 
         // Build an instance of the app database.
         db = AppDB.create(getApplicationContext());
@@ -143,7 +155,7 @@ public class ChatActivity extends AppCompatActivity
                                        @NonNull RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
 
-                if (parent.getAdapter() == null)
+                if (parent.getAdapter() == null || parent.getAdapter().getItemCount() == 0)
                     return;
 
                 if (parent.getChildAdapterPosition(view) != parent.getAdapter().getItemCount())
@@ -199,6 +211,21 @@ public class ChatActivity extends AppCompatActivity
                 ChatMessage.DIR_RIGHT
         );
         chatViewModel.addChatMessages(toAdd);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(ChatMessagesService.ACTION_DATA_UPDATED);
+        registerReceiver(receiver, intentFilter);
+        ChatMessagesService.addRegisteredReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+        ChatMessagesService.removeRegisteredReceiver();
     }
 
     @Override
@@ -272,6 +299,28 @@ public class ChatActivity extends AppCompatActivity
 
         @Override
         public void onFailure(@NonNull Call<SendMessageResponse> call, @NonNull Throwable t) {}
+    }
+
+    private class ChatFirebaseCloudMessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!intent.getAction().equals(ChatMessagesService.ACTION_DATA_UPDATED)) {
+                return;
+            }
+
+            // Handle the messaged received.
+            int chatId = intent.getIntExtra("chatId", -1);
+            String displayName = intent.getStringExtra("displayName");
+            String content = intent.getStringExtra("content");
+
+            if (chatId == ChatActivity.this.chatId) {
+                loadMessages();
+            } else {
+                notificationsHandler.displayNotification(chatId, displayName, content);
+            }
+        }
+
     }
 
 }

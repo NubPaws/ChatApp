@@ -8,6 +8,7 @@ const router = new Router();
 router.post("/", async (req, res, next) => {
 	// Take the information that should be passed from the app.
 	const { username, password } = req.body;
+	const fcmToken = req.headers.fcmtoken;
 	
 	// Make sure the information is valid.
 	if (generateError({username, password}, res)) {
@@ -24,8 +25,7 @@ router.post("/", async (req, res, next) => {
 	}
 	
 	// Handle FCM token.
-	if (req.headers.fcmtoken) {
-		const fcmToken = req.headers.fcmtoken;
+	if (fcmToken) {
 		addFcmToken(username, fcmToken);
 	}
 });

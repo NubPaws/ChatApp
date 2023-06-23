@@ -7,7 +7,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -27,8 +30,10 @@ import com.example.androidapp.chats.database.entities.ContactCard;
 import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.User;
+import com.example.androidapp.connectivity.ChatMessagesService;
 import com.example.androidapp.utils.PushNotificationsHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +52,7 @@ public class ContactListActivity extends AppCompatActivity
     private String username;
 
     private PushNotificationsHandler notifications;
+    private ContactsFirebaseCloudMessageReceiver receiver;
 
     private AppDB db;
     private ChatViewModel chatViewModel;
@@ -64,9 +70,12 @@ public class ContactListActivity extends AppCompatActivity
         jwtToken = intent.getStringExtra(getString(R.string.jwt_token_key));
         username = intent.getStringExtra(getString(R.string.username_key));
 
-        notifications = new PushNotificationsHandler(this, "push_id", "Chat App Push Notifications");
+        notifications = new PushNotificationsHandler(this);
         if (notifications.needPermissions())
             notifications.requestNotificationPermission(this);
+
+        // Register a receiver for the notifications from the server.
+        receiver = new ContactsFirebaseCloudMessageReceiver();
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.getContacts().observe(this, this);
@@ -217,11 +226,17 @@ public class ContactListActivity extends AppCompatActivity
         loadContacts();
         if (notifications.needPermissions())
             notifications.requestNotificationPermission(this);
+
+        IntentFilter intentFilter = new IntentFilter(ChatMessagesService.ACTION_DATA_UPDATED);
+        registerReceiver(receiver, intentFilter);
+        ChatMessagesService.addRegisteredReceiver();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(receiver);
+        ChatMessagesService.removeRegisteredReceiver();
     }
 
     @Override
@@ -285,6 +300,28 @@ public class ContactListActivity extends AppCompatActivity
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+    }
+
+    private class ContactsFirebaseCloudMessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!intent.getAction().equals(ChatMessagesService.ACTION_DATA_UPDATED)) {
+                return;
+            }
+
+            // Handle the messaged received.
+            int chatId = intent.getIntExtra("chatId", -1);
+            String displayName = intent.getStringExtra("displayName");
+            String content = intent.getStringExtra("content");
+
+            loadContacts();
+
+            Executors.newSingleThreadExecutor().execute(
+                    () -> notifications.displayNotification(chatId, displayName, content)
+            );
+        }
+
     }
 
 }

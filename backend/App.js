@@ -10,6 +10,7 @@ import chatsRouter from "./controllers/Chats.js";
 import tokensRouter from "./controllers/Tokens.js";
 import usersRouter from "./controllers/Users.js";
 import { onConnect } from "./controllers/ServerHandler.js";
+import { initFirebase } from "./models/FirebaseConnector.js";
 
 config();
 
@@ -20,6 +21,10 @@ if (!process.env.JWT_KEY) {
 if (!process.env.PORT) {
 	process.env.PORT = 5000;
 }
+
+// Setup firebase.
+initFirebase();
+console.log("Initizlied Firebase Connection.")
 
 // Connect to the MongoDB server.
 await startMongoDB();

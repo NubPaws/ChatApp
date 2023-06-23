@@ -17,10 +17,6 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.chats.contacts.ContactListActivity;
-import com.example.androidapp.connectivity.ChatMessagesService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +63,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String username = preferences.getString(usernameKey, "");
         String jwtToken = preferences.getString(jwtTokenKey, "");
 
+        // Toss a quick connect so that the server will know that a user has connected.
+        ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
+        Call<String> loginAttempt = api.login(getFcmToken(), new LoginRequest(username));
+        loginAttempt.enqueue(new LoginResponseHandler(false));
+
         Intent intent = new Intent(this, ContactListActivity.class);
         intent.putExtra(usernameKey, username);
         intent.putExtra(jwtTokenKey, jwtToken);
@@ -105,13 +106,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences.Editor editor = getSharedPreferences(
-                getString(R.string.shared_prefs_name), Context.MODE_PRIVATE
-        ).edit();
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
 
-        editor.putBoolean(getString(R.string.logged_in_key), false);
+        prefs.edit()
+                .putBoolean(getString(R.string.logged_in_key), false)
+                .apply();
 
-        editor.apply();
+        ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
+        Call<String> call = api.login("", new LoginRequest(prefs.getString(getString(R.string.username_key), "")));
+        call.enqueue(new LoginResponseHandler(false));
     }
 
     @Override
@@ -125,25 +128,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final String username = etLoginUsername.getText().toString();
         final String password = etLoginPassword.getText().toString();
 
-        // Firebase Cloud Messaging token.
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
-        final String fcmToken = prefs.getString(getString(R.string.fcm_token_key), "");
-
         ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
-        Call<String> loginAttempt = api.login(fcmToken, new LoginRequest(username, password));
+        Call<String> loginAttempt = api.login(getFcmToken(), new LoginRequest(username, password));
         loginAttempt.enqueue(new LoginResponseHandler());
     }
 
+    private String getFcmToken() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.shared_prefs_name), MODE_PRIVATE);
+        return prefs.getString(getString(R.string.fcm_token_key), "");
+    }
+
     public class LoginResponseHandler implements Callback<String> {
+
+        private boolean display;
+
+        public LoginResponseHandler(boolean display) {
+            this.display = display;
+        }
+
+        public LoginResponseHandler() {
+            this(true);
+        }
 
         @Override
         public void onResponse(@NonNull Call<String> call, Response<String> response) {
             if (response.isSuccessful()) {
                 String jwt = response.body();
-                Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                 successfulLogin(jwt);
             } else {
-                Toast.makeText(LoginActivity.this, "Error while trying to login", Toast.LENGTH_SHORT).show();
+                if (display)
+                    Toast.makeText(LoginActivity.this, "Error while trying to login", Toast.LENGTH_SHORT).show();
             }
         }
 

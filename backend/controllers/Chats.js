@@ -80,10 +80,8 @@ router.post("/:id/Messages", async (req, res, next) => {
 	try {
 		const message = await addMessageToChat(username, req.params.id, req.body.msg);
 		// Get the information to send the message for the user live.
-		const chat = await getChat(username, req.params.id);
 		const receiver = await getReceiver(username, req.params.id);
-		console.log(receiver);
-		sendInstantMessage(username, receiver, message.content, message.created);
+		await sendInstantMessage(req.params.id, username, receiver, message.content, message.created);
 		// Return the result to the sender.
 		res.json(message);
 	} catch (err) {

@@ -52,7 +52,6 @@ export async function sendInstantMessage(chatId, sender, receiver, content, time
 	
 	// Send to the user on the web.
 	if (websiteConnections.has(receiver)) {
-		console.log("HERE");
 		const receiverPayload = {
 			sender: sender,
 			content: content,

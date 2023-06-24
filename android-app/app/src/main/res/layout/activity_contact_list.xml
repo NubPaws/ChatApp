@@ -20,7 +20,6 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:elevation="@dimen/bar_elevation"
-
             android:weightSum="10">
 
             <ImageButton
@@ -28,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:contentDescription="@string/logout_img_btn_content_desc"
                 android:focusable="true"
@@ -40,9 +39,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/contact_list_title"
-                android:gravity="center"
+                android:gravity="start"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:textSize="24sp"
-                android:layout_weight="7"/>
+                android:layout_weight="8"/>
 
             <Button
                 android:id="@+id/btnSettingsFromContactList"
@@ -51,15 +52,8 @@
                 android:layout_gravity="center"
                 android:text="@string/settings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- This TextView is here to center the TextView above this one.
-            We use the weights in the LinearLayout to do it. -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2" />
-
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

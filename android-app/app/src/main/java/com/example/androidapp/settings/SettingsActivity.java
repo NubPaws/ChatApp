@@ -1,10 +1,12 @@
 package com.example.androidapp.settings;
 
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
+import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_UNSPECIFIED;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -13,43 +15,69 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 import com.example.androidapp.R;
-import com.example.androidapp.authentication.LoginActivity;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private EditText etServerAddress;
+
+    private RadioButton rbLight;
+    private RadioButton rbDark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        EditText etServerAddress = findViewById(R.id.etServerAddress);
+        etServerAddress = findViewById(R.id.etServerAddress);
 
-        Button btnSelectAddress = findViewById(R.id.btnSelectAddress);
-        btnSelectAddress.setOnClickListener(view -> {
-            SharedPreferences sharedPref = this.getSharedPreferences(
-                    getString(R.string.preference_file_key),
-                    Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
+        int mode = AppCompatDelegate.getDefaultNightMode();
 
-            // Adding the /api to the address
-            String url = etServerAddress.getText().toString();
-            if (url.endsWith("/")) {
-                url = url.substring(0, url.length() - 1);
-            }
+        rbLight = findViewById(R.id.rbLight);
+        rbDark = findViewById(R.id.rbDark);
 
-            url += getString(R.string.ApiPath);
-            editor.putString(getString(R.string.BaseUrl), url);
-            editor.apply();
-        });
+        if (mode == MODE_NIGHT_NO || mode == MODE_NIGHT_UNSPECIFIED)
+            rbLight.toggle();
+        if (mode == MODE_NIGHT_YES)
+            rbDark.toggle();
+
+        Button backButton = findViewById(R.id.settings_back_btn);
+        backButton.setOnClickListener(this::onApplyButtonClick);
     }
 
-    public void onThemeSelected(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        if (view.getId() == R.id.rbLight && checked) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else if (view.getId() == R.id.rbDark && checked) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    private void onThemeSelected() {
+        if (rbLight.isChecked()) {
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
         }
     }
+
+    private void btnSelectAddressClick() {
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key),
+                MODE_PRIVATE);
+
+        // Adding the /api to the address
+        String url = etServerAddress.getText().toString();
+        if (url.isEmpty()) {
+            return;
+        }
+
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+
+        url += getString(R.string.ApiPath);
+        sharedPref.edit()
+                .putString(getString(R.string.BaseUrl), url)
+                .apply();
+    }
+
+    private void onApplyButtonClick(View v) {
+        btnSelectAddressClick();
+        onThemeSelected();
+
+        finish();
+    }
+
 }

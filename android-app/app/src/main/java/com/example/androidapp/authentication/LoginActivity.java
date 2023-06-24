@@ -54,6 +54,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    /**
+     * Checks if the user has logged in to the application already and hasn't logged out.
+     * If so then connect the user straight to the contact list activity to start using
+     * the app.
+     */
     private void checkUserAlreadyLoggedIn() {
         SharedPreferences preferences = getSharedPreferences(
                 getString(R.string.shared_prefs_name), Context.MODE_PRIVATE
@@ -69,11 +74,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String username = preferences.getString(usernameKey, "");
         String jwtToken = preferences.getString(jwtTokenKey, "");
-
-        // Toss a quick connect so that the server will know that a user has connected.
-        ChatAppAPI api = ChatAppAPI.createAPI(getApplicationContext());
-        Call<String> loginAttempt = api.login(getFcmToken(), new LoginRequest(username));
-        loginAttempt.enqueue(new LoginResponseHandler(false));
 
         Intent intent = new Intent(this, ContactListActivity.class);
         intent.putExtra(usernameKey, username);
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public class LoginResponseHandler implements Callback<String> {
 
-        private boolean display;
+        private final boolean display;
 
         public LoginResponseHandler(boolean display) {
             this.display = display;

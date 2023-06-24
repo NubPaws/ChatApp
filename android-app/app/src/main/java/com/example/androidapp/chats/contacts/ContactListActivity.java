@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,6 +33,7 @@ import com.example.androidapp.chats.database.AppDB;
 import com.example.androidapp.chats.database.dao.ContactCardDao;
 import com.example.androidapp.chats.database.entities.User;
 import com.example.androidapp.connectivity.ChatMessagesService;
+import com.example.androidapp.utils.ActivityTracker;
 import com.example.androidapp.utils.PushNotificationsHandler;
 import com.example.androidapp.settings.SettingsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -66,6 +68,9 @@ public class ContactListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
+
+        // Add us to the activity tracker.
+        ActivityTracker.getInstance().add(this);
 
         // Get that sweet sweet JWT token as we love it.
         Intent intent = getIntent();
@@ -248,6 +253,12 @@ public class ContactListActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityTracker.getInstance().remove(this);
+    }
+
+    @Override
     public void onChanged(List<ContactCard> contactCards) {
         // Update the dao.
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -302,7 +313,9 @@ public class ContactListActivity extends AppCompatActivity
 
             builder.setTitle("Confirm Logout")
                     .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Confirm", (dialog, which) -> finish())
+                    .setPositiveButton("Confirm",
+                            (dialog, which) -> ActivityTracker.getInstance().finishAllActivities()
+                    )
                     .setNegativeButton("Cancel", (dialog, which) -> {});
 
             AlertDialog dialog = builder.create();

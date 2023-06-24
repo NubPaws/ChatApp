@@ -1,10 +1,16 @@
 # Yuval & Rami's Chat App
 
 - [Yuval \& Rami's Chat App](#yuval--ramis-chat-app)
-  - [Running the application](#running-the-application)
+- [Running the application](#running-the-application)
+  - [Backend server setup](#backend-server-setup)
+    - [MongoDB](#mongodb)
+    - [Environment Variables](#environment-variables)
   - [Running the backend server](#running-the-backend-server)
-- [Running the chat application alone](#running-the-chat-application-alone)
+  - [Running the chat application alone](#running-the-chat-application-alone)
 - [About](#about)
+    - [Front end](#front-end)
+    - [Backend](#backend)
+    - [Android app:](#android-app)
 - [Credits](#credits)
 
 # Running the application
@@ -31,17 +37,28 @@ Afterwards you can run the server that connects to the database using `npm run s
 To run the chat application you'll need to `cd` into the `chat-app` folder and run `npm start` to launch the React application, it will automatically open up in your default browser. Make sure to run the backend server first.
 
 # About
-This project attempts to make a chat application that will be accessible on multiple platforms:
+This is a chat application project. The application can be ran both a browser (via accessing the server's url) and through an Android app.
 
-* Web browser
-* Desktop app
-* Android app
+To create the application, the following technologies and languages were used:
+### Front end
+  * Node.js using React.js.
+  * WebSockets to connect to the backend server.
+### Backend
+  * Node.js using Express.js.
+    * Exposing REST API endpoints.
+    * Displaying the React.js application to the front end.
+  * MongoDB using NoSQL database for data storage and retrival.
+  * WebSockets to connect to web clients.
+  * Firebase Cloud Messaging to connect to android clients.
+### Android app:
+  * The app was made using Java with OOP design principles and event driven programming.
+  * Retrofit2 for REST API end point access.
+  * Room for local SQL database storage.
+  * Firebase Cloud Messaing for direct/instant communication with the backend.
 
-In this chat app, users will be able to register a new accounts and log into their account. By doing so, users may chat with each other.
+In this chat app, users can register a new accounts and log into their account and chat with one another (assuming they are on the same server).
 
-As it stands now there exists a working website that can be downloaded and deployed. Running the server with an existing MongoDB database is also possible using the instructions defined at the top.
-
-The website currently is fully functional and operational. Chat messages update in live and you can create new accounts and add accounts based on their usernames.
+As it stands now the project is fully built with a supported web client and an androind client that can be ran, connected to and used.
 
 # Credits
 Most images are from [wikimedia.org](https://commons.wikimedia.org) and fall under free use.

@@ -1,41 +1,42 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# React Application
 react-app/node_modules
-react-app/.pnp
-react-app/.pnp.js
+react-app/build
+
+# Backend Server
 backend/node_modules
+backend/.env
+backend/serviceAccountKey.json
 
-# testing
-react-app/coverage
+# Other
+/task-server/
+/database/
 
-# misc
+# Android Studio / Android App
+android-app/*.iml
+android-app/.gradle
+android-app/local.properties
+android-app/.idea
+android-app/.DS_Store
+android-app/build
+android-app/captures
+android-app/.externalNativeBuild
+android-app/.cxx
+
+
+# IntelliJ
+.idea
+
+# React
+/react-app/.pnp
+/react-app/.pnp.js
+/react-app/coverage
 /react-app/.DS_Store
 /react-app/.env.local
 /react-app/.env.development.local
 /react-app/.env.test.local
 /react-app/.env.production.local
-
 /react-app/npm-debug.log*
 /react-app/yarn-debug.log*
 /react-app/yarn-error.log*
-
-/backend/.env
-/react-app/build
-/task-server/
-/database/
-
-# intellij
-.idea
-
-# android studio
-/android-app/*.iml
-/android-app/.gradle
-/android-app/local.properties
-/android-app/.idea
-/android-app/.DS_Store
-/android-app/build
-/android-app/captures
-/android-app/.externalNativeBuild
-/android-app/.cxx
-

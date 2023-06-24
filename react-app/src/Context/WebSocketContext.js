@@ -5,7 +5,6 @@ export const WebSocketContext = createContext({
 	isReady: false,
 	value: null,
 	clearValue: () => {},
-	send: (payload) => {},
 	lastSent: null,
 	setLastSent: () => {},
 });
@@ -36,16 +35,10 @@ export function WebSocketProvider(props) {
 		};
 	}, [username]);
 	
-	const send = (payload) => {
-		if (webSocket.current && isReady)
-			webSocket.current.emit("send", payload);
-	};
-	
 	const contextValue = {
 		isReady: isReady,
 		value: val,
 		clearValue: () => {setVal(undefined)},
-		send: send,
 		lastSent: lastSent,
 		setLastSent: setLastSent,
 	};

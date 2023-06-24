@@ -26,11 +26,13 @@ import retrofit2.http.Path;
 
 public interface ChatAppAPI {
 
-    int OK_STATUS = 200;
-
     @Headers({"Content-Type: application/json"})
     @POST("Tokens")
     Call<String> login(@Body LoginRequest request);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("Tokens")
+    Call<String> login(@Header("fcmToken") String fcmToken, @Body LoginRequest request);
 
     @Headers({"Content-Type: application/json"})
     @POST("Users")

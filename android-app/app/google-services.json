@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "319123624491",
+    "project_id": "rcchat-3b8f0",
+    "storage_bucket": "rcchat-3b8f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319123624491:android:0c46461c9af03de0b3506e",
+        "android_client_info": {
+          "package_name": "com.example.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319123624491-bg94qk2m798ibj6m1qs2bmn5cu3c0bvb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Sc-a_pXrFM3Z6LW4XEkpIgf-3mjY4rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319123624491-bg94qk2m798ibj6m1qs2bmn5cu3c0bvb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

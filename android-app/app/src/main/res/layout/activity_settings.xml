@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -33,13 +34,6 @@
             android:hint="@string/server_address"
             android:inputType="text" />
 
-        <Button
-            android:id="@+id/btnSelectAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/select" />
-
         <TextView
             android:id="@+id/idtvTheme"
             android:layout_width="match_parent"
@@ -59,7 +53,6 @@
             android:padding="4dp">
 
             <RadioButton
-                android:onClick="onThemeSelected"
                 android:id="@+id/rbLight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +62,6 @@
                 android:text="Light" />
 
             <RadioButton
-                android:onClick="onThemeSelected"
                 android:id="@+id/rbDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -80,6 +72,14 @@
                 android:text="Dark" />
 
         </RadioGroup>
+
+        <Button
+            android:id="@+id/settings_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apply"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

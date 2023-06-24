@@ -17,6 +17,7 @@ import com.example.androidapp.R;
 import com.example.androidapp.api.ChatAppAPI;
 import com.example.androidapp.api.requests.LoginRequest;
 import com.example.androidapp.chats.contacts.ContactListActivity;
+import com.example.androidapp.settings.SettingsActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +46,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
+
+        Button btnSettingsFromLogin = findViewById(R.id.btnSettingsFromLogin);
+        btnSettingsFromLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void checkUserAlreadyLoggedIn() {

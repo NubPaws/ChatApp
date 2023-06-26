@@ -1,7 +1,12 @@
-### Other assignments
+## Other assignments
+### Assignment 1B
 The other half of the first assignment is under the [init-react-client](https://github.com/NubPaws/ChatApp/tree/init-react-client) branch.
 
-The 2nd part of the assignment is under the [create-backend-server](https://github.com/NubPaws/ChatApp/tree/create-backend-server) branch.
+### Assignment 2
+The 2nd assignment is under the [create-backend-server](https://github.com/NubPaws/ChatApp/tree/create-backend-server) branch.
+
+### Assignment 3
+The 3rd assinment is under the [start-android-app](https://github.com/NubPaws/ChatApp/tree/start-android-app) branch.
 
 # Yuval & Rami's Chat App
 

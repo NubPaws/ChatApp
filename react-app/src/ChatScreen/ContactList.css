@@ -1,0 +1,17 @@
+
+#contactList {
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	user-select: none;
+	border-width: 0px;
+	border: 0;
+	border-right: 1px black solid;
+}
+
+#listOfContacts {
+	overflow: hidden;
+	overflow-y: auto;
+	flex-grow: 0;
+}

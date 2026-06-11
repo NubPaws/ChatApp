@@ -1,0 +1,14 @@
+packages:
+  - "backend"
+  - "react-app"
+  - "packages/*"
+
+# pnpm blocks dependency build/lifecycle scripts by default (a security measure).
+# Decide per package which trusted scripts may run:
+#   - protobufjs: used by firebase-admin (gRPC/protobuf) on the backend -> allow.
+#   - core-js / core-js-pure: postinstall only prints a funding notice and comes from
+#     the CRA toolchain removed in Phase 6 -> keep blocked.
+allowBuilds:
+  protobufjs: true
+  core-js: false
+  core-js-pure: false

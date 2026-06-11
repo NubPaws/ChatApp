@@ -1,0 +1,18 @@
+{
+  "name": "chatapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Yuval & Rami's Chat App — pnpm monorepo (backend, react-app, @chatapp/shared).",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.5.3",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "dev:backend": "pnpm --filter backend run dev",
+    "dev:web": "pnpm --filter chat-app run dev"
+  }
+}

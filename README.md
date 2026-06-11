@@ -1,65 +1,103 @@
 # Yuval & Rami's Chat App
 
-- [Yuval \& Rami's Chat App](#yuval--ramis-chat-app)
-- [Running the application](#running-the-application)
-  - [Backend server setup](#backend-server-setup)
-    - [MongoDB](#mongodb)
-    - [Environment Variables](#environment-variables)
-  - [Running the backend server](#running-the-backend-server)
-  - [Running the chat application alone](#running-the-chat-application-alone)
-- [About](#about)
-    - [Front end](#front-end)
-    - [Backend](#backend)
-    - [Android app:](#android-app)
-- [Credits](#credits)
+A chat application you can use from the browser or an Android app. Users register
+an account, log in, and chat in real time with anyone else on the same server.
 
-# Running the application
-In order to run the application all you need to do is run the backend server. In order to do that, follow these steps:
-1. Open the command line in the root directory.
-2. `cd` to `backend`
-3. Run the `npm i` to install the modules.
-4. Run `npm run server` to run the server.
+This repository is a **pnpm workspace monorepo**:
 
-These steps assume that you already have a MongoDB database running. If not please follow the [Backend server setup](#backend-server-setup) instructions to download and run a MongoDB database.
+| Package | Path | Stack |
+| --- | --- | --- |
+| Backend | [`backend/`](backend) | TypeScript · Express 5 · Mongoose 9 · Socket.IO · Firebase Cloud Messaging |
+| Web client | [`react-app/`](react-app) | TypeScript · React 19 · Vite · React Router 7 · Socket.IO client |
+| Shared types | [`packages/shared/`](packages/shared) | `@chatapp/shared` — API + socket contracts used by both apps |
+| Android app | [`android-app/`](android-app) | Java · Gradle · Retrofit2 · Room · FCM (standalone) |
 
-## Backend server setup
-### MongoDB
-In order to run the application you must have a database server up and running. In this application we are using the [MongoDB](https://www.mongodb.com/) platform to run the server.<br/>
-Assuming you have a MongoDB server up and running you can `cd` into the `backend` directory and install the required node modules using `npm i`. <br />
-### Environment Variables
-The server uses the `dotenv` library, using the values provided in `.env` file. <br/>
-The server uses the `JWT_KEY` and `PORT` variables. In cases when `.env` file is not provided, default values will be selected.
+The backend, web client, and shared types are tested with **Vitest** and type-checked
+with **TypeScript**. The Android app is a standalone Gradle project and is built with
+Android Studio as before.
 
-## Running the backend server
-Afterwards you can run the server that connects to the database using `npm run server` (or you can use `node server.js` if you are not interested in running the server using nodemon).
+## Prerequisites
 
-## Running the chat application alone
-To run the chat application you'll need to `cd` into the `chat-app` folder and run `npm start` to launch the React application, it will automatically open up in your default browser. Make sure to run the backend server first.
+- **Node.js 20+** (22 LTS recommended — see [`.nvmrc`](.nvmrc))
+- **pnpm** (`corepack enable` will provide the pinned version)
+- A running **MongoDB** instance for the backend
 
-# About
-This is a chat application project. The application can be ran both a browser (via accessing the server's url) and through an Android app.
+## Getting started
 
-To create the application, the following technologies and languages were used:
-### Front end
-  * Node.js using React.js.
-  * WebSockets to connect to the backend server.
+Install every workspace's dependencies from the repository root:
+
+```bash
+pnpm install
+```
+
 ### Backend
-  * Node.js using Express.js.
-    * Exposing REST API endpoints.
-    * Displaying the React.js application to the front end.
-  * MongoDB using NoSQL database for data storage and retrival.
-  * WebSockets to connect to web clients.
-  * Firebase Cloud Messaging to connect to android clients.
-### Android app:
-  * The app was made using Java with OOP design principles and event driven programming.
-  * Retrofit2 for REST API end point access.
-  * Room for local SQL database storage.
-  * Firebase Cloud Messaing for direct/instant communication with the backend.
 
-In this chat app, users can register a new accounts and log into their account and chat with one another (assuming they are on the same server).
+1. Create `backend/.env` from the template and fill in the values
+   (see [`backend/.env.example`](backend/.env.example)):
 
-As it stands now the project is fully built with a supported web client and an androind client that can be ran, connected to and used.
+   ```bash
+   cp backend/.env.example backend/.env
+   ```
 
-# Credits
-Most images are from [wikimedia.org](https://commons.wikimedia.org) and fall under free use.
-Other images where taken from either [bootstrap's icon collection](https://icons.getbootstrap.com/) or were made in house by our graphics team (which is just one person).
+   `JWT_KEY` is **required** — the server refuses to start without it. Firebase
+   credentials are optional (push notifications are simply disabled if absent).
+
+2. Make sure MongoDB is running. If you don't have a server, you can start one
+   against a local data directory with `pnpm --filter backend run database`
+   (requires `mongod` on your PATH).
+
+3. Run the backend in watch mode:
+
+   ```bash
+   pnpm --filter backend dev      # or: pnpm dev:backend
+   ```
+
+   The server listens on `http://localhost:5000/` and also serves the built web
+   client from `backend/public/`.
+
+### Web client
+
+```bash
+pnpm --filter chat-app dev        # or: pnpm dev:web
+```
+
+Vite serves the app on `http://localhost:3000/`. The backend URL defaults to
+`http://localhost:5000`; override it with `VITE_API_URL` / `VITE_SOCKET_URL`
+(see [`react-app/.env.example`](react-app/.env.example)).
+
+## Common tasks
+
+Run these from the repository root; they fan out across all workspaces:
+
+```bash
+pnpm -r test          # run the Vitest suites
+pnpm -r typecheck     # type-check every package
+pnpm -r build         # build shared types, backend (dist/), and the web client
+```
+
+You can scope any of them to one package, e.g. `pnpm --filter backend test`.
+Coverage is available per package via `pnpm --filter backend run test:coverage`
+and `pnpm --filter chat-app run coverage`. Continuous integration
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs typecheck, tests,
+and build on every push and pull request.
+
+## About
+
+To create the application, the following technologies were used:
+
+- **Web client** — React (TypeScript) bundled with Vite, talking to the backend
+  over REST and WebSockets (Socket.IO).
+- **Backend** — Node.js + Express (TypeScript) exposing REST endpoints and a
+  Socket.IO server, MongoDB via Mongoose for storage, and Firebase Cloud
+  Messaging for Android push notifications. It also serves the built web client.
+- **Android app** — Java with OOP and event-driven design, Retrofit2 for REST,
+  Room for local SQLite storage, and Firebase Cloud Messaging for instant
+  delivery. It is unchanged by the TypeScript migration and is built with
+  Android Studio.
+
+## Credits
+
+Most images are from [wikimedia.org](https://commons.wikimedia.org) and fall
+under free use. Other images were taken from
+[Bootstrap's icon collection](https://icons.getbootstrap.com/) or were made
+in house by our graphics team (which is just one person).

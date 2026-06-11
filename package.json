@@ -11,7 +11,6 @@
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm -r run lint",
     "dev:backend": "pnpm --filter backend run dev",
     "dev:web": "pnpm --filter chat-app run dev"
   },

@@ -6,7 +6,7 @@ packages:
 # pnpm blocks dependency build/lifecycle scripts by default (a security measure).
 # Decide per package which trusted scripts may run:
 #   - protobufjs: used by firebase-admin (gRPC/protobuf) on the backend -> allow.
-#   - esbuild: installs its native binary; required by tsx/vitest -> allow.
+#   - esbuild: installs its native binary; required by tsx/vitest/vite -> allow.
 #   - core-js / core-js-pure: postinstall only prints a funding notice and comes from
 #     the CRA toolchain removed in Phase 6 -> keep blocked.
 #   - mongodb-memory-server: its postinstall pre-downloads the mongod binary. Keep it
@@ -14,6 +14,8 @@ packages:
 #     first test run instead.
 #   - @firebase/util: pure-JS utility pulled in by firebase-admin; its lifecycle
 #     script is not needed at runtime -> keep blocked.
+#   - msw: its postinstall installs a browser service worker; we only use msw's
+#     node server in tests, so it is not needed -> keep blocked.
 allowBuilds:
   protobufjs: true
   esbuild: true
@@ -21,3 +23,4 @@ allowBuilds:
   core-js-pure: false
   mongodb-memory-server: false
   "@firebase/util": false
+  msw: false

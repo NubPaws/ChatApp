@@ -14,5 +14,8 @@
     "lint": "pnpm -r run lint",
     "dev:backend": "pnpm --filter backend run dev",
     "dev:web": "pnpm --filter chat-app run dev"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }

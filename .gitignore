@@ -1,5 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# pnpm / monorepo (covers all workspaces and the root)
+node_modules/
+.pnpm-store/
+dist/
+*.tsbuildinfo
+coverage/
+
 # React Application
 react-app/node_modules
 react-app/build

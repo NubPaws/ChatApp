@@ -2,30 +2,26 @@ import { Router } from "express";
 import { getToken } from "../models/Tokens.js";
 import { generateError } from "./Validator.js";
 import { addFcmToken } from "./ServerHandler.js";
+import type { LoginRequest } from "@chatapp/shared";
 
-const router = new Router();
+const router = Router();
 
 router.post("/", async (req, res, next) => {
-	// Take the information that should be passed from the app.
-	const { username, password } = req.body;
+	const { username, password } = req.body as LoginRequest;
 	const fcmToken = req.headers.fcmtoken;
-	
-	// Make sure the information is valid.
-	if (generateError({username, password}, res)) {
+
+	if (generateError({ username, password }, res)) {
 		return;
 	}
 	try {
-		// Get the token.
 		const token = await getToken(username, password);
-		
-		// Send it back to the user.
 		res.send(token);
 	} catch (err) {
 		next(err);
 	}
-	
-	// Handle FCM token.
-	if (fcmToken) {
+
+	// Register the Android push token if one was supplied with the login.
+	if (typeof fcmToken === "string" && fcmToken) {
 		addFcmToken(username, fcmToken);
 	}
 });

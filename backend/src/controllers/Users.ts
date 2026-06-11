@@ -2,8 +2,9 @@ import { Router } from "express";
 import { addUser, getUser } from "../models/Users.js";
 import { getUsernameFromToken } from "../models/Tokens.js";
 import { generateError } from "./Validator.js";
+import type { RegisterRequest } from "@chatapp/shared";
 
-const router = new Router();
+const router = Router();
 
 router.get("/:username", async (req, res, next) => {
 	if (!req.headers.authorization) {
@@ -13,7 +14,6 @@ router.get("/:username", async (req, res, next) => {
 	const token = req.headers.authorization.split(" ")[1];
 	try {
 		const username = getUsernameFromToken(token);
-		
 		if (req.params.username === username) {
 			res.json(await getUser(username));
 		} else {
@@ -25,9 +25,8 @@ router.get("/:username", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-	const {username, password, displayName, profilePic} = req.body;
-	
-	if (generateError({username, password, displayName, profilePic}, res)) {
+	const { username, password, displayName, profilePic } = req.body as RegisterRequest;
+	if (generateError({ username, password, displayName, profilePic }, res)) {
 		return;
 	}
 	try {

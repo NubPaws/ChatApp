@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io";
-import firebase from "firebase-admin";
+import { getMessaging } from "firebase-admin/messaging";
 import { getDisplayName } from "../models/Chats.js";
 import type {
 	ClientToServerEvents,
@@ -66,8 +66,7 @@ export async function sendInstantMessage(
 			timestamp: timestamp.toString(),
 		};
 
-		firebase
-			.messaging()
+		getMessaging()
 			.send({ data, token: fcmToken })
 			.catch((error) => {
 				console.error("Error:", error);

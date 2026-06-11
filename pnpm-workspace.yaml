@@ -12,9 +12,12 @@ packages:
 #   - mongodb-memory-server: its postinstall pre-downloads the mongod binary. Keep it
 #     blocked so `pnpm install` stays offline; the binary downloads lazily on the
 #     first test run instead.
+#   - @firebase/util: pure-JS utility pulled in by firebase-admin; its lifecycle
+#     script is not needed at runtime -> keep blocked.
 allowBuilds:
   protobufjs: true
   esbuild: true
   core-js: false
   core-js-pure: false
   mongodb-memory-server: false
+  "@firebase/util": false

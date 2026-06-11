@@ -1,4 +1,4 @@
-import admin from "firebase-admin";
+import { initializeApp, cert, type ServiceAccount } from "firebase-admin/app";
 import { readFileSync } from "fs";
 
 let initialized = false;
@@ -10,15 +10,15 @@ let initialized = false;
  *   3. ./serviceAccountKey.json       - gitignored local file
  * Returns null when no credentials are available.
  */
-function loadServiceAccount(): admin.ServiceAccount | null {
+function loadServiceAccount(): ServiceAccount | null {
 	const inline = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 	if (inline) {
-		return JSON.parse(inline) as admin.ServiceAccount;
+		return JSON.parse(inline) as ServiceAccount;
 	}
 
 	const file = process.env.GOOGLE_APPLICATION_CREDENTIALS ?? "serviceAccountKey.json";
 	try {
-		return JSON.parse(readFileSync(file, "utf-8")) as admin.ServiceAccount;
+		return JSON.parse(readFileSync(file, "utf-8")) as ServiceAccount;
 	} catch {
 		return null;
 	}
@@ -40,6 +40,6 @@ export function initFirebase(): void {
 		return;
 	}
 
-	admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+	initializeApp({ credential: cert(serviceAccount) });
 	initialized = true;
 }

@@ -1,4 +1,3 @@
-import type { HydratedDocument } from "mongoose";
 import {
 	Chat,
 	Message,
@@ -7,10 +6,12 @@ import {
 	getNextChatId,
 	getNextMessageId,
 	getUserByUsername,
-	type IChat,
 	type IUser,
 } from "./DatabaseConnector.js";
 import { InvalidUsernameError, getUser } from "./Users.js";
+
+/** A chat document as returned by the DatabaseConnector query helpers. */
+type ChatDoc = Awaited<ReturnType<typeof getChatById>>[number];
 
 export class ChatAlreadyExistsError extends Error {}
 export class UserNotPartOfChatError extends Error {}
@@ -19,7 +20,7 @@ export class InvalidMessageContentError extends Error {}
 export class SameUserChatError extends Error {}
 
 /** Returns the other participant of a chat as a plain public user, or null. */
-function getOtherUserInChat(chat: HydratedDocument<IChat>, username: string): IUser | null {
+function getOtherUserInChat(chat: ChatDoc, username: string): IUser | null {
 	const users = chat.users;
 	if (users.length < 2) {
 		return null;
@@ -33,7 +34,7 @@ function getOtherUserInChat(chat: HydratedDocument<IChat>, username: string): IU
 }
 
 /** Whether the user with `username` is a participant of `chat`. */
-function isUserPartOfChat(username: string, chat: HydratedDocument<IChat>): boolean {
+function isUserPartOfChat(username: string, chat: ChatDoc): boolean {
 	return chat.users.some((user) => user.username === username);
 }
 
@@ -139,7 +140,7 @@ export async function deleteChat(username: string, id: number | string): Promise
 		throw new UserNotPartOfChatError();
 	}
 
-	await Chat.deleteOne({ id });
+	await Chat.deleteOne({ id: Number(id) });
 }
 
 /**
@@ -183,9 +184,9 @@ export async function addMessageToChat(
 	});
 
 	if (chat.messages === null) {
-		await Chat.findOneAndUpdate({ id: chatId }, { $set: { messages: [message.toObject()] } });
+		await Chat.findOneAndUpdate({ id: Number(chatId) }, { $set: { messages: [message.toObject()] } });
 	} else {
-		await Chat.findOneAndUpdate({ id: chatId }, { $push: { messages: message.toObject() } });
+		await Chat.findOneAndUpdate({ id: Number(chatId) }, { $push: { messages: message.toObject() } });
 	}
 
 	return {

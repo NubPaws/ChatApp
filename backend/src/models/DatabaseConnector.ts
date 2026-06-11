@@ -103,7 +103,7 @@ export async function getMessageById(id: number) {
 }
 
 export async function getChatById(id: number | string) {
-	return Chat.find({ id });
+	return Chat.find({ id: Number(id) });
 }
 
 export async function getChatsByUsername(username: string) {

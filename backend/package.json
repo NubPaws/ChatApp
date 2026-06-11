@@ -3,10 +3,13 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Backend server handling the chat app database.",
-  "main": "App.js",
+  "main": "src/server.js",
   "scripts": {
     "database": "mongod --dbpath=\"../database\"",
-    "server": "nodemon App.js"
+    "server": "nodemon src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +26,11 @@
     "mongoose": "^7.2.1",
     "nodemon": "^2.0.22",
     "socket.io": "^4.6.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.8",
+    "mongodb-memory-server": "^11.2.0",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.8"
   }
 }

@@ -8,7 +8,11 @@ packages:
 #   - protobufjs: used by firebase-admin (gRPC/protobuf) on the backend -> allow.
 #   - core-js / core-js-pure: postinstall only prints a funding notice and comes from
 #     the CRA toolchain removed in Phase 6 -> keep blocked.
+#   - mongodb-memory-server: its postinstall pre-downloads the mongod binary. Keep it
+#     blocked so `pnpm install` stays offline; the binary downloads lazily on the
+#     first test run instead.
 allowBuilds:
   protobufjs: true
   core-js: false
   core-js-pure: false
+  mongodb-memory-server: false
